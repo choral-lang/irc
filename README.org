@@ -1,0 +1,38 @@
+* About
+
+Trying to model the IRC protocol using Choral.
+
+* Building
+
+1. Clone the [[https://github.com/choral-lang/choral][Choral repository]] and build the JARs:
+
+   #+BEGIN_EXAMPLE
+     gradle jar jarRuntime
+   #+END_EXAMPLE
+
+2. Install the Choral JARs into the local Maven repository (=cd= into Choral's
+   =dist= directory first):
+
+   #+BEGIN_EXAMPLE
+     mvn install:install-file \
+       -Dfile=choral-runtime.jar \
+       -DgroupId=choral \
+       -DartifactId=choral-runtime \
+       -Dversion=git \
+       -Dpackaging=jar \
+       -DgeneratePom=true
+
+     mvn install:install-file \
+       -Dfile=choral.jar \
+       -DgroupId=choral \
+       -DartifactId=choral \
+       -Dversion=git \
+       -Dpackaging=jar \
+       -DgeneratePom=true
+   #+END_EXAMPLE
+
+3. Build the project:
+
+   #+BEGIN_EXAMPLE
+     mvn compile
+   #+END_EXAMPLE
