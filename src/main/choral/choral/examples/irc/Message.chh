@@ -1,0 +1,18 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class Message@R {
+    public Message() {}
+
+    public Message(String@R command) {}
+
+    public Message(String@R command, List@R<String> params) {}
+
+    public Message(String@R source, String@R command, List@R<String> params) {}
+
+    public Message(String@R tags, String@R source, String@R command,
+                   List@R<String> params) {}
+
+    public static Message@R parse(String@R str) {}
+}
