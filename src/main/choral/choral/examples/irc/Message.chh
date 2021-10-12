@@ -15,4 +15,6 @@ public class Message@R {
                    List@R<String> params) {}
 
     public static Message@R parse(String@R str) {}
+
+    public String@R serialize() {}
 }

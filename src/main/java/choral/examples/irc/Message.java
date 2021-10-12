@@ -121,4 +121,44 @@ public class Message {
 
         return new Message(tags, src, cmd, params);
     }
+
+    /**
+       Serialize the `Message` instance to a string following the format
+       specified by the IRC protocol.
+
+       The last parameter, even if the only one, is always serialized as a
+       trailing parameter.
+     */
+    public String serialize() {
+        // TODO: Make sure there are no NUL, CR or LF characters in the message
+        // parts. Make sure the tags' values are properly escaped.
+        StringBuilder sb = new StringBuilder();
+
+        if (!tags.isEmpty()) {
+            sb.append("@");
+            sb.append(tags);
+            sb.append(" ");
+        }
+
+        if (!src.isEmpty()) {
+            sb.append(":");
+            sb.append(src);
+            sb.append(" ");
+        }
+
+        sb.append(cmd);
+
+        for (int i = 0; i < params.size(); ++i) {
+            sb.append(" ");
+
+            if (i == params.size() - 1)
+                sb.append(":");
+
+            sb.append(params.get(i));
+        }
+
+        sb.append("\r\n");
+
+        return sb.toString();
+    }
 }
