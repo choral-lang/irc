@@ -1,0 +1,11 @@
+package choral.examples.irc;
+
+public abstract class ClientEvent@R {
+    ClientEvent(ClientEventType@R eventType) {}
+
+    public ClientEventType@R getType() {}
+
+    public ClientMessageEvent@R asClientMessageEvent() {}
+
+    public ClientJoinEvent@R asClientJoinEvent() {}
+}
