@@ -161,4 +161,9 @@ public class Message {
 
         return sb.toString();
     }
+
+    public static Message prepareJoin(List<String> channels, List<String> keys) {
+        return new Message("JOIN", List.of(String.join(",", channels),
+                                           String.join(",", keys)));
+    }
 }
