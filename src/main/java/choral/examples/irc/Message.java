@@ -5,11 +5,10 @@ import java.util.List;
 import java.lang.StringBuilder;
 
 public class Message {
-    public String tags, src, cmd;
+    public String src, cmd;
     public List<String> params;
 
     public Message() {
-        this.tags = "";
         this.src = "";
         this.cmd = "";
         this.params = new ArrayList<>();
@@ -28,12 +27,6 @@ public class Message {
     public Message(String src, String cmd, List<String> params) {
         this(cmd, params);
         this.src = src;
-    }
-
-    public Message(String tags, String src, String cmd,
-                   List<String> params) {
-        this(src, cmd, params);
-        this.tags = tags;
     }
 
     private static int untilWhitespace(String str, int i) {
@@ -61,13 +54,12 @@ public class Message {
      */
     public static Message parse(String str) {
         // TODO: Fail when the string contains NUL, CR or LF characters. Fail
-        // when a non-trailing parameter contains a colon character. Handle
-        // escaped values within tags.
+        // when a non-trailing parameter contains a colon character.
 
         int len = str.length();
 
         int i = 0;
-        String tags = null, src = null, cmd = null;
+        String src = null, cmd = null;
         List<String> params = new ArrayList<>();
 
         while (true) {
@@ -77,12 +69,7 @@ public class Message {
             if (i == len)
                 break;
 
-            // Tags.
-            if (str.charAt(i) == '@') {
-                j = untilWhitespace(str, i + 1);
-                tags = str.substring(i + 1, j);
-            }
-            else if (str.charAt(i) == ':') {
+            if (str.charAt(i) == ':') {
                 // Source.
                 if (src == null) {
                     j = untilWhitespace(str, i + 1);
@@ -116,10 +103,7 @@ public class Message {
         if (cmd == null)
             return null;
 
-        if (tags == null)
-            tags = "";
-
-        return new Message(tags, src, cmd, params);
+        return new Message(src, cmd, params);
     }
 
     /**
@@ -131,14 +115,8 @@ public class Message {
      */
     public String serialize() {
         // TODO: Make sure there are no NUL, CR or LF characters in the message
-        // parts. Make sure the tags' values are properly escaped.
+        // parts.
         StringBuilder sb = new StringBuilder();
-
-        if (!tags.isEmpty()) {
-            sb.append("@");
-            sb.append(tags);
-            sb.append(" ");
-        }
 
         if (!src.isEmpty()) {
             sb.append(":");

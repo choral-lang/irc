@@ -11,9 +11,6 @@ public class Message@R {
 
     public Message(String@R source, String@R command, List@R<String> params) {}
 
-    public Message(String@R tags, String@R source, String@R command,
-                   List@R<String> params) {}
-
     public static Message@R parse(String@R str) {}
 
     public String@R serialize() {}
