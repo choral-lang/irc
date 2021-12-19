@@ -14,14 +14,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>choral</groupId>
+            <groupId>org.choral-lang</groupId>
             <artifactId>choral</artifactId>
-            <version>git</version>
+            <version>0.1.1</version>
         </dependency>
         <dependency>
-            <groupId>choral</groupId>
-            <artifactId>choral-runtime</artifactId>
-            <version>git</version>
+            <groupId>org.choral-lang</groupId>
+            <artifactId>runtime</artifactId>
+            <version>0.1.1</version>
         </dependency>
     </dependencies>
 
