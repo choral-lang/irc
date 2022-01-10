@@ -4,4 +4,8 @@ import java.util.List;
 
 public class ClientMessageEvent@R extends ClientEvent@R {
     public ClientMessageEvent(List@R<String> targets, String@R message) {}
+
+    public List@R<String> getTargets() {}
+
+    public String@R getMessage() {}
 }

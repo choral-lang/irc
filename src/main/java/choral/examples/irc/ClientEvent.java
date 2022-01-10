@@ -11,6 +11,16 @@ public abstract class ClientEvent {
         return eventType;
     }
 
+    public ClientNickEvent asClientNickEvent() {
+        assert eventType == ClientEventType.NICK;
+        return (ClientNickEvent) this;
+    }
+
+    public ClientRegisterEvent asClientRegisterEvent() {
+        assert eventType == ClientEventType.REGISTER;
+        return (ClientRegisterEvent) this;
+    }
+
     public ClientMessageEvent asClientMessageEvent() {
         assert eventType == ClientEventType.MESSAGE;
         return (ClientMessageEvent)this;
