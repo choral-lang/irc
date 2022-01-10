@@ -5,6 +5,8 @@ import java.util.List;
 import java.lang.StringBuilder;
 
 public class Message {
+    public static final int MAX_SIZE = 512;
+
     public String src, cmd;
     public List<String> params;
 
