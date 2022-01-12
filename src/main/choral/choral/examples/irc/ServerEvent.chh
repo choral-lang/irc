@@ -1,0 +1,15 @@
+package choral.examples.irc;
+
+public abstract class ServerEvent@R {
+    ServerEvent(ServerEventType@R eventType) {}
+
+    public ServerEventType@R getType() {}
+
+    public ServerNickEvent@R asServerNickEvent() {}
+
+    public ServerRegisterEvent@R asServerRegisterEvent() {}
+
+    public ServerMessageEvent@R asServerMessageEvent() {}
+
+    public ServerJoinEvent@R asServerJoinEvent() {}
+}

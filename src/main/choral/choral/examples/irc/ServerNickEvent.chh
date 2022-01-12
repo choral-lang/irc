@@ -1,0 +1,9 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class ServerNickEvent@R extends ServerEvent@R {
+    public ServerNickEvent(String@R nick) {}
+
+    public String@R getNickname() {}
+}

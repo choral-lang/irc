@@ -9,10 +9,12 @@ public class Irc@(Client, Server) {
     private SymChannel@(Client, Server)<String> ch_AB;
 
     private LinkedBlockingQueue@Client<ClientEvent> clientQueue;
+    private LinkedBlockingQueue@Server<ServerEvent> serverQueue;
 
     public Irc(SymChannel@(Client, Server)<String> ch_AB) {
         this.ch_AB = ch_AB;
         this.clientQueue = new LinkedBlockingQueue@Client<ClientEvent>();
+        this.serverQueue = new LinkedBlockingQueue@Server<ServerEvent>();
     }
 
     public void run() {
