@@ -10,6 +10,7 @@ import choral.channels.SymChannelImpl;
 import choral.lang.Unit;
 
 public class IrcChannelImpl implements SymChannelImpl<Message> {
+    private static final int MAX_SIZE = 512;
     private static final byte[] MARKER = new byte[] {0x0D, 0x0A};
 
     private ByteChannel channel;
@@ -20,7 +21,7 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     IrcChannelImpl(ByteChannel channel) {
         this.channel = channel;
         this.writer = Channels.newWriter(channel, StandardCharsets.UTF_8);
-        this.buffer = ByteBuffer.allocate(Message.MAX_SIZE);
+        this.buffer = ByteBuffer.allocate(MAX_SIZE);
         this.current = -1;
     }
 
@@ -44,20 +45,14 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     private static int findMarker(ByteBuffer buffer, byte[] marker) {
         int limit = buffer.limit();
         int i = buffer.position(), m = 0;
+        assert marker.length > 0;
 
-        while (i < limit) {
-            if (m == marker.length)
-                break;
-
-            if (buffer.get(i) == marker[m])
-                ++m;
-            else
-                m = 0;
-
+        while (i < limit && m < marker.length) {
+            m = buffer.get(i) == marker[m] ? m + 1 : 0;
             ++i;
         }
 
-        return m == marker.length ? i : -1;
+        return i < limit ? i : -1;
     }
 
     @Override
@@ -68,9 +63,8 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
                 buffer.clear();
 
             try {
-                if (channel.read(buffer) == -1) {
+                if (channel.read(buffer) == -1)
                     throw new RuntimeException("Channel closed while reading");
-                }
             }
             catch (IOException e) {
                 throw new RuntimeException(e.getMessage());

@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.StringBuilder;
 
-public class Message {
-    public static final int MAX_SIZE = 512;
 
+public class Message {
     private String src, cmd;
     private List<String> params;
 
