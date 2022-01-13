@@ -8,12 +8,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Irc@(Client, Server) {
     private SymChannel@(Client, Server)<String> ch_AB;
 
+    private ClientState@Client clientState;
     private LinkedBlockingQueue@Client<ClientEvent> clientQueue;
+
+    private ServerState@Server serverState;
     private LinkedBlockingQueue@Server<ServerEvent> serverQueue;
 
     public Irc(SymChannel@(Client, Server)<String> ch_AB) {
         this.ch_AB = ch_AB;
+        this.clientState = new ClientState@Client();
         this.clientQueue = new LinkedBlockingQueue@Client<ClientEvent>();
+        this.serverState = new ServerState@Server();
         this.serverQueue = new LinkedBlockingQueue@Server<ServerEvent>();
     }
 
