@@ -7,8 +7,8 @@ import java.lang.StringBuilder;
 public class Message {
     public static final int MAX_SIZE = 512;
 
-    public String src, cmd;
-    public List<String> params;
+    private String src, cmd;
+    private List<String> params;
 
     public Message() {
         this.src = "";
@@ -29,6 +29,22 @@ public class Message {
     public Message(String src, String cmd, List<String> params) {
         this(cmd, params);
         this.src = src;
+    }
+
+    public String getSrc() {
+        return src;
+    }
+
+    public String getCommand() {
+        return cmd;
+    }
+
+    public List<String> getParams() {
+        return params;
+    }
+
+    public String getParam(int n) {
+        return params.get(n);
     }
 
     private static int untilWhitespace(String str, int i) {
@@ -140,6 +156,14 @@ public class Message {
         sb.append("\r\n");
 
         return sb.toString();
+    }
+
+    public static Message prepareNick(String nickname) {
+        return new Message("NICK", List.of(nickname));
+    }
+
+    public static Message prepareUser(String username, String realname) {
+        return new Message("USER", List.of(username, "0", "*", realname));
     }
 
     public static Message prepareJoin(List<String> channels, List<String> keys) {
