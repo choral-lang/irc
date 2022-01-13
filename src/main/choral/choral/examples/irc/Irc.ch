@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Irc@(Client, Server) {
-    private SymChannel@(Client, Server)<String> ch_AB;
+    private SymChannel@(Client, Server)<Object> ch_AB;
 
     private ClientState@Client clientState;
     private LinkedBlockingQueue@Client<ClientEvent> clientQueue;
@@ -14,7 +14,7 @@ public class Irc@(Client, Server) {
     private ServerState@Server serverState;
     private LinkedBlockingQueue@Server<ServerEvent> serverQueue;
 
-    public Irc(SymChannel@(Client, Server)<String> ch_AB) {
+    public Irc(SymChannel@(Client, Server)<Object> ch_AB) {
         this.ch_AB = ch_AB;
         this.clientState = new ClientState@Client();
         this.clientQueue = new LinkedBlockingQueue@Client<ClientEvent>();
