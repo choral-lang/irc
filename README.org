@@ -7,7 +7,7 @@ Trying to model the IRC protocol using Choral.
 1. Clone the [[https://github.com/choral-lang/choral][Choral repository]] and build the JARs:
 
    #+BEGIN_EXAMPLE
-     gradle jar jarRuntime
+     mvn install
    #+END_EXAMPLE
 
 2. Install the Choral JARs into the local Maven repository (=cd= into Choral's
