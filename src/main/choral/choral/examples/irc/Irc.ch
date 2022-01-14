@@ -23,37 +23,44 @@ public class Irc@(Client, Server) {
     }
 
     public void run() {
-        // TODO: Start clientDrivenLoop() and serverDrivenLoop() on separate threads.
+        // TODO: Start clientDrivenLoop() and serverDrivenLoop() on separate
+        // threads.
     }
 
     private void clientDrivenLoop() {
         try {
             ClientEvent@Client event = clientQueue.take();
-            ClientEventType@Client t = event.getType();
 
             if (event.getType() == ClientEventType@Client.NICK) {
                 ch_AB.<ClientEventType>select(ClientEventType@Client.NICK);
 
                 ClientNickEvent@Client e = event.asClientNickEvent();
-                clientState.nickname = e.getNickname();
+                String@Client nickname = e.getNickname();
 
-                Message@Client m = Message@Client.prepareNick(e.getNickname());
-                Message@Server s = Message@Server.parse(ch_AB.<String>com(m.serialize()));
-                serverState.nickname = s.getParam(0@Server);
-                // TODO: Insert into server's queue to broadcast to other
-                // clients.
+                clientState.nickname = nickname;
+
+                NickMessage@Server m = ch_AB.<NickMessage>com(
+                    new NickMessage@Client(nickname));
+                serverState.nickname = m.getNickname();
+
+                // TODO: Server: Add NICK events to all appropiate queues.
             }
             else {
                 ch_AB.<ClientEventType>select(ClientEventType@Client.REGISTER);
 
                 ClientRegisterEvent@Client e = event.asClientRegisterEvent();
-                clientState.username = e.getUsername();
-                clientState.realname = e.getRealname();
+                String@Client username = e.getUsername();
+                String@Client realname = e.getRealname();
 
-                Message@Client m = Message@Client.prepareUser(e.getUsername(), e.getRealname());
-                Message@Server s = Message@Server.parse(ch_AB.<String>com(m.serialize()));
-                serverState.username = s.getParam(0@Server);
-                serverState.realname = s.getParam(3@Server);
+                clientState.username = username;
+                clientState.realname = realname;
+
+                RegisterMessage@Server m = ch_AB.<RegisterMessage>com(
+                    new RegisterMessage@Client(username, realname));
+                serverState.username = m.getUsername();
+                serverState.realname = m.getRealname();
+
+                // TODO: Server: Add MOTD events to the appropriate queue.
             }
         }
         catch (InterruptedException@Client e) {
@@ -66,7 +73,6 @@ public class Irc@(Client, Server) {
     private void serverDrivenLoop() {
         try {
             ServerEvent@Server event = serverQueue.take();
-            ServerEventType@Server t = event.getType();
 
             if (event.getType() == ServerEventType@Server.NICK) {
                 ch_AB.<ServerEventType>select(ServerEventType@Server.NICK);
@@ -74,9 +80,8 @@ public class Irc@(Client, Server) {
                 ServerNickEvent@Server e = event.asServerNickEvent();
                 serverState.nickname = e.getNickname();
 
-                Message@Server m = Message@Server.prepareNick(e.getNickname());
-                Message@Client s = Message@Client.parse(ch_AB.<String>com(m.serialize()));
-                // addServerEvent(new ServerNickEvent@Server(s.getParam(0@Server)));
+                // TODO: Server: Reply with a numeric.
+                // TODO: Client: Adjust local state (own or others' nicknames).
             }
             else {
                 ch_AB.<ServerEventType>select(ServerEventType@Server.REGISTER);
@@ -85,9 +90,8 @@ public class Irc@(Client, Server) {
                 serverState.username = e.getUsername();
                 serverState.realname = e.getRealname();
 
-                Message@Server m = Message@Server.prepareUser(e.getUsername(), e.getRealname());
-                Message@Client s = Message@Client.parse(ch_AB.<String>com(m.serialize()));
-                // addServerEvent(new ServerRegisterEvent@Server(s.getParam(0@Server), s.getParam(3@Server)));
+                // TODO: Server: Reply with a numeric.
+                // TODO: Client: Adjust local state.
             }
         }
         catch (InterruptedException@Server e) {
