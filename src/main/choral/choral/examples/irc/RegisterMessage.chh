@@ -1,0 +1,13 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class RegisterMessage@R {
+    public RegisterMessage(String@R src, String@R username, String@R realname) {}
+
+    public RegisterMessage(String@R username, String@R realname) {}
+
+    public String@R getUsername() {}
+
+    public String@R getRealname() {}
+}

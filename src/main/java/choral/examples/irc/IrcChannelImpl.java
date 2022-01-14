@@ -88,9 +88,14 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             buffer.compact();
 
         String s = StandardCharsets.UTF_8.decode(b).toString();
-        // TODO: We will only ever communicate Message instances. How do we
-        // narrow the API?
-        return (M) Message.parse(s);
+
+        // NOTE: Assuming the (de)serialization code is correct, this cast is
+        // guaranteed to succeed because of the properties of projection -- the
+        // synchronizing roles agree on the type being communicated.
+        @SuppressWarnings("unchecked")
+        M m = (M) Message.construct(Message.parse(s));
+
+        return m;
     }
 
     @Override

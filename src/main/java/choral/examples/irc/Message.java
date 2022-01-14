@@ -63,6 +63,26 @@ public class Message {
     }
 
     /**
+       Construct an instance of the appropriate subclass of `Message` by
+       switching on the value of the command.
+
+       Return the newly constructed instance or null if the command doesn't
+       match any of the known subclasses.
+     */
+    public static Message construct(Message m) {
+        String cmd = m.getCommand();
+
+        if (cmd == NickMessage.CMD) {
+            return NickMessage.construct(m);
+        }
+        else if (cmd == RegisterMessage.CMD) {
+            return RegisterMessage.construct(m);
+        }
+
+        return null;
+    }
+
+    /**
        Parse an IRC message as specified by the IRC protocol. Assume there's no
        trailing CRLF sequence.
 
