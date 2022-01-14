@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.StringBuilder;
 
-
 public class Message {
     private String src, cmd;
     private List<String> params;
@@ -23,6 +22,9 @@ public class Message {
     public Message(String cmd, List<String> params) {
         this(cmd);
         this.params = params;
+
+        if (params.size() > 15)
+            throw new IllegalArgumentException("There should be at most 15 parameters");
     }
 
     public Message(String src, String cmd, List<String> params) {
@@ -124,7 +126,7 @@ public class Message {
                 cmd = str.substring(i, j);
 
                 // Treat an unspecified source as empty. The next occurrence of
-                // a colon can only start a trailing parameter.
+                // a colon can then only start a trailing parameter.
                 if (src == null)
                     src = "";
             }
