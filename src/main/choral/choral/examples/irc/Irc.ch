@@ -22,80 +22,90 @@ public class Irc@(Client, Server) {
         this.serverQueue = new LinkedBlockingQueue@Server<ServerEvent>();
     }
 
+    private ClientEvent@Client takeClientEvent() {
+        try {
+            return clientQueue.take();
+        }
+        catch (InterruptedException@Client e) {
+            // Ignore the interrupt and try again.
+            return takeClientEvent();
+        }
+    }
+
+    private ServerEvent@Server takeServerEvent() {
+        try {
+            return serverQueue.take();
+        }
+        catch (InterruptedException@Server e) {
+            // Ignore the interrupt and try again.
+            return takeServerEvent();
+        }
+    }
+
     public void run() {
         // TODO: Start clientDrivenLoop() and serverDrivenLoop() on separate
         // threads.
     }
 
     private void clientDrivenLoop() {
-        try {
-            ClientEvent@Client event = clientQueue.take();
+        ClientEvent@Client event = takeClientEvent();
 
-            if (event.getType() == ClientEventType@Client.NICK) {
-                ch_AB.<ClientEventType>select(ClientEventType@Client.NICK);
+        if (event.getType() == ClientEventType@Client.NICK) {
+            ch_AB.<ClientEventType>select(ClientEventType@Client.NICK);
 
-                ClientNickEvent@Client e = event.asClientNickEvent();
-                String@Client nickname = e.getNickname();
+            ClientNickEvent@Client e = event.asClientNickEvent();
+            String@Client nickname = e.getNickname();
 
-                clientState.nickname = nickname;
+            clientState.nickname = nickname;
 
-                NickMessage@Server m = ch_AB.<NickMessage>com(
-                    new NickMessage@Client(nickname));
-                serverState.nickname = m.getNickname();
+            NickMessage@Server m = ch_AB.<NickMessage>com(
+                new NickMessage@Client(nickname));
+            serverState.nickname = m.getNickname();
 
-                // TODO: Server: Add NICK events to all appropiate queues.
-            }
-            else {
-                ch_AB.<ClientEventType>select(ClientEventType@Client.REGISTER);
-
-                ClientRegisterEvent@Client e = event.asClientRegisterEvent();
-                String@Client username = e.getUsername();
-                String@Client realname = e.getRealname();
-
-                clientState.username = username;
-                clientState.realname = realname;
-
-                RegisterMessage@Server m = ch_AB.<RegisterMessage>com(
-                    new RegisterMessage@Client(username, realname));
-                serverState.username = m.getUsername();
-                serverState.realname = m.getRealname();
-
-                // TODO: Server: Add MOTD events to the appropriate queue.
-            }
+            // TODO: Server: Add NICK events to all appropiate queues.
         }
-        catch (InterruptedException@Client e) {
-            Thread@Client.currentThread().interrupt();
+        else {
+            ch_AB.<ClientEventType>select(ClientEventType@Client.REGISTER);
+
+            ClientRegisterEvent@Client e = event.asClientRegisterEvent();
+            String@Client username = e.getUsername();
+            String@Client realname = e.getRealname();
+
+            clientState.username = username;
+            clientState.realname = realname;
+
+            RegisterMessage@Server m = ch_AB.<RegisterMessage>com(
+                new RegisterMessage@Client(username, realname));
+            serverState.username = m.getUsername();
+            serverState.realname = m.getRealname();
+
+            // TODO: Server: Add MOTD events to the appropriate queue.
         }
 
         clientDrivenLoop();
     }
 
     private void serverDrivenLoop() {
-        try {
-            ServerEvent@Server event = serverQueue.take();
+        ServerEvent@Server event = takeServerEvent();
 
-            if (event.getType() == ServerEventType@Server.NICK) {
-                ch_AB.<ServerEventType>select(ServerEventType@Server.NICK);
+        if (event.getType() == ServerEventType@Server.NICK) {
+            ch_AB.<ServerEventType>select(ServerEventType@Server.NICK);
 
-                ServerNickEvent@Server e = event.asServerNickEvent();
-                serverState.nickname = e.getNickname();
+            ServerNickEvent@Server e = event.asServerNickEvent();
+            serverState.nickname = e.getNickname();
 
-                // TODO: Server: Reply with a numeric.
-                // TODO: Client: Adjust local state (own or others' nicknames).
-            }
-            else {
-                ch_AB.<ServerEventType>select(ServerEventType@Server.REGISTER);
-
-                ServerRegisterEvent@Server e = event.asServerRegisterEvent();
-                serverState.username = e.getUsername();
-                serverState.realname = e.getRealname();
-
-                // TODO: Server: Reply with a numeric.
-                // TODO: Client: Adjust local state.
-            }
+            // TODO: Server: Reply with a numeric.
+            // TODO: Client: Adjust local state (own or others' nicknames).
         }
-        catch (InterruptedException@Server e) {
-            Thread@Server.currentThread().interrupt();
+        else {
+            ch_AB.<ServerEventType>select(ServerEventType@Server.REGISTER);
+
+            ServerRegisterEvent@Server e = event.asServerRegisterEvent();
+            serverState.username = e.getUsername();
+            serverState.realname = e.getRealname();
+
+            // TODO: Server: Reply with a numeric.
+            // TODO: Client: Adjust local state.
         }
 
         serverDrivenLoop();
