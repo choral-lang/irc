@@ -42,6 +42,28 @@ public class Irc@(Client, Server) {
         }
     }
 
+	private Integer@Client addClientEvent(ClientEvent@Client event) {
+        try {
+			clientQueue.put(event);
+            return null@Client;
+        }
+        catch (InterruptedException@Client e) {
+            // Ignore the interrupt and try again.
+            return addClientEvent(event);
+        }
+	}
+
+	private Integer@Server addServerEvent(ServerEvent@Server event) {
+        try {
+            serverQueue.put(event);
+            return null@Server;
+        }
+        catch (InterruptedException@Server e) {
+            // Ignore the interrupt and try again.
+            return addServerEvent(event);
+        }
+	}
+
     public void run() {
         // TODO: Start clientDrivenLoop() and serverDrivenLoop() on separate
         // threads.

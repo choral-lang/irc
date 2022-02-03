@@ -3,5 +3,7 @@ package java.util.concurrent;
 public class LinkedBlockingQueue@R<E@R> {
     public LinkedBlockingQueue() {}
 
+    public void put(E@R e) {}
+
     public E@R take() {}
 }
