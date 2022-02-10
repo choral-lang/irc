@@ -94,17 +94,17 @@ public class Irc@(Client, Server) {
             // TODO: Server: Add NICK events to all appropiate queues.
         }
         else {
-            ch_AB.<ClientEventType>select(ClientEventType@Client.REGISTER);
+            ch_AB.<ClientEventType>select(ClientEventType@Client.USER);
 
-            ClientRegisterEvent@Client e = event.asClientRegisterEvent();
+            ClientUserEvent@Client e = event.asClientUserEvent();
             String@Client username = e.getUsername();
             String@Client realname = e.getRealname();
 
             clientState.username = username;
             clientState.realname = realname;
+            UserMessage@Server m = ch_AB.<UserMessage>com(
+                new UserMessage@Client(username, realname));
 
-            RegisterMessage@Server m = ch_AB.<RegisterMessage>com(
-                new RegisterMessage@Client(username, realname));
             serverState.username = m.getUsername();
             serverState.realname = m.getRealname();
 
@@ -127,11 +127,11 @@ public class Irc@(Client, Server) {
             // TODO: Client: Adjust local state (own or others' nicknames).
         }
         else {
-            ch_AB.<ServerEventType>select(ServerEventType@Server.REGISTER);
+            ch_AB.<ServerEventType>select(ServerEventType@Server.USER);
 
-            ServerRegisterEvent@Server e = event.asServerRegisterEvent();
             serverState.username = e.getUsername();
             serverState.realname = e.getRealname();
+            ServerUserEvent@Server e = event.asServerUserEvent();
 
             // TODO: Server: Reply with a numeric.
             // TODO: Client: Adjust local state.

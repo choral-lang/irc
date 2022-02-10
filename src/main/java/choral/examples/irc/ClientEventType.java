@@ -2,7 +2,7 @@ package choral.examples.irc;
 
 enum ClientEventType {
     NICK,
-    REGISTER,
+    USER,
     JOIN,
     MESSAGE
 }

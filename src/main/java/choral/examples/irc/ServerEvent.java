@@ -16,9 +16,9 @@ public abstract class ServerEvent {
         return (ServerNickEvent) this;
     }
 
-    public ServerRegisterEvent asServerRegisterEvent() {
-        assert eventType == ServerEventType.REGISTER;
-        return (ServerRegisterEvent) this;
+    public ServerUserEvent asServerUserEvent() {
+        assert eventType == ServerEventType.USER;
+        return (ServerUserEvent) this;
     }
 
     public ServerMessageEvent asServerMessageEvent() {

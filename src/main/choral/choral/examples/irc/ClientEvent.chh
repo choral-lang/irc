@@ -7,7 +7,7 @@ public abstract class ClientEvent@R {
 
     public ClientNickEvent@R asClientNickEvent() {}
 
-    public ClientRegisterEvent@R asClientRegisterEvent() {}
+    public ClientUserEvent@R asClientUserEvent() {}
 
     public ClientMessageEvent@R asClientMessageEvent() {}
 

@@ -1,13 +1,13 @@
 package choral.examples.irc;
 
-public class ClientRegisterEvent extends ClientEvent {
+public class ClientUserEvent extends ClientEvent {
     private String realname, username;
 
-    private ClientRegisterEvent() {
-        super(ClientEventType.REGISTER);
+    private ClientUserEvent() {
+        super(ClientEventType.USER);
     }
 
-    public ClientRegisterEvent(String username, String realname) {
+    public ClientUserEvent(String username, String realname) {
         this();
         this.username = username;
         this.realname = realname;

@@ -77,8 +77,8 @@ public class Message {
         if (cmd == NickMessage.CMD) {
             return NickMessage.construct(m);
         }
-        else if (cmd == RegisterMessage.CMD) {
-            return RegisterMessage.construct(m);
+        else if (cmd == UserMessage.CMD) {
+            return UserMessage.construct(m);
         }
 
         return null;

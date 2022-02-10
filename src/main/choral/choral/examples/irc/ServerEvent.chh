@@ -7,7 +7,7 @@ public abstract class ServerEvent@R {
 
     public ServerNickEvent@R asServerNickEvent() {}
 
-    public ServerRegisterEvent@R asServerRegisterEvent() {}
+    public ServerUserEvent@R asServerUserEvent() {}
 
     public ServerMessageEvent@R asServerMessageEvent() {}
 
