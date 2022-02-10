@@ -1,0 +1,3 @@
+package choral.examples.irc;
+
+public class NoNicknameGivenException@R extends RuntimeException@R {}

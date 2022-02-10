@@ -76,12 +76,19 @@ public class Irc@(Client, Server) {
             ch_AB.<ClientEventType>select(ClientEventType@Client.NICK);
 
             ClientNickEvent@Client e = event.asClientNickEvent();
-            String@Client nickname = e.getNickname();
+            String@Client cNickname = e.getNickname();
+            String@Server sNickname;
 
             clientState.nickname = nickname;
+            try {
+                NickMessage@Server m = ch_AB.<NickMessage>com(
+                    new NickMessage@Client(cNickname));
+                sNickname = m.getNickname();
+            }
+            catch (NoNicknameGivenException@Server ex) {
+                sNickname = null@Server;
+            }
 
-            NickMessage@Server m = ch_AB.<NickMessage>com(
-                new NickMessage@Client(nickname));
             serverState.nickname = m.getNickname();
 
             // TODO: Server: Add NICK events to all appropiate queues.

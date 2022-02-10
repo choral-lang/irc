@@ -2,8 +2,6 @@ package choral.examples.irc;
 
 import java.util.List;
 
-// TODO: Validate nickname.
-
 public class NickMessage extends Message {
     public static final String CMD = "NICK";
 
@@ -23,8 +21,7 @@ public class NickMessage extends Message {
         List<String> params = m.getParams();
 
         if (params.size() < 1)
-            throw new IllegalArgumentException(
-                "At least 1 parameter is expected");
+            throw new NoNicknameGivenException();
 
         return new NickMessage(m.getSrc(), params.get(0));
     }

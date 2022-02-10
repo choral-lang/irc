@@ -1,0 +1,6 @@
+package choral.examples.irc;
+
+public class ErrNoNicknameGivenMessage@R {
+    public ErrNoNicknameGivenMessage() {}
+    public ErrNoNicknameGivenMessage(String@R src) {}
+}

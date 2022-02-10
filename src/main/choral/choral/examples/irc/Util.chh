@@ -1,0 +1,5 @@
+package choral.examples.irc;
+
+public class Util@R {
+    public static boolean@R validNickname(String@R nickname) {}
+}
