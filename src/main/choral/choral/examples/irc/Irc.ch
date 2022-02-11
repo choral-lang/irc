@@ -90,10 +90,8 @@ public class Irc@(Client, Server) {
                 sNickname = null@Server;
             }
 
-            serverState.nickname = m.getNickname();
-
-            // TODO: Server: Add NICK events to all appropiate queues.
             clientState.setNickname(cNickname);
+            addServerEvent(new ServerNickEvent@Server(sNickname));
         }
         else {
             ch_AB.<ClientEventType>select(ClientEventType@Client.USER);
