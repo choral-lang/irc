@@ -71,6 +71,9 @@ public class Irc@(Client, Server) {
         // threads.
     }
 
+    /**
+     * A loop driven by the client's event queue. The client initiates requests.
+     */
     private void clientDrivenLoop() {
         ClientEvent@Client event = takeClientEvent();
 
@@ -114,6 +117,9 @@ public class Irc@(Client, Server) {
         clientDrivenLoop();
     }
 
+    /**
+     * A loop driven by the server's event queue. The server initiates requests.
+     */
     private void serverDrivenLoop() {
         ServerEvent@Server event = takeServerEvent();
 
