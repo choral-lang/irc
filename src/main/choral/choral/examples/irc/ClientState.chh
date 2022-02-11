@@ -1,9 +1,25 @@
 package choral.examples.irc;
 
-public class ClientState@R {
-    public String@R username;
-    public String@R realname;
-    public String@R nickname;
+import java.io.PrintStream;
 
-    public ClientState() {}
+public class ClientState@R {
+    public ClientState(String@R username, String@R realname, String@R nickname) {}
+
+    public ClientState(String@R nickname) {}
+
+    public String@R getUsername() {}
+
+    public void setUsername(String@R username) {}
+
+    public String@R getRealname() {}
+
+    public void setRealname(String@R realname) {}
+
+    public String@R getNickname() {}
+
+    public void setNickname(String@R nickname) {}
+
+    public void revertNickname() {}
+
+    public PrintStream@R getOut() {}
 }

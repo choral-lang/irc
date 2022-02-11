@@ -5,10 +5,8 @@ import java.util.List;
 // TODO: Validate username and realname.
 
 public class UserMessage extends Message {
-    public static final String CMD = "USER";
-
     public UserMessage(String src, String username, String realname) {
-        super(src, "USER", List.of(username, "0", "*", realname));
+        super(src, Message.USER, List.of(username, "0", "*", realname));
     }
 
     public UserMessage(String username, String realname) {

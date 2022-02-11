@@ -5,6 +5,9 @@ import java.util.List;
 import java.lang.StringBuilder;
 
 public class Message {
+    public static final String NICK = "NICK";
+    public static final String USER = "USER";
+
     private String src, cmd;
     private List<String> params;
 
@@ -74,10 +77,10 @@ public class Message {
     public static Message construct(Message m) {
         String cmd = m.getCommand();
 
-        if (cmd == NickMessage.CMD) {
+        if (cmd == NICK) {
             return NickMessage.construct(m);
         }
-        else if (cmd == UserMessage.CMD) {
+        else if (cmd == USER) {
             return UserMessage.construct(m);
         }
 

@@ -14,11 +14,13 @@ public class Irc@(Client, Server) {
     private ServerState@Server serverState;
     private LinkedBlockingQueue@Server<ServerEvent> serverQueue;
 
-    public Irc(SymChannel@(Client, Server)<Object> ch_AB) {
+    public Irc(SymChannel@(Client, Server)<Object> ch_AB,
+               ClientState@Client clientState,
+               ServerState@Server serverState) {
         this.ch_AB = ch_AB;
-        this.clientState = new ClientState@Client();
+        this.clientState = clientState;
         this.clientQueue = new LinkedBlockingQueue@Client<ClientEvent>();
-        this.serverState = new ServerState@Server();
+        this.serverState = serverState;
         this.serverQueue = new LinkedBlockingQueue@Server<ServerEvent>();
     }
 
@@ -79,7 +81,6 @@ public class Irc@(Client, Server) {
             String@Client cNickname = e.getNickname();
             String@Server sNickname;
 
-            clientState.nickname = nickname;
             try {
                 NickMessage@Server m = ch_AB.<NickMessage>com(
                     new NickMessage@Client(cNickname));
@@ -92,6 +93,7 @@ public class Irc@(Client, Server) {
             serverState.nickname = m.getNickname();
 
             // TODO: Server: Add NICK events to all appropiate queues.
+            clientState.setNickname(cNickname);
         }
         else {
             ch_AB.<ClientEventType>select(ClientEventType@Client.USER);
@@ -100,13 +102,13 @@ public class Irc@(Client, Server) {
             String@Client username = e.getUsername();
             String@Client realname = e.getRealname();
 
-            clientState.username = username;
-            clientState.realname = realname;
             UserMessage@Server m = ch_AB.<UserMessage>com(
                 new UserMessage@Client(username, realname));
 
-            serverState.username = m.getUsername();
-            serverState.realname = m.getRealname();
+            clientState.setUsername(username);
+            clientState.setRealname(realname);
+            serverState.setUsername(m.getUsername());
+            serverState.setRealname(m.getRealname());
 
             // TODO: Server: Add MOTD events to the appropriate queue.
         }
@@ -121,7 +123,7 @@ public class Irc@(Client, Server) {
             ch_AB.<ServerEventType>select(ServerEventType@Server.NICK);
 
             ServerNickEvent@Server e = event.asServerNickEvent();
-            serverState.nickname = e.getNickname();
+            String@Server nickname = e.getNickname();
 
             // TODO: Server: Reply with a numeric.
             // TODO: Client: Adjust local state (own or others' nicknames).
@@ -129,9 +131,9 @@ public class Irc@(Client, Server) {
         else {
             ch_AB.<ServerEventType>select(ServerEventType@Server.USER);
 
-            serverState.username = e.getUsername();
-            serverState.realname = e.getRealname();
             ServerUserEvent@Server e = event.asServerUserEvent();
+            serverState.setUsername(e.getUsername());
+            serverState.setRealname(e.getRealname());
 
             // TODO: Server: Reply with a numeric.
             // TODO: Client: Adjust local state.
