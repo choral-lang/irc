@@ -124,8 +124,6 @@ public class Irc@(Client, Server) {
         ServerEvent@Server event = takeServerEvent();
 
         if (event.getType() == ServerEventType@Server.NICK) {
-            ch_AB.<ServerEventType>select(ServerEventType@Server.NICK);
-
             ServerNickEvent@Server e = event.asServerNickEvent();
             String@Server nickname = e.getNickname();
 
