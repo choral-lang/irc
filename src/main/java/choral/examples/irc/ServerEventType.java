@@ -4,5 +4,9 @@ enum ServerEventType {
     NICK,
     USER,
     JOIN,
-    MESSAGE
+    MESSAGE,
+    ERR_NONICKNAMEGIVEN,
+    ERR_ERRONEUSNICKNAME,
+    ERR_NICKNAMEINUSE,
+    NICK_SUCCESS
 }

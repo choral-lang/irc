@@ -8,6 +8,10 @@ public class Message {
     public static final String NICK = "NICK";
     public static final String USER = "USER";
 
+    public static final String ERR_NONICKNAMEGIVEN = "431";
+    public static final String ERR_ERRONEUSNICKNAME = "432";
+    public static final String ERR_NICKNAMEINUSE = "433";
+
     private String src, cmd;
     private List<String> params;
 

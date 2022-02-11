@@ -123,10 +123,43 @@ public class Irc@(Client, Server) {
             ServerNickEvent@Server e = event.asServerNickEvent();
             String@Server nickname = e.getNickname();
 
-            // TODO: Server: Reply with a numeric.
             // TODO: Client: Adjust local state (own or others' nicknames).
+
+            if (nickname == null@Server) {{{
+                // ERR_NONICKNAMEGIVEN (431)
+                ch_AB.<ServerEventType>select(ServerEventType@Server.ERR_NONICKNAMEGIVEN);
+                ErrNoNicknameGivenMessage@Client err = ch_AB.<ErrNoNicknameGivenMessage>com(
+                    new ErrNoNicknameGivenMessage@Server());
+
+                clientState.revertNickname();
+                clientState.getOut().println("Server: ERR_NONICKNAMEGIVNE"@Client);
+            }}}
+            else {
+                if (!Util@Server.validNickname(nickname)) {{
+                    // ERR_ERRONEUSNICKNAME (432)
+                    ch_AB.<ServerEventType>select(ServerEventType@Server.ERR_ERRONEUSNICKNAME);
+
+                    clientState.revertNickname();
+                    clientState.getOut().println("Server: ERR_ERRONEUSNICKNAME"@Client);
+                }}
+                else {
+                    if (serverState.nicknameInUse(nickname)) {
+                        // ERR_NICKNAMEINUSE (433)
+                        ch_AB.<ServerEventType>select(ServerEventType@Server.ERR_NICKNAMEINUSE);
+
+                        clientState.revertNickname();
+                        clientState.getOut().println("Server: ERR_NICKNAMEINUSE"@Client);
+                    }
+                    else {
+                        // Success (TODO: Eventually remove this branch somehow.)
+                            ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_SUCCESS);
+
+                        clientState.getOut().println("Server: Nickname changed successfully"@Client);
+                    }
+                }
+            }
         }
-        else {
+        else {{{{
             ch_AB.<ServerEventType>select(ServerEventType@Server.USER);
 
             ServerUserEvent@Server e = event.asServerUserEvent();
@@ -135,7 +168,7 @@ public class Irc@(Client, Server) {
 
             // TODO: Server: Reply with a numeric.
             // TODO: Client: Adjust local state.
-        }
+        }}}}
 
         serverDrivenLoop();
     }
