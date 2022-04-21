@@ -1,0 +1,7 @@
+package choral.examples.irc;
+
+public class ErrNicknameInUseMessage@R extends Message@R {
+    public ErrNicknameInUseMessage() {}
+
+    public ErrNicknameInUseMessage(String@R src) {}
+}

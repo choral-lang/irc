@@ -3,6 +3,7 @@ package choral.examples.irc;
 import choral.channels.SymChannel;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Irc@(Client, Server) {
@@ -130,33 +131,34 @@ public class Irc@(Client, Server) {
             // TODO: Client: Adjust local state (own or others' nicknames).
 
             if (nickname == null@Server) {{{
-                // ERR_NONICKNAMEGIVEN (431)
                 ch_AB.<ServerEventType>select(ServerEventType@Server.ERR_NONICKNAMEGIVEN);
                 ErrNoNicknameGivenMessage@Client err = ch_AB.<ErrNoNicknameGivenMessage>com(
                     new ErrNoNicknameGivenMessage@Server());
 
                 clientState.revertNickname();
-                clientState.getOut().println("Server: ERR_NONICKNAMEGIVNE"@Client);
+                clientState.getOut().println("Server: ERR_NONICKNAMEGIVEN"@Client);
             }}}
             else {
                 if (!Util@Server.validNickname(nickname)) {{
-                    // ERR_ERRONEUSNICKNAME (432)
                     ch_AB.<ServerEventType>select(ServerEventType@Server.ERR_ERRONEUSNICKNAME);
+                    ErrErroneousNicknameMessage@Client err = ch_AB.<ErrErroneousNicknameMessage>com(
+                        new ErrErroneousNicknameMessage@Server());
 
                     clientState.revertNickname();
                     clientState.getOut().println("Server: ERR_ERRONEUSNICKNAME"@Client);
                 }}
                 else {
                     if (serverState.nicknameInUse(nickname)) {
-                        // ERR_NICKNAMEINUSE (433)
                         ch_AB.<ServerEventType>select(ServerEventType@Server.ERR_NICKNAMEINUSE);
+                        ErrNicknameInUseMessage@Client err = ch_AB.<ErrNicknameInUseMessage>com(
+                            new ErrNicknameInUseMessage@Server());
 
                         clientState.revertNickname();
                         clientState.getOut().println("Server: ERR_NICKNAMEINUSE"@Client);
                     }
                     else {
-                        // Success (TODO: Eventually remove this branch somehow.)
-                            ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_SUCCESS);
+                        // Success (TODO: Remove this branch somehow.)
+                        ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_SUCCESS);
 
                         clientState.getOut().println("Server: Nickname changed successfully"@Client);
                     }
@@ -172,6 +174,9 @@ public class Irc@(Client, Server) {
 
             // TODO: Server: Reply with a numeric.
             // TODO: Client: Adjust local state.
+
+            // TODO: ERR_NEEDMOREPARAMS (461)
+            // TODO: ERR_ALREADYREGISTERED (462)
         }}}}
 
         serverDrivenLoop();
