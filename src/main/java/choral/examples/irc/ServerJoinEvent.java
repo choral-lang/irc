@@ -5,12 +5,8 @@ import java.util.List;
 public class ServerJoinEvent extends ServerEvent {
     private List<String> channels;
 
-    private ServerJoinEvent() {
-        super(ServerEventType.JOIN);
-    }
-
     public ServerJoinEvent(List<String> channels) {
-        this();
+        super(ServerEventType.JOIN);
         this.channels = channels;
     }
 
