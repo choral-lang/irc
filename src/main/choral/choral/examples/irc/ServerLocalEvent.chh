@@ -6,4 +6,6 @@ public abstract class ServerLocalEvent@R {
     public ServerLocalEventType@R getType() {}
 
     public ServerLocalCheckNickEvent@R asServerLocalCheckNickEvent() {}
+
+    public ServerLocalCheckUserEvent@R asServerLocalCheckUserEvent() {}
 }

@@ -104,16 +104,26 @@ public class Irc@(Client, Server) {
             ch_AB.<ClientEventType>select(ClientEventType@Client.USER);
 
             ClientUserEvent@Client e = event.asClientUserEvent();
-            String@Client username = e.getUsername();
-            String@Client realname = e.getRealname();
+            String@Client cUsername = e.getUsername();
+            String@Client cRealname = e.getRealname();
+            String@Server sUsername;
+            String@Server sRealname;
 
-            UserMessage@Server m = ch_AB.<UserMessage>com(
-                new UserMessage@Client(username, realname));
+            try {
+                UserMessage@Server m = ch_AB.<UserMessage>com(
+                    new UserMessage@Client(cUsername, cRealname));
+                sUsername = m.getUsername();
+                sRealname = m.getRealname();
+            }
+            catch (NeedMoreParamsException@Server ex) {
+                sUsername = null@Server;
+                sRealname = null@Server;
+            }
 
-            clientState.setUsername(username);
-            clientState.setRealname(realname);
-            serverState.setUsername(m.getUsername());
-            serverState.setRealname(m.getRealname());
+            clientState.setUsername(cUsername);
+            clientState.setRealname(cRealname);
+            serverLocal.addLocalEvent(
+                new ServerLocalCheckUserEvent@Server(sUsername, sRealname));
 
             // TODO: Server: Add MOTD events to the appropriate queue.
         }
@@ -140,14 +150,10 @@ public class Irc@(Client, Server) {
             ch_AB.<ServerEventType>select(ServerEventType@Server.USER);
 
             ServerUserEvent@Server e = event.asServerUserEvent();
-            serverState.setUsername(e.getUsername());
-            serverState.setRealname(e.getRealname());
+            Message@Client m = ch_AB.<Message>com(e.getError());
 
-            // TODO: Server: Reply with a numeric.
-            // TODO: Client: Adjust local state.
-
-            // TODO: ERR_NEEDMOREPARAMS (461)
-            // TODO: ERR_ALREADYREGISTERED (462)
+            clientState.getOut().println(
+                "Client: Error while registering username"@Client);
         }
 
         serverDrivenLoop();

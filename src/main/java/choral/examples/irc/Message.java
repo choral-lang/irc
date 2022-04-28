@@ -11,6 +11,7 @@ public class Message {
     public static final String ERR_NONICKNAMEGIVEN = "431";
     public static final String ERR_ERRONEOUSNICKNAME = "432";
     public static final String ERR_NICKNAMEINUSE = "433";
+    public static final String ERR_NEEDMOREPARAMS = "461";
 
     private String src, cmd;
     private List<String> params;

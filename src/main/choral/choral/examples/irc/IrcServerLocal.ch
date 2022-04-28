@@ -73,6 +73,28 @@ public class IrcServerLocal@R {
                 }
             }
         }
+        else {
+            if (event.getType() == ServerLocalEventType@R.CHECK_USER) {
+                ServerLocalCheckUserEvent@R e = event.asServerLocalCheckUserEvent();
+                String@R username = e.getUsername();
+                String@R realname = e.getRealname();
+
+                if (username == null@R) {
+                    Message@R m = new ErrNeedMoreParamsMessage@R();
+                    addEvent(new ServerUserEvent@R(username, realname, null@R));
+                }
+                else {
+                    if (state.usernameRegistered(username)) {
+                        Message@R m = new ErrNeedMoreParamsMessage@R();
+                        addEvent(new ServerUserEvent@R(username, realname, m));
+                    }
+                    else {
+                        state.setUsername(username);
+                        state.setRealname(realname);
+                    }
+                }
+            }
+        }
 
         run();
     }

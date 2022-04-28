@@ -35,6 +35,10 @@ public class ServerState {
         return false;
     }
 
+    public boolean usernameRegistered(String username) {
+        return false;
+    }
+
     public boolean isRegistrationDone() {
         return (this.username != null && this.realname != null &&
                 this.nickname != null);

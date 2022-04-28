@@ -25,7 +25,7 @@ public class UserMessage extends Message {
         List<String> params = m.getParams();
 
         if (params.size() < 4)
-            throw new IllegalArgumentException(
+            throw new NeedMoreParamsException(
                 "At least 4 parameters are expected");
 
         return new UserMessage(m.getSrc(), params.get(0), params.get(3));

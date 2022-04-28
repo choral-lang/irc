@@ -15,4 +15,9 @@ public abstract class ServerLocalEvent {
         assert eventType == ServerLocalEventType.CHECK_NICK;
         return (ServerLocalCheckNickEvent) this;
     }
+
+    public ServerLocalCheckUserEvent asServerLocalCheckUserEvent() {
+        assert eventType == ServerLocalEventType.CHECK_USER;
+        return (ServerLocalCheckUserEvent) this;
+    }
 }

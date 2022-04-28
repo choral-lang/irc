@@ -1,0 +1,5 @@
+package choral.examples.irc;
+
+public class NeedMoreParamsException@R extends RuntimeException@R {
+    public NeedMoreParamsException(String@R msg) {}
+}
