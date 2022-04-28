@@ -14,6 +14,7 @@ public class Irc@(Client, Server) {
 
     private ServerState@Server serverState;
     private LinkedBlockingQueue@Server<ServerEvent> serverQueue;
+    private IrcServerLocal@Server serverLocal;
 
     public Irc(SymChannel@(Client, Server)<Object> ch_AB,
                ClientState@Client clientState,
@@ -23,6 +24,7 @@ public class Irc@(Client, Server) {
         this.clientQueue = new LinkedBlockingQueue@Client<ClientEvent>();
         this.serverState = serverState;
         this.serverQueue = new LinkedBlockingQueue@Server<ServerEvent>();
+        this.serverLocal = new IrcServerLocal@Server(serverState, serverQueue);
     }
 
     private ClientEvent@Client takeClientEvent() {
@@ -95,7 +97,8 @@ public class Irc@(Client, Server) {
             }
 
             clientState.setNickname(cNickname);
-            addServerEvent(new ServerNickEvent@Server(sNickname));
+            serverLocal.addLocalEvent(
+                new ServerLocalCheckNickEvent@Server(sNickname));
         }
         else {
             ch_AB.<ClientEventType>select(ClientEventType@Client.USER);
@@ -125,47 +128,15 @@ public class Irc@(Client, Server) {
         ServerEvent@Server event = takeServerEvent();
 
         if (event.getType() == ServerEventType@Server.NICK) {
+            ch_AB.<ServerEventType>select(ServerEventType@Server.NICK);
+
             ServerNickEvent@Server e = event.asServerNickEvent();
-            String@Server nickname = e.getNickname();
+            Message@Client m = ch_AB.<Message>com(e.getError());
 
-            // TODO: Client: Adjust local state (own or others' nicknames).
-
-            if (nickname == null@Server) {{{
-                ch_AB.<ServerEventType>select(ServerEventType@Server.ERR_NONICKNAMEGIVEN);
-                ErrNoNicknameGivenMessage@Client err = ch_AB.<ErrNoNicknameGivenMessage>com(
-                    new ErrNoNicknameGivenMessage@Server());
-
-                clientState.revertNickname();
-                clientState.getOut().println("Server: ERR_NONICKNAMEGIVEN"@Client);
-            }}}
-            else {
-                if (!Util@Server.validNickname(nickname)) {{
-                    ch_AB.<ServerEventType>select(ServerEventType@Server.ERR_ERRONEUSNICKNAME);
-                    ErrErroneousNicknameMessage@Client err = ch_AB.<ErrErroneousNicknameMessage>com(
-                        new ErrErroneousNicknameMessage@Server());
-
-                    clientState.revertNickname();
-                    clientState.getOut().println("Server: ERR_ERRONEUSNICKNAME"@Client);
-                }}
-                else {
-                    if (serverState.nicknameInUse(nickname)) {
-                        ch_AB.<ServerEventType>select(ServerEventType@Server.ERR_NICKNAMEINUSE);
-                        ErrNicknameInUseMessage@Client err = ch_AB.<ErrNicknameInUseMessage>com(
-                            new ErrNicknameInUseMessage@Server());
-
-                        clientState.revertNickname();
-                        clientState.getOut().println("Server: ERR_NICKNAMEINUSE"@Client);
-                    }
-                    else {
-                        // Success (TODO: Remove this branch somehow.)
-                        ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_SUCCESS);
-
-                        clientState.getOut().println("Server: Nickname changed successfully"@Client);
-                    }
-                }
-            }
+            clientState.getOut().println(
+                "Client: Error while changing nickname"@Client);
         }
-        else {{{{
+        else {
             ch_AB.<ServerEventType>select(ServerEventType@Server.USER);
 
             ServerUserEvent@Server e = event.asServerUserEvent();
@@ -177,7 +148,7 @@ public class Irc@(Client, Server) {
 
             // TODO: ERR_NEEDMOREPARAMS (461)
             // TODO: ERR_ALREADYREGISTERED (462)
-        }}}}
+        }
 
         serverDrivenLoop();
     }

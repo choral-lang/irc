@@ -1,0 +1,9 @@
+package choral.examples.irc;
+
+public abstract class ServerLocalEvent@R {
+    ServerLocalEvent(ServerLocalEventType@R eventType) {}
+
+    public ServerLocalEventType@R getType() {}
+
+    public ServerLocalCheckNickEvent@R asServerLocalCheckNickEvent() {}
+}
