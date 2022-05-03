@@ -7,6 +7,8 @@ public class Message@R {
 
     public Message(String@R command) {}
 
+    public Message(String@R source, String@R command) {}
+
     public Message(String@R command, List@R<String> params) {}
 
     public Message(String@R source, String@R command, List@R<String> params) {}

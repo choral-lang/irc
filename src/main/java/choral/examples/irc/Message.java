@@ -40,6 +40,10 @@ public class Message {
         this.src = src;
     }
 
+    public Message(String src, String cmd) {
+        this(src, cmd, List.of());
+    }
+
     public String getSrc() {
         return src;
     }
