@@ -1,10 +1,10 @@
 package choral.examples.irc;
 
+import choral.lang.Unit;
 import choral.runtime.Media.ServerSocketByteChannel;
 import choral.runtime.SerializerChannel.SerializerChannel_B;
 import choral.runtime.Serializers.KryoSerializer;
 import choral.runtime.WrapperByteChannel.WrapperByteChannel_B;
-import choral.lang.Unit;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +28,8 @@ public class Server {
                     executor.submit(() -> {
                         try {
                             System.out.println("Client connected");
-                            new Irc_Server(ch, Unit.id(), state).run();
+                            Irc.runServer(
+                                new Irc_Server(ch, Unit.id(), state), executor);
                             System.out.println("Client disconnected");
                         }
                         catch (Exception e) {

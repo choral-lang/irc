@@ -69,15 +69,10 @@ public class Irc@(Client, Server) {
         }
 	}
 
-    public void run() {
-        // TODO: Start clientDrivenLoop() and serverDrivenLoop() on separate
-        // threads.
-    }
-
     /**
      * A loop driven by the client's event queue. The client initiates requests.
      */
-    private void clientDrivenLoop() {
+    public void clientDrivenLoop() {
         ClientEvent@Client event = takeClientEvent();
 
         if (event.getType() == ClientEventType@Client.NICK) {
@@ -134,7 +129,7 @@ public class Irc@(Client, Server) {
     /**
      * A loop driven by the server's event queue. The server initiates requests.
      */
-    private void serverDrivenLoop() {
+    public void serverDrivenLoop() {
         ServerEvent@Server event = takeServerEvent();
 
         if (event.getType() == ServerEventType@Server.NICK) {
@@ -157,5 +152,9 @@ public class Irc@(Client, Server) {
         }
 
         serverDrivenLoop();
+    }
+
+    public void serverLocalLoop() {
+        serverLocal.run();
     }
 }

@@ -1,14 +1,17 @@
 package choral.examples.irc;
 
+import choral.lang.Unit;
 import choral.runtime.Media.SocketByteChannel;
 import choral.runtime.SerializerChannel.SerializerChannel_A;
 import choral.runtime.Serializers.KryoSerializer;
 import choral.runtime.WrapperByteChannel.WrapperByteChannel_A;
-import choral.lang.Unit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Client {
     public static void main(String[] args) {
         ClientState state = new ClientState("choralbot");
+        ExecutorService executor = Executors.newCachedThreadPool();
 
         System.out.println("Connecting to the server");
 
@@ -17,8 +20,10 @@ public class Client {
             new WrapperByteChannel_A(
                 SocketByteChannel.connect("localhost", 12345)));
 
-        System.out.println("Client connected");
-        new Irc_Client(ch, state, Unit.id()).run();
-        System.out.println("Client disconnected");
+        System.out.println("Connected");
+        Irc.runClient(new Irc_Client(ch, state, Unit.id()), executor);
+        System.out.println("Disconnected");
+
+        executor.shutdown();
     }
 }
