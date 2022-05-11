@@ -1,0 +1,15 @@
+package choral.examples.irc;
+
+public class Source@R {
+    public Source() {}
+
+    public Source(String@R nick) {}
+
+    public Source(String@R nick, String@R host) {}
+
+    public Source(String@R nick, String@R user, String@R host) {}
+
+    public static Source@R parse(String@R source) {}
+
+    public String@R serialize() {}
+}

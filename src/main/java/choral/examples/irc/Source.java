@@ -3,7 +3,7 @@ package choral.examples.irc;
 public class Source {
     private String nick, user, host;
 
-    private Source() {
+    public Source() {
         this.nick = "";
         this.user = "";
         this.host = "";
@@ -36,5 +36,9 @@ public class Source {
             return new Source(hostParts[0], hostParts[1]);
 
         return new Source(userParts[0], userParts[1], hostParts[1]);
+    }
+
+    public String serialize() {
+        return nick + "@" + user + "!" + host;
     }
 }

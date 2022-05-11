@@ -7,11 +7,15 @@ public class Message@R {
 
     public Message(String@R command) {}
 
-    public Message(String@R source, String@R command) {}
-
     public Message(String@R command, List@R<String> params) {}
 
-    public Message(String@R source, String@R command, List@R<String> params) {}
+    public Message(String@R cmd, String@R param) {}
+
+    public Message(String@R cmd, String@R param1, String@R param2) {}
+
+    public Message(Source@R source, String@R command, List@R<String> params) {}
+
+    public Message(Source@R src, String@R cmd) {}
 
     public String@R getSrc() {}
 

@@ -13,11 +13,12 @@ public class Message {
     public static final String ERR_NICKNAMEINUSE = "433";
     public static final String ERR_NEEDMOREPARAMS = "461";
 
-    private String src, cmd;
+    private Source src;
+    private String cmd;
     private List<String> params;
 
     public Message() {
-        this.src = "";
+        this.src = new Source();
         this.cmd = "";
         this.params = new ArrayList<>();
     }
@@ -35,16 +36,24 @@ public class Message {
             throw new IllegalArgumentException("There should be at most 15 parameters");
     }
 
-    public Message(String src, String cmd, List<String> params) {
+    public Message(String cmd, String param) {
+        this(cmd, List.of(param));
+    }
+
+    public Message(String cmd, String param1, String param2) {
+        this(cmd, List.of(param1, param2));
+    }
+
+    public Message(Source src, String cmd, List<String> params) {
         this(cmd, params);
         this.src = src;
     }
 
-    public Message(String src, String cmd) {
+    public Message(Source src, String cmd) {
         this(src, cmd, List.of());
     }
 
-    public String getSrc() {
+    public Source getSrc() {
         return src;
     }
 
@@ -154,7 +163,7 @@ public class Message {
         if (cmd == null)
             return null;
 
-        return new Message(src, cmd, params);
+        return new Message(Source.parse(src), cmd, params);
     }
 
     /**
@@ -168,10 +177,11 @@ public class Message {
         // TODO: Make sure there are no NUL, CR or LF characters in the message
         // parts.
         StringBuilder sb = new StringBuilder();
+        String srcString = src.serialize();
 
-        if (!src.isEmpty()) {
+        if (!srcString.isEmpty()) {
             sb.append(":");
-            sb.append(src);
+            sb.append(srcString);
             sb.append(" ");
         }
 

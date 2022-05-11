@@ -3,7 +3,7 @@ package choral.examples.irc;
 import java.util.List;
 
 public class UserMessage@R {
-    public UserMessage(String@R src, String@R username, String@R realname) {}
+    public UserMessage(Source@R src, String@R username, String@R realname) {}
 
     public UserMessage(String@R username, String@R realname) {}
 

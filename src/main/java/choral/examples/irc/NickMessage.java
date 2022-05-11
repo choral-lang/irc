@@ -3,12 +3,12 @@ package choral.examples.irc;
 import java.util.List;
 
 public class NickMessage extends Message {
-    public NickMessage(String src, String nickname) {
+    public NickMessage(Source src, String nickname) {
         super(src, Message.NICK, List.of(nickname));
     }
 
     public NickMessage(String nickname) {
-        this("", nickname);
+        this(new Source(), nickname);
     }
 
     public String getNickname() {
