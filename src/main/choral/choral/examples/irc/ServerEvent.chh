@@ -5,9 +5,9 @@ public abstract class ServerEvent@R {
 
     public ServerEventType@R getType() {}
 
-    public ServerNickEvent@R asServerNickEvent() {}
+    public ServerNickErrorEvent@R asServerNickErrorEvent() {}
 
-    public ServerUserEvent@R asServerUserEvent() {}
+    public ServerUserErrorEvent@R asServerUserErrorEvent() {}
 
     public ServerMessageEvent@R asServerMessageEvent() {}
 

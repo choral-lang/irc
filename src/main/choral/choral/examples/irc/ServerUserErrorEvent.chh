@@ -2,8 +2,8 @@ package choral.examples.irc;
 
 import java.util.List;
 
-public class ServerUserEvent@R extends ServerEvent@R {
-    public ServerUserEvent(String@R username, String@R realname, Message@R error) {}
+public class ServerUserErrorEvent@R extends ServerEvent@R {
+    public ServerUserErrorEvent(String@R username, String@R realname, Message@R error) {}
 
     public String@R getUsername() {}
 

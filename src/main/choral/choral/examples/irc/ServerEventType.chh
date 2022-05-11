@@ -1,8 +1,8 @@
 package choral.examples.irc;
 
 enum ServerEventType@R {
-    NICK,
-    USER,
+    NICK_ERROR,
+    USER_ERROR,
     JOIN,
     MESSAGE,
     ERR_NONICKNAMEGIVEN,

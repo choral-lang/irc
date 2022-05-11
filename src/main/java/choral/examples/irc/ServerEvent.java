@@ -11,14 +11,14 @@ public abstract class ServerEvent {
         return eventType;
     }
 
-    public ServerNickEvent asServerNickEvent() {
-        assert eventType == ServerEventType.NICK;
-        return (ServerNickEvent) this;
+    public ServerNickErrorEvent asServerNickErrorEvent() {
+        assert eventType == ServerEventType.NICK_ERROR;
+        return (ServerNickErrorEvent) this;
     }
 
-    public ServerUserEvent asServerUserEvent() {
-        assert eventType == ServerEventType.USER;
-        return (ServerUserEvent) this;
+    public ServerUserErrorEvent asServerUserErrorEvent() {
+        assert eventType == ServerEventType.USER_ERROR;
+        return (ServerUserErrorEvent) this;
     }
 
     public ServerMessageEvent asServerMessageEvent() {

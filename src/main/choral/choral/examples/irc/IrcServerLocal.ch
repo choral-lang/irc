@@ -55,17 +55,17 @@ public class IrcServerLocal@R {
 
             if (nickname == null@R) {
                 Message@R m = new ErrNoNicknameGivenMessage@R();
-                addEvent(new ServerNickEvent@R(nickname, m));
+                addEvent(new ServerNickErrorEvent@R(nickname, m));
             }
             else {
                 if (!Util@R.validNickname(nickname)) {
                     Message@R m = new ErrErroneousNicknameMessage@R();
-                    addEvent(new ServerNickEvent@R(nickname, m));
+                    addEvent(new ServerNickErrorEvent@R(nickname, m));
                 }
                 else {
                     if (state.nicknameInUse(nickname)) {
                         Message@R m = new ErrNicknameInUseMessage@R();
-                        addEvent(new ServerNickEvent@R(nickname, m));
+                        addEvent(new ServerNickErrorEvent@R(nickname, m));
                     }
                     else {
                         state.setNickname(nickname);
@@ -81,12 +81,12 @@ public class IrcServerLocal@R {
 
                 if (username == null@R) {
                     Message@R m = new ErrNeedMoreParamsMessage@R();
-                    addEvent(new ServerUserEvent@R(username, realname, null@R));
+                    addEvent(new ServerUserErrorEvent@R(username, realname, null@R));
                 }
                 else {
                     if (state.usernameRegistered(username)) {
                         Message@R m = new ErrNeedMoreParamsMessage@R();
-                        addEvent(new ServerUserEvent@R(username, realname, m));
+                        addEvent(new ServerUserErrorEvent@R(username, realname, m));
                     }
                     else {
                         state.setUsername(username);

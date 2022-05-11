@@ -1,11 +1,11 @@
 package choral.examples.irc;
 
-public class ServerUserEvent extends ServerEvent {
+public class ServerUserErrorEvent extends ServerEvent {
     private String realname, username;
     private Message error;
 
-    public ServerUserEvent(String username, String realname, Message error) {
-        super(ServerEventType.USER);
+    public ServerUserErrorEvent(String username, String realname, Message error) {
+        super(ServerEventType.USER_ERROR);
         this.username = username;
         this.realname = realname;
         this.error = error;

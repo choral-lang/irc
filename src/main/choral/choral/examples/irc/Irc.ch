@@ -132,17 +132,17 @@ public class Irc@(Client, Server) {
     public void serverDrivenLoop() {
         ServerEvent@Server event = takeServerEvent();
 
-        if (event.getType() == ServerEventType@Server.NICK) {
-            ch_AB.<ServerEventType>select(ServerEventType@Server.NICK);
+        if (event.getType() == ServerEventType@Server.NICK_ERROR) {
+            ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_ERROR);
 
-            ServerNickEvent@Server e = event.asServerNickEvent();
+            ServerNickErrorEvent@Server e = event.asServerNickErrorEvent();
             Message@Client m = ch_AB.<Message>com(e.getError());
 
             clientState.getOut().println(
                 "Client: Error while changing nickname"@Client);
         }
         else {
-            ch_AB.<ServerEventType>select(ServerEventType@Server.USER);
+            ch_AB.<ServerEventType>select(ServerEventType@Server.USER_ERROR);
 
             ServerUserEvent@Server e = event.asServerUserEvent();
             Message@Client m = ch_AB.<Message>com(e.getError());
