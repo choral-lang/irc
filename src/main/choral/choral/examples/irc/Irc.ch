@@ -126,29 +126,68 @@ public class Irc@(Client, Server) {
         clientDrivenLoop();
     }
 
+    public void clientRecvAndDisplay(String@Server cmd, String@Server param) {
+        Source@Server src = Source@Server.parse("irc.choral.net"@Server);
+        List@Server<String> params = new ArrayList@Server<String>();
+        params.add(param);
+        Message@Client m = ch_AB.<Message>com(new Message@Server(src, cmd, params));
+        clientState.getOut().println(m.serialize());
+    }
+
     /**
      * A loop driven by the server's event queue. The server initiates requests.
      */
     public void serverDrivenLoop() {
         ServerEvent@Server event = takeServerEvent();
 
-        if (event.getType() == ServerEventType@Server.NICK_ERROR) {
+        if (event.getType() == ServerEventType@Server.NICK_ERROR) {{{
             ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_ERROR);
 
             ServerNickErrorEvent@Server e = event.asServerNickErrorEvent();
             Message@Client m = ch_AB.<Message>com(e.getError());
 
             clientState.getOut().println(
-                "Client: Error while changing nickname"@Client);
-        }
+                "Error while changing nickname"@Client);
+        }}}
         else {
-            ch_AB.<ServerEventType>select(ServerEventType@Server.USER_ERROR);
+            if (event.getType() == ServerEventType@Server.USER_ERROR) {{
+                ch_AB.<ServerEventType>select(ServerEventType@Server.USER_ERROR);
 
-            ServerUserEvent@Server e = event.asServerUserEvent();
-            Message@Client m = ch_AB.<Message>com(e.getError());
+                ServerUserErrorEvent@Server e = event.asServerUserErrorEvent();
+                Message@Client m = ch_AB.<Message>com(e.getError());
 
-            clientState.getOut().println(
-                "Client: Error while registering username"@Client);
+                clientState.getOut().println(
+                    "Error while registering username"@Client);
+            }}
+            else {
+                if (event.getType() == ServerEventType@Server.REGISTRATION_COMPLETE) {
+                    ch_AB.<ServerEventType>select(ServerEventType@Server.REGISTRATION_COMPLETE);
+
+                    clientRecvAndDisplay(Message@Server.RPL_WELCOME, "Welcome to ChoralNet!"@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_YOURHOST, "Your host is irc.choral.net"@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_CREATED, "The server was created at IMADA"@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_MYINFO, "I'm running ChoralIRC 0.0.1"@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_ISUPPORT, "NICKLEN=32"@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_UMODEIS, "+i"@Server);
+
+                    clientRecvAndDisplay(Message@Server.RPL_LUSERCLIENT, "There's only me and you here"@Server);
+                    // clientRecvAndDisplay(Message@Server.RPL_LUSEROP, ""@Server);
+                    // clientRecvAndDisplay(Message@Server.RPL_LUSERUNKNOWN, ""@Server);
+                    // clientRecvAndDisplay(Message@Server.RPL_LUSERCHANNELS, ""@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_LUSERME, "I have exactly one user---you"@Server);
+                    // clientRecvAndDisplay(Message@Server.RPL_LOCALUSERS, ""@Server);
+                    // clientRecvAndDisplay(Message@Server.RPL_GLOBALUSERS, ""@Server);
+
+                    clientRecvAndDisplay(Message@Server.RPL_MOTDSTART, "ChoralNet Message of the Day"@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_MOTD, "Hopefully you're having a nice day!"@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_MOTD, "Come find us in the office working..."@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_MOTD, "...or having a choco break in the lunchroom!"@Server);
+                    clientRecvAndDisplay(Message@Server.RPL_ENDOFMOTD, "End of /MOTD command"@Server);
+                }
+                else {
+                    ch_AB.<ServerEventType>select(ServerEventType@Server.UNKNOWN);
+                }
+            }
         }
 
         serverDrivenLoop();

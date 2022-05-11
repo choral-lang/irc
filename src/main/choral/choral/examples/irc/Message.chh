@@ -3,6 +3,34 @@ package choral.examples.irc;
 import java.util.List;
 
 public class Message@R {
+    public static final String@R NICK;
+    public static final String@R USER;
+
+    public static final String@R RPL_WELCOME;
+    public static final String@R RPL_YOURHOST;
+    public static final String@R RPL_CREATED;
+    public static final String@R RPL_MYINFO;
+    public static final String@R RPL_ISUPPORT;
+    public static final String@R RPL_UMODEIS;
+
+    public static final String@R RPL_LUSERCLIENT;
+    public static final String@R RPL_LUSEROP;
+    public static final String@R RPL_LUSERUNKNOWN;
+    public static final String@R RPL_LUSERCHANNELS;
+    public static final String@R RPL_LUSERME;
+    public static final String@R RPL_LOCALUSERS;
+    public static final String@R RPL_GLOBALUSERS;
+
+    public static final String@R RPL_MOTD;
+    public static final String@R RPL_MOTDSTART;
+    public static final String@R RPL_ENDOFMOTD;
+    public static final String@R ERR_NOMOTD;
+
+    public static final String@R ERR_NONICKNAMEGIVEN;
+    public static final String@R ERR_ERRONEOUSNICKNAME;
+    public static final String@R ERR_NICKNAMEINUSE;
+    public static final String@R ERR_NEEDMOREPARAMS;
+
     public Message() {}
 
     public Message(String@R command) {}

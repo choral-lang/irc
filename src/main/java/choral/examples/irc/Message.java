@@ -8,6 +8,26 @@ public class Message {
     public static final String NICK = "NICK";
     public static final String USER = "USER";
 
+    public static final String RPL_WELCOME = "001";
+    public static final String RPL_YOURHOST = "002";
+    public static final String RPL_CREATED = "003";
+    public static final String RPL_MYINFO = "004";
+    public static final String RPL_ISUPPORT = "005";
+    public static final String RPL_UMODEIS = "221";
+
+    public static final String RPL_LUSERCLIENT = "251";
+    public static final String RPL_LUSEROP = "252";
+    public static final String RPL_LUSERUNKNOWN = "253";
+    public static final String RPL_LUSERCHANNELS = "254";
+    public static final String RPL_LUSERME = "255";
+    public static final String RPL_LOCALUSERS = "265";
+    public static final String RPL_GLOBALUSERS = "266";
+
+    public static final String RPL_MOTD = "372";
+    public static final String RPL_MOTDSTART = "375";
+    public static final String RPL_ENDOFMOTD = "376";
+    public static final String ERR_NOMOTD = "422";
+
     public static final String ERR_NONICKNAMEGIVEN = "431";
     public static final String ERR_ERRONEOUSNICKNAME = "432";
     public static final String ERR_NICKNAMEINUSE = "433";

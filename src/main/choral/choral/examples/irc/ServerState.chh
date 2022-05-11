@@ -21,5 +21,7 @@ public class ServerState@R {
 
     public boolean@R usernameRegistered(String@R username) {}
 
+    public boolean@R isRegistrationDone() {}
+
     public PrintStream@R getOut() {}
 }

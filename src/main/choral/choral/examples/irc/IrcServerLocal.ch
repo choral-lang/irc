@@ -69,6 +69,10 @@ public class IrcServerLocal@R {
                     }
                     else {
                         state.setNickname(nickname);
+
+                        if (state.isRegistrationDone()) {
+                            addEvent(new ServerRegistrationCompleteEvent@R());
+                        }
                     }
                 }
             }
@@ -91,6 +95,10 @@ public class IrcServerLocal@R {
                     else {
                         state.setUsername(username);
                         state.setRealname(realname);
+
+                        if (state.isRegistrationDone()) {
+                            addEvent(new ServerRegistrationCompleteEvent@R());
+                        }
                     }
                 }
             }
