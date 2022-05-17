@@ -1,6 +1,5 @@
 package choral.examples.irc;
 
 public class ErrNoNicknameGivenMessage@R extends Message@R {
-    public ErrNoNicknameGivenMessage() {}
-    public ErrNoNicknameGivenMessage(String@R src) {}
+    public ErrNoNicknameGivenMessage(String@R nickname, String@R message) {}
 }

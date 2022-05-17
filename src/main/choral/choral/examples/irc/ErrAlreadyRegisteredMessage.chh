@@ -1,3 +1,5 @@
 package choral.examples.irc;
 
-public class ErrAlreadyRegisteredMessage@R extends Message@R {}
+public class ErrAlreadyRegisteredMessage@R extends Message@R {
+    public ErrAlreadyRegisteredMessage(String@R nickname, String@R message) {}
+}

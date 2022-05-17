@@ -1,11 +1,9 @@
 package choral.examples.irc;
 
-public class ErrNicknameInUseMessage extends Message {
-    public ErrNicknameInUseMessage() {
-        super(Message.ERR_NICKNAMEINUSE);
-    }
+import java.util.List;
 
-    public ErrNicknameInUseMessage(String src) {
-        super(src, Message.ERR_NICKNAMEINUSE);
+public class ErrNicknameInUseMessage extends Message {
+    public ErrNicknameInUseMessage(String nickname, String message) {
+        super(Message.ERR_NICKNAMEINUSE, List.of(nickname, message));
     }
 }

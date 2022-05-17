@@ -107,9 +107,13 @@ public class Irc@(Client, Server) {
 
     public void clientRecvAndDisplay(String@Server cmd, String@Server param) {
         Source@Server src = Source@Server.parse("irc.choral.net"@Server);
+
         List@Server<String> params = new ArrayList@Server<String>();
+        params.add(serverState.getNickname());
         params.add(param);
-        Message@Client m = ch_AB.<Message>com(new Message@Server(src, cmd, params));
+
+        Message@Client m = ch_AB.<Message>com(
+            new Message@Server(src, cmd, params));
         clientState.getOut().println(m.serialize());
     }
 
@@ -126,7 +130,8 @@ public class Irc@(Client, Server) {
             Message@Client m = ch_AB.<Message>com(e.getReply());
 
             clientState.getOut().println(
-                "Error while changing nickname"@Client);
+                "Error while changing nickname: '"@Client +
+                m.serialize() + "'"@Client);
         }}}
         else {
             if (event.getType() == ServerEventType@Server.USER_ERROR) {{
@@ -136,7 +141,8 @@ public class Irc@(Client, Server) {
                 Message@Client m = ch_AB.<Message>com(e.getReply());
 
                 clientState.getOut().println(
-                    "Error while registering username"@Client);
+                    "Error while registering username: '"@Client +
+                    m.serialize() + "'"@Client);
             }}
             else {
                 if (event.getType() == ServerEventType@Server.REGISTRATION_COMPLETE) {

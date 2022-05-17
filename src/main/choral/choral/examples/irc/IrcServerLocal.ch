@@ -54,19 +54,22 @@ public class IrcServerLocal@R {
             NickMessage@R m = e.getMessage();
 
             if (!m.hasEnoughParams()) {
-                Message@R r = new ErrNoNicknameGivenMessage@R();
+                Message@R r = new ErrNoNicknameGivenMessage@R(
+                    state.getNickname(), "No nickname given"@R);
                 addEvent(new ServerNickErrorEvent@R(m, r));
             }
             else {
                 String@R nickname = m.getNickname();
 
                 if (!Util@R.validNickname(nickname)) {
-                    Message@R r = new ErrErroneousNicknameMessage@R();
+                    Message@R r = new ErrErroneousNicknameMessage@R(
+                        state.getNickname(), "Nickname is invalid"@R);
                     addEvent(new ServerNickErrorEvent@R(m, r));
                 }
                 else {
                     if (state.nicknameInUse(nickname)) {
-                        Message@R r = new ErrNicknameInUseMessage@R();
+                        Message@R r = new ErrNicknameInUseMessage@R(
+                            state.getNickname(), "Nickname is in use"@R);
                         addEvent(new ServerNickErrorEvent@R(m, r));
                     }
                     else {
@@ -85,7 +88,8 @@ public class IrcServerLocal@R {
                 UserMessage@R m = e.getMessage();
 
                 if (!m.hasEnoughParams()) {
-                    Message@R r = new ErrNeedMoreParamsMessage@R();
+                    Message@R r = new ErrNeedMoreParamsMessage@R(
+                        state.getNickname(), "Need at least 4 parameters!"@R);
                     addEvent(new ServerUserErrorEvent@R(m, r));
                 }
                 else {
@@ -93,7 +97,8 @@ public class IrcServerLocal@R {
                     String@R realname = m.getRealname();
 
                     if (state.usernameRegistered(username)) {
-                        Message@R r = new ErrAlreadyRegisteredMessage@R();
+                        Message@R r = new ErrAlreadyRegisteredMessage@R(
+                            state.getNickname(), "Username is already registered"@R);
                         addEvent(new ServerUserErrorEvent@R(m, r));
                     }
                     else {

@@ -1,11 +1,9 @@
 package choral.examples.irc;
 
-public class ErrNeedMoreParamsMessage extends Message {
-    public ErrNeedMoreParamsMessage() {
-        super(Message.ERR_NEEDMOREPARAMS);
-    }
+import java.util.List;
 
-    public ErrNeedMoreParamsMessage(String src) {
-        super(src, Message.ERR_NEEDMOREPARAMS);
+public class ErrNeedMoreParamsMessage extends Message {
+    public ErrNeedMoreParamsMessage(String nickname, String message) {
+        super(Message.ERR_NEEDMOREPARAMS, List.of(nickname, message));
     }
 }

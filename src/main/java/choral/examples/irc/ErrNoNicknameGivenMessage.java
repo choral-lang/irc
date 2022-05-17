@@ -1,11 +1,9 @@
 package choral.examples.irc;
 
-public class ErrNoNicknameGivenMessage extends Message {
-    public ErrNoNicknameGivenMessage() {
-        super(Message.ERR_NONICKNAMEGIVEN);
-    }
+import java.util.List;
 
-    public ErrNoNicknameGivenMessage(String src) {
-        super(src, Message.ERR_NONICKNAMEGIVEN);
+public class ErrNoNicknameGivenMessage extends Message {
+    public ErrNoNicknameGivenMessage(String nickname, String message) {
+        super(Message.ERR_NONICKNAMEGIVEN, List.of(nickname, message));
     }
 }
