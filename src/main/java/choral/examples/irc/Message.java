@@ -33,9 +33,9 @@ public class Message {
     public static final String ERR_NICKNAMEINUSE = "433";
     public static final String ERR_NEEDMOREPARAMS = "461";
 
-    private Source src;
-    private String cmd;
-    private List<String> params;
+    protected Source src;
+    protected String cmd;
+    protected List<String> params;
 
     public Message() {
         this.src = new Source();
@@ -71,6 +71,12 @@ public class Message {
 
     public Message(Source src, String cmd) {
         this(src, cmd, List.of());
+    }
+
+    public Message(Message m) {
+        this.src = m.src;
+        this.cmd = m.cmd;
+        this.params = m.params;
     }
 
     public Source getSrc() {
@@ -116,10 +122,10 @@ public class Message {
         String cmd = m.getCommand();
 
         if (cmd == NICK) {
-            return NickMessage.construct(m);
+            return new NickMessage(m);
         }
         else if (cmd == USER) {
-            return UserMessage.construct(m);
+            return new UserMessage(m);
         }
 
         return null;
@@ -130,7 +136,7 @@ public class Message {
        trailing CRLF sequence.
 
        Return either a new `Message` instance or null if the message couldn't be
-       parsed (invalid format, characters, etc.).
+       parsed (missing command, invalid characters, etc.).
      */
     public static Message parse(String str) {
         // TODO: Fail when the string contains NUL, CR or LF characters. Fail

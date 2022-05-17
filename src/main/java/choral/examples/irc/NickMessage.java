@@ -11,16 +11,15 @@ public class NickMessage extends Message {
         this(new Source(), nickname);
     }
 
-    public String getNickname() {
-        return getParam(0);
+    public NickMessage(Message message) {
+        super(message);
     }
 
-    public static NickMessage construct(Message m) {
-        List<String> params = m.getParams();
+    public boolean hasEnoughParams() {
+        return params.size() >= 1;
+    }
 
-        if (params.size() < 1)
-            throw new NoNicknameGivenException();
-
-        return new NickMessage(m.getSrc(), params.get(0));
+    public String getNickname() {
+        return getParam(0);
     }
 }

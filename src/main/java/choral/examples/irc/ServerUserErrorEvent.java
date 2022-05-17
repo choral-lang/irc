@@ -1,25 +1,20 @@
 package choral.examples.irc;
 
 public class ServerUserErrorEvent extends ServerEvent {
-    private String realname, username;
-    private Message error;
+    private UserMessage origin;
+    private Message reply;
 
-    public ServerUserErrorEvent(String username, String realname, Message error) {
+    public ServerUserErrorEvent(UserMessage origin, Message reply) {
         super(ServerEventType.USER_ERROR);
-        this.username = username;
-        this.realname = realname;
-        this.error = error;
+        this.origin = origin;
+        this.reply = reply;
     }
 
-    public String getUsername() {
-        return username;
+    public UserMessage getOrigin() {
+        return origin;
     }
 
-    public String getRealname() {
-        return realname;
-    }
-
-    public Message getError() {
-        return error;
+    public Message getReply() {
+        return reply;
     }
 }

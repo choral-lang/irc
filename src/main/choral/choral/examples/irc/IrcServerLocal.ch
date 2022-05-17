@@ -51,21 +51,23 @@ public class IrcServerLocal@R {
 
         if (event.getType() == ServerLocalEventType@R.CHECK_NICK) {
             ServerLocalCheckNickEvent@R e = event.asServerLocalCheckNickEvent();
-            String@R nickname = e.getNickname();
+            NickMessage@R m = e.getMessage();
 
-            if (nickname == null@R) {
-                Message@R m = new ErrNoNicknameGivenMessage@R();
-                addEvent(new ServerNickErrorEvent@R(nickname, m));
+            if (!m.hasEnoughParams()) {
+                Message@R r = new ErrNoNicknameGivenMessage@R();
+                addEvent(new ServerNickErrorEvent@R(m, r));
             }
             else {
+                String@R nickname = m.getNickname();
+
                 if (!Util@R.validNickname(nickname)) {
-                    Message@R m = new ErrErroneousNicknameMessage@R();
-                    addEvent(new ServerNickErrorEvent@R(nickname, m));
+                    Message@R r = new ErrErroneousNicknameMessage@R();
+                    addEvent(new ServerNickErrorEvent@R(m, r));
                 }
                 else {
                     if (state.nicknameInUse(nickname)) {
-                        Message@R m = new ErrNicknameInUseMessage@R();
-                        addEvent(new ServerNickErrorEvent@R(nickname, m));
+                        Message@R r = new ErrNicknameInUseMessage@R();
+                        addEvent(new ServerNickErrorEvent@R(m, r));
                     }
                     else {
                         state.setNickname(nickname);
@@ -80,17 +82,19 @@ public class IrcServerLocal@R {
         else {
             if (event.getType() == ServerLocalEventType@R.CHECK_USER) {
                 ServerLocalCheckUserEvent@R e = event.asServerLocalCheckUserEvent();
-                String@R username = e.getUsername();
-                String@R realname = e.getRealname();
+                UserMessage@R m = e.getMessage();
 
-                if (username == null@R) {
-                    Message@R m = new ErrNeedMoreParamsMessage@R();
-                    addEvent(new ServerUserErrorEvent@R(username, realname, null@R));
+                if (!m.hasEnoughParams()) {
+                    Message@R r = new ErrNeedMoreParamsMessage@R();
+                    addEvent(new ServerUserErrorEvent@R(m, r));
                 }
                 else {
+                    String@R username = m.getUsername();
+                    String@R realname = m.getRealname();
+
                     if (state.usernameRegistered(username)) {
-                        Message@R m = new ErrNeedMoreParamsMessage@R();
-                        addEvent(new ServerUserErrorEvent@R(username, realname, m));
+                        Message@R r = new ErrNeedMoreParamsMessage@R();
+                        addEvent(new ServerUserErrorEvent@R(m, r));
                     }
                     else {
                         state.setUsername(username);

@@ -1,20 +1,20 @@
 package choral.examples.irc;
 
 public class ServerNickErrorEvent extends ServerEvent {
-    private String nickname;
-    private Message error;
+    private NickMessage origin;
+    private Message reply;
 
-    public ServerNickErrorEvent(String nickname, Message error) {
+    public ServerNickErrorEvent(NickMessage origin, Message reply) {
         super(ServerEventType.NICK_ERROR);
-        this.nickname = nickname;
-        this.error = error;
+        this.origin = origin;
+        this.reply = reply;
     }
 
-    public String getNickname() {
-        return nickname;
+    public NickMessage getOrigin() {
+        return origin;
     }
 
-    public Message getError() {
-        return error;
+    public Message getReply() {
+        return reply;
     }
 }

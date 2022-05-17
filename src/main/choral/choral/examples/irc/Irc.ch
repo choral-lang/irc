@@ -80,20 +80,12 @@ public class Irc@(Client, Server) {
 
             ClientNickEvent@Client e = event.asClientNickEvent();
             String@Client cNickname = e.getNickname();
-            String@Server sNickname;
 
-            try {
-                NickMessage@Server m = ch_AB.<NickMessage>com(
-                    new NickMessage@Client(cNickname));
-                sNickname = m.getNickname();
-            }
-            catch (NoNicknameGivenException@Server ex) {
-                sNickname = null@Server;
-            }
+            NickMessage@Server m = ch_AB.<NickMessage>com(
+                new NickMessage@Client(cNickname));
 
             clientState.setNickname(cNickname);
-            serverLocal.addLocalEvent(
-                new ServerLocalCheckNickEvent@Server(sNickname));
+            serverLocal.addLocalEvent(new ServerLocalCheckNickEvent@Server(m));
         }
         else {
             ch_AB.<ClientEventType>select(ClientEventType@Client.USER);
@@ -101,26 +93,13 @@ public class Irc@(Client, Server) {
             ClientUserEvent@Client e = event.asClientUserEvent();
             String@Client cUsername = e.getUsername();
             String@Client cRealname = e.getRealname();
-            String@Server sUsername;
-            String@Server sRealname;
 
-            try {
-                UserMessage@Server m = ch_AB.<UserMessage>com(
-                    new UserMessage@Client(cUsername, cRealname));
-                sUsername = m.getUsername();
-                sRealname = m.getRealname();
-            }
-            catch (NeedMoreParamsException@Server ex) {
-                sUsername = null@Server;
-                sRealname = null@Server;
-            }
+            UserMessage@Server m = ch_AB.<UserMessage>com(
+                new UserMessage@Client(cUsername, cRealname));
 
             clientState.setUsername(cUsername);
             clientState.setRealname(cRealname);
-            serverLocal.addLocalEvent(
-                new ServerLocalCheckUserEvent@Server(sUsername, sRealname));
-
-            // TODO: Server: Add MOTD events to the appropriate queue.
+            serverLocal.addLocalEvent(new ServerLocalCheckUserEvent@Server(m));
         }
 
         clientDrivenLoop();
@@ -144,7 +123,7 @@ public class Irc@(Client, Server) {
             ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_ERROR);
 
             ServerNickErrorEvent@Server e = event.asServerNickErrorEvent();
-            Message@Client m = ch_AB.<Message>com(e.getError());
+            Message@Client m = ch_AB.<Message>com(e.getReply());
 
             clientState.getOut().println(
                 "Error while changing nickname"@Client);
@@ -154,7 +133,7 @@ public class Irc@(Client, Server) {
                 ch_AB.<ServerEventType>select(ServerEventType@Server.USER_ERROR);
 
                 ServerUserErrorEvent@Server e = event.asServerUserErrorEvent();
-                Message@Client m = ch_AB.<Message>com(e.getError());
+                Message@Client m = ch_AB.<Message>com(e.getReply());
 
                 clientState.getOut().println(
                     "Error while registering username"@Client);

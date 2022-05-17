@@ -3,9 +3,9 @@ package choral.examples.irc;
 import java.util.List;
 
 public class ServerNickErrorEvent@R extends ServerEvent@R {
-    public ServerNickErrorEvent(String@R nick, Message@R message) {}
+    public ServerNickErrorEvent(NickMessage@R origin, Message@R reply) {}
 
-    public String@R getNickname() {}
+    public NickMessage@R getOrigin() {}
 
-    public Message@R getError() {}
+    public Message@R getReply() {}
 }

@@ -88,14 +88,19 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             buffer.compact();
 
         String s = StandardCharsets.UTF_8.decode(b).toString();
+        Message m = Message.construct(Message.parse(s));
 
-        // NOTE: Assuming the (de)serialization code is correct, this cast is
-        // guaranteed to succeed because of the properties of projection -- the
-        // synchronizing roles agree on the type being communicated.
-        @SuppressWarnings("unchecked")
-        M m = (M) Message.construct(Message.parse(s));
+        if (m == null)
+            throw new UnrecognizedMessageException(s);
 
-        return m;
+        try {
+            @SuppressWarnings("unchecked")
+            M res = (M) m;
+            return res;
+        }
+        catch (ClassCastException e) {
+            throw new UnexpectedMessageException(m);
+        }
     }
 
     @Override

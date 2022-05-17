@@ -1,14 +1,14 @@
 package choral.examples.irc;
 
 public class ServerLocalCheckNickEvent extends ServerLocalEvent {
-    private String nickname;
+    private NickMessage message;
 
-    public ServerLocalCheckNickEvent(String nickname) {
+    public ServerLocalCheckNickEvent(NickMessage message) {
         super(ServerLocalEventType.CHECK_NICK);
-        this.nickname = nickname;
+        this.message = message;
     }
 
-    public String getNickname() {
-        return nickname;
+    public NickMessage getMessage() {
+        return message;
     }
 }

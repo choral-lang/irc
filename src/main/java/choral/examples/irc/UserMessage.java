@@ -13,21 +13,19 @@ public class UserMessage extends Message {
         this(new Source(), username, realname);
     }
 
+    public UserMessage(Message message) {
+        super(message);
+    }
+
+    public boolean hasEnoughParams() {
+        return params.size() >= 4;
+    }
+
     public String getUsername() {
         return getParam(0);
     }
 
     public String getRealname() {
         return getParam(3);
-    }
-
-    public static UserMessage construct(Message m) {
-        List<String> params = m.getParams();
-
-        if (params.size() < 4)
-            throw new NeedMoreParamsException(
-                "At least 4 parameters are expected");
-
-        return new UserMessage(m.getSrc(), params.get(0), params.get(3));
     }
 }

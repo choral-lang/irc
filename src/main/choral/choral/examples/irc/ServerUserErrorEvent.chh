@@ -3,11 +3,9 @@ package choral.examples.irc;
 import java.util.List;
 
 public class ServerUserErrorEvent@R extends ServerEvent@R {
-    public ServerUserErrorEvent(String@R username, String@R realname, Message@R error) {}
+    public ServerUserErrorEvent(UserMessage@R origin, Message@R reply) {}
 
-    public String@R getUsername() {}
+    public UserMessage@R getOrigin() {}
 
-    public String@R getRealname() {}
-
-    public Message@R getError() {}
+    public Message@R getReply() {}
 }

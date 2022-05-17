@@ -45,6 +45,8 @@ public class Message@R {
 
     public Message(Source@R src, String@R cmd) {}
 
+    public Message(Message@R message) {}
+
     public String@R getSrc() {}
 
     public String@R getCommand() {}
