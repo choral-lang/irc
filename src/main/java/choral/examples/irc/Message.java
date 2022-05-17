@@ -32,6 +32,7 @@ public class Message {
     public static final String ERR_ERRONEOUSNICKNAME = "432";
     public static final String ERR_NICKNAMEINUSE = "433";
     public static final String ERR_NEEDMOREPARAMS = "461";
+    public static final String ERR_ALREADYREGISTERED = "462";
 
     protected Source src;
     protected String cmd;

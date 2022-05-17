@@ -1,0 +1,3 @@
+package choral.examples.irc;
+
+public class ErrAlreadyRegisteredMessage@R extends Message@R {}

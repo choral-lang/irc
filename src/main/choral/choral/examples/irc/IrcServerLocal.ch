@@ -93,7 +93,7 @@ public class IrcServerLocal@R {
                     String@R realname = m.getRealname();
 
                     if (state.usernameRegistered(username)) {
-                        Message@R r = new ErrNeedMoreParamsMessage@R();
+                        Message@R r = new ErrAlreadyRegisteredMessage@R();
                         addEvent(new ServerUserErrorEvent@R(m, r));
                     }
                     else {
