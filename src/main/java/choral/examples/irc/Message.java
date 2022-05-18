@@ -77,7 +77,7 @@ public class Message {
     public Message(Message m) {
         this.src = m.src;
         this.cmd = m.cmd;
-        this.params = m.params;
+        this.params = new ArrayList<>(m.params);
     }
 
     public Source getSrc() {
