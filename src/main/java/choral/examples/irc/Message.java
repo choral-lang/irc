@@ -138,6 +138,8 @@ public class Message {
 
        Return either a new `Message` instance or null if the message couldn't be
        parsed (missing command, invalid characters, etc.).
+
+       See RFC 1459, section 2.3.1.
      */
     public static Message parse(String str) {
         // TODO: Fail when the string contains NUL, CR or LF characters. Fail
