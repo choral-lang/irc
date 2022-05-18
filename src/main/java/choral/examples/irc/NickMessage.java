@@ -4,7 +4,7 @@ import java.util.List;
 
 public class NickMessage extends Message {
     public NickMessage(String nickname) {
-        super(Message.NICK, List.of(nickname));
+        super(null, Message.NICK, List.of(nickname));
     }
 
     public NickMessage(Message message) {

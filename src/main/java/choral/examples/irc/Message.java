@@ -38,35 +38,22 @@ public class Message {
     protected String command;
     protected List<String> params;
 
-    public Message(String command) {
-        this.source = null;
-        this.command = command;
-        this.params = new ArrayList<>();
-    }
-
-    public Message(String command, List<String> params) {
-        this(command);
-        this.params = params;
-
-        if (params.size() > 15)
-            throw new IllegalArgumentException("There should be at most 15 parameters");
-    }
-
-    public Message(String command, String param) {
-        this(command, List.of(param));
-    }
-
-    public Message(String command, String param1, String param2) {
-        this(command, List.of(param1, param2));
-    }
-
-    public Message(Source source, String command) {
-        this(source, command, List.of());
-    }
-
     public Message(Source source, String command, List<String> params) {
-        this(command, params);
+        if (command == null) {
+            throw new IllegalArgumentException("Command cannot be null");
+        }
+
+        if (params == null) {
+            this.params = new ArrayList<>();
+        }
+        else if (params.size() > 15) {
+            throw new IllegalArgumentException(
+                "There should be at most 15 parameters");
+        }
+
         this.source = source;
+        this.command = command;
+        this.params = params;
     }
 
     public Message(Message m) {
