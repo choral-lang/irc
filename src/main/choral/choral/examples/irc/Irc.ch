@@ -105,15 +105,15 @@ public class Irc@(Client, Server) {
         clientDrivenLoop();
     }
 
-    public void clientRecvAndDisplay(String@Server cmd, String@Server param) {
-        Source@Server src = Source@Server.parse("irc.choral.net"@Server);
+    public void clientRecvAndDisplay(String@Server command, String@Server param) {
+        Source@Server source = Source@Server.parse("irc.choral.net"@Server);
 
         List@Server<String> params = new ArrayList@Server<String>();
         params.add(serverState.getNickname());
         params.add(param);
 
         Message@Client m = ch_AB.<Message>com(
-            new Message@Server(src, cmd, params));
+            new Message@Server(source, command, params));
         clientState.getOut().println(m.serialize());
     }
 

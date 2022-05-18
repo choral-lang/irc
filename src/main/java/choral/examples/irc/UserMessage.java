@@ -9,7 +9,7 @@ public class UserMessage extends Message {
 
     public UserMessage(Message message) {
         super(message);
-        assert cmd == Message.USER;
+        assert command == Message.USER;
     }
 
     public boolean hasEnoughParams() {

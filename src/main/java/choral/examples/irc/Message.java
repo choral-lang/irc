@@ -34,58 +34,58 @@ public class Message {
     public static final String ERR_NEEDMOREPARAMS = "461";
     public static final String ERR_ALREADYREGISTERED = "462";
 
-    protected Source src;
-    protected String cmd;
+    protected Source source;
+    protected String command;
     protected List<String> params;
 
     public Message() {
-        this.src = new Source();
-        this.cmd = "";
+        this.source = new Source();
+        this.command = "";
         this.params = new ArrayList<>();
     }
 
-    public Message(String cmd) {
+    public Message(String command) {
         this();
-        this.cmd = cmd;
+        this.command = command;
     }
 
-    public Message(String cmd, List<String> params) {
-        this(cmd);
+    public Message(String command, List<String> params) {
+        this(command);
         this.params = params;
 
         if (params.size() > 15)
             throw new IllegalArgumentException("There should be at most 15 parameters");
     }
 
-    public Message(String cmd, String param) {
-        this(cmd, List.of(param));
+    public Message(String command, String param) {
+        this(command, List.of(param));
     }
 
-    public Message(String cmd, String param1, String param2) {
-        this(cmd, List.of(param1, param2));
+    public Message(String command, String param1, String param2) {
+        this(command, List.of(param1, param2));
     }
 
-    public Message(Source src, String cmd, List<String> params) {
-        this(cmd, params);
-        this.src = src;
+    public Message(Source source, String command) {
+        this(source, command, List.of());
     }
 
-    public Message(Source src, String cmd) {
-        this(src, cmd, List.of());
+    public Message(Source source, String command, List<String> params) {
+        this(command, params);
+        this.source = source;
     }
 
     public Message(Message m) {
-        this.src = m.src;
-        this.cmd = m.cmd;
+        this.source = m.source;
+        this.command = m.command;
         this.params = new ArrayList<>(m.params);
     }
 
-    public Source getSrc() {
-        return src;
+    public Source getSource() {
+        return source;
     }
 
     public String getCommand() {
-        return cmd;
+        return command;
     }
 
     public List<String> getParams() {
@@ -120,12 +120,12 @@ public class Message {
        match any of the known subclasses.
      */
     public static Message construct(Message m) {
-        String cmd = m.getCommand();
+        String command = m.getCommand();
 
-        if (cmd == NICK) {
+        if (command == NICK) {
             return new NickMessage(m);
         }
-        else if (cmd == USER) {
+        else if (command == USER) {
             return new UserMessage(m);
         }
 
@@ -148,7 +148,7 @@ public class Message {
         int len = str.length();
 
         int i = 0;
-        String src = null, cmd = null;
+        String source = null, command = null;
         List<String> params = new ArrayList<>();
 
         while (true) {
@@ -160,9 +160,9 @@ public class Message {
 
             if (str.charAt(i) == ':') {
                 // Source.
-                if (src == null) {
+                if (source == null) {
                     j = untilWhitespace(str, i + 1);
-                    src = str.substring(i + 1, j);
+                    source = str.substring(i + 1, j);
                 }
                 // Trailing parameter.
                 else {
@@ -171,14 +171,14 @@ public class Message {
                 }
             }
             // Command.
-            else if (cmd == null) {
+            else if (command == null) {
                 j = untilWhitespace(str, i);
-                cmd = str.substring(i, j);
+                command = str.substring(i, j);
 
                 // Treat an unspecified source as empty. The next occurrence of
                 // a colon can then only start a trailing parameter.
-                if (src == null)
-                    src = "";
+                if (source == null)
+                    source = "";
             }
             // Parameter.
             else {
@@ -189,10 +189,10 @@ public class Message {
             i = j;
         }
 
-        if (cmd == null)
+        if (command == null)
             return null;
 
-        return new Message(Source.parse(src), cmd, params);
+        return new Message(Source.parse(source), command, params);
     }
 
     /**
@@ -206,15 +206,15 @@ public class Message {
         // TODO: Make sure there are no NUL, CR or LF characters in the message
         // parts.
         StringBuilder sb = new StringBuilder();
-        String srcString = src.serialize();
+        String sourceString = source.serialize();
 
-        if (!srcString.isEmpty()) {
+        if (!sourceString.isEmpty()) {
             sb.append(":");
-            sb.append(srcString);
+            sb.append(sourceString);
             sb.append(" ");
         }
 
-        sb.append(cmd);
+        sb.append(command);
 
         for (int i = 0; i < params.size(); ++i) {
             sb.append(" ");
