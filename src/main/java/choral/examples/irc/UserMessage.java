@@ -2,8 +2,6 @@ package choral.examples.irc;
 
 import java.util.List;
 
-// TODO: Validate username and realname.
-
 public class UserMessage extends Message {
     public UserMessage(String username, String realname) {
         super(Message.USER, List.of(username, "0", "*", realname));
@@ -11,6 +9,7 @@ public class UserMessage extends Message {
 
     public UserMessage(Message message) {
         super(message);
+        assert cmd == Message.USER;
     }
 
     public boolean hasEnoughParams() {
@@ -18,10 +17,12 @@ public class UserMessage extends Message {
     }
 
     public String getUsername() {
+        assert params.size() >= 1;
         return getParam(0);
     }
 
     public String getRealname() {
+        assert params.size() >= 4;
         return getParam(3);
     }
 }

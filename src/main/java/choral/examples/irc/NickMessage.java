@@ -9,6 +9,7 @@ public class NickMessage extends Message {
 
     public NickMessage(Message message) {
         super(message);
+        assert cmd == Message.NICK;
     }
 
     public boolean hasEnoughParams() {
@@ -16,6 +17,7 @@ public class NickMessage extends Message {
     }
 
     public String getNickname() {
+        assert params.size() >= 1;
         return getParam(0);
     }
 }
