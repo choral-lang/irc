@@ -1,13 +1,14 @@
 package choral.examples.irc;
 
+import choral.channels.SymChannelImpl;
+import choral.lang.Unit;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
-import choral.channels.SymChannelImpl;
-import choral.lang.Unit;
+import java.util.List;
 
 public class IrcChannelImpl implements SymChannelImpl<Message> {
     private static final int MAX_SIZE = 512;
@@ -104,22 +105,43 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     }
 
     @Override
-    public <T extends Enum<T>> Unit select(T m) {
-        // TODO: Ideally, selections should be fused with communications, but
-        // until we have compiler support for that, we have to implement at
-        // least a basic form of selection if we want working projected code. A
-        // naive implementation could just make use of Enum.ordinal().
-        return null;
+    public <T extends Enum<T>> Unit select(T l) {
+        return com(new Message(null, "SELECT", List.of(l.getClass().getName(),
+                                                       l.name())));
     }
 
     @Override
-    public <T extends Enum<T>> T select(Unit m) {
+    public <T extends Enum<T>> T select(Unit l) {
         return select();
     }
 
     @Override
     public <T extends Enum<T>> T select() {
-        // TODO: See comment in select(T).
-        return null;
+        Message m = com();
+
+        assert m.getCommand().equals("SELECT");
+        assert m.getParams().size() == 2;
+
+        String className = m.getParam(0);
+        String enumName = m.getParam(1);
+
+        try {
+            @SuppressWarnings("unchecked")
+            Class<T> enumClass = (Class<T>) Class.forName(className);
+
+            return Enum.valueOf(enumClass, enumName);
+        }
+        catch (ClassNotFoundException e) {
+            throw new RuntimeException(
+                "Selection failed -- couldn't find class '" + className + "'");
+        }
+        catch (ClassCastException e) {
+            throw new RuntimeException(
+                "Selection failed -- loaded wrong class");
+        }
+        catch (IllegalArgumentException e) {
+            throw new RuntimeException(
+                "Selection failed -- couldn't find enum '" + enumName + "'");
+        }
     }
 }
