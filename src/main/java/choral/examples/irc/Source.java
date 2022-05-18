@@ -3,15 +3,10 @@ package choral.examples.irc;
 public class Source {
     private String nickname, username, hostname;
 
-    public Source() {
-        this.nickname = null;
+    public Source(String nickname) {
+        this.nickname = nickname;
         this.username = null;
         this.hostname = null;
-    }
-
-    public Source(String nickname) {
-        this();
-        this.nickname = nickname;
     }
 
     public Source(String nickname, String hostname) {
@@ -39,6 +34,20 @@ public class Source {
     }
 
     public String serialize() {
-        return nickname + "@" + username + "!" + hostname;
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(nickname);
+
+        if (username != null) {
+            sb.append("!");
+            sb.append(username);
+        }
+
+        if (hostname != null) {
+            sb.append("@");
+            sb.append(hostname);
+        }
+
+        return sb.toString();
     }
 }

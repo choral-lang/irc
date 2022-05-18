@@ -38,15 +38,10 @@ public class Message {
     protected String command;
     protected List<String> params;
 
-    public Message() {
-        this.source = new Source();
-        this.command = "";
-        this.params = new ArrayList<>();
-    }
-
     public Message(String command) {
-        this();
+        this.source = null;
         this.command = command;
+        this.params = new ArrayList<>();
     }
 
     public Message(String command, List<String> params) {
@@ -206,11 +201,10 @@ public class Message {
         // TODO: Make sure there are no NUL, CR or LF characters in the message
         // parts.
         StringBuilder sb = new StringBuilder();
-        String sourceString = source.serialize();
 
-        if (!sourceString.isEmpty()) {
+        if (source != null) {
             sb.append(":");
-            sb.append(sourceString);
+            sb.append(source.serialize());
             sb.append(" ");
         }
 
