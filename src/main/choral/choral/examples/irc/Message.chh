@@ -58,10 +58,4 @@ public class Message@R {
     public static Message@R parse(String@R str) {}
 
     public String@R serialize() {}
-
-    public static Message@R prepareNick(String@R nick) {}
-
-    public static Message@R prepareUser(String@R username, String@R realname) {}
-
-    public static Message@R prepareJoin(List@R<String> channels, List@R<String> keys) {}
 }

@@ -229,17 +229,4 @@ public class Message {
 
         return sb.toString();
     }
-
-    public static Message prepareNick(String nickname) {
-        return new Message("NICK", List.of(nickname));
-    }
-
-    public static Message prepareUser(String username, String realname) {
-        return new Message("USER", List.of(username, "0", "*", realname));
-    }
-
-    public static Message prepareJoin(List<String> channels, List<String> keys) {
-        return new Message("JOIN", List.of(String.join(",", channels),
-                                           String.join(",", keys)));
-    }
 }
