@@ -1,4 +1,4 @@
 package java.lang;
 
-public class InterruptedException@R {
+public class InterruptedException@R extends Exception@R {
 }
