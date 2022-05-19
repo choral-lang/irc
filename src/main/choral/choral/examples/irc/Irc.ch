@@ -106,15 +106,16 @@ public class Irc@(Client, Server) {
     }
 
     public void clientRecvAndDisplay(String@Server command, String@Server param) {
-        Source@Server source = Source@Server.parse("irc.choral.net"@Server);
+        Message@Server ms = MessageBuilder@Server
+            .build()
+            .source(Source@Server.parse("irc.choral.net"@Server))
+            .command(command)
+            .param(serverState.getNickname())
+            .param(param)
+            .message();
 
-        List@Server<String> params = new ArrayList@Server<String>();
-        params.add(serverState.getNickname());
-        params.add(param);
-
-        Message@Client m = ch_AB.<Message>com(
-            new Message@Server(source, command, params));
-        clientState.getOut().println(m.serialize());
+        Message@Client mc = ch_AB.<Message>com(ms);
+        clientState.getOut().println(mc.serialize());
     }
 
     /**
