@@ -47,7 +47,7 @@ public class Irc@(Client, Server) {
         }
     }
 
-	private Integer@Client addClientEvent(ClientEvent@Client event) {
+	public Integer@Client addClientEvent(ClientEvent@Client event) {
         try {
 			clientQueue.put(event);
             return null@Client;
@@ -58,7 +58,7 @@ public class Irc@(Client, Server) {
         }
 	}
 
-	private Integer@Server addServerEvent(ServerEvent@Server event) {
+	public Integer@Server addServerEvent(ServerEvent@Server event) {
         try {
             serverQueue.put(event);
             return null@Server;
