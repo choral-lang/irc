@@ -1,38 +1,43 @@
 * About
 
-Trying to model the IRC protocol using Choral.
+Modeling the IRC protocol using Choral.
 
 * Building
 
-1. Clone the [[https://github.com/choral-lang/choral][Choral repository]] and build the JARs:
+It should always be possible to build the project with the most recent version
+of Choral. To build the project:
+
+1. Make sure you have the Choral runtime libraries installed
+   (=org.choral-lang:choral= and =org.choral-lang:runtime=).
+
+   An easy way to do this is to clone the [[https://github.com/choral-lang/choral][Choral repository]] and install the JARs:
 
    #+BEGIN_EXAMPLE
      mvn install
    #+END_EXAMPLE
 
-2. Install the Choral JARs into the local Maven repository (=cd= into Choral's
-   =dist= directory first):
-
-   #+BEGIN_EXAMPLE
-     mvn install:install-file \
-       -Dfile=choral-runtime.jar \
-       -DgroupId=choral \
-       -DartifactId=choral-runtime \
-       -Dversion=git \
-       -Dpackaging=jar \
-       -DgeneratePom=true
-
-     mvn install:install-file \
-       -Dfile=choral.jar \
-       -DgroupId=choral \
-       -DartifactId=choral \
-       -Dversion=git \
-       -Dpackaging=jar \
-       -DgeneratePom=true
-   #+END_EXAMPLE
+2. Make sure you've installed the Choral compiler so that the =choral= binary is
+   on your =PATH=. The version of the compiler should match the version of the
+   runtime you've installed.
 
 3. Build the project:
 
    #+BEGIN_EXAMPLE
      mvn compile
+   #+END_EXAMPLE
+
+4. Run the server and the client program:
+
+   #+BEGIN_EXAMPLE
+     mvn exec:java -Dexec.mainClass="choral.examples.irc.Server"
+     mvn exec:java -Dexec.mainClass="choral.examples.irc.Client"
+   #+END_EXAMPLE
+
+   Use the client's textual interface to connect to the server and run some
+   commands:
+
+   #+BEGIN_EXAMPLE
+     /connect localhost 8667
+     /nick choralbot
+     /user choralbot
    #+END_EXAMPLE
