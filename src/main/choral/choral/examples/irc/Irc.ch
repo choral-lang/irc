@@ -47,18 +47,18 @@ public class Irc@(Client, Server) {
         }
     }
 
-	public Integer@Client addClientEvent(ClientEvent@Client event) {
+    public Integer@Client addClientEvent(ClientEvent@Client event) {
         try {
-			clientQueue.put(event);
+            clientQueue.put(event);
             return null@Client;
         }
         catch (InterruptedException@Client e) {
             // Ignore the interrupt and try again.
             return addClientEvent(event);
         }
-	}
+    }
 
-	public Integer@Server addServerEvent(ServerEvent@Server event) {
+    public Integer@Server addServerEvent(ServerEvent@Server event) {
         try {
             serverQueue.put(event);
             return null@Server;
@@ -67,7 +67,7 @@ public class Irc@(Client, Server) {
             // Ignore the interrupt and try again.
             return addServerEvent(event);
         }
-	}
+    }
 
     /**
      * A loop driven by the client's event queue. The client initiates requests.

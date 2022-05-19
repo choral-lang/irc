@@ -14,7 +14,7 @@ public class IrcServerLocal@R {
         this.localQueue = new LinkedBlockingQueue@R<ServerLocalEvent>();
     }
 
-	private Integer@R addEvent(ServerEvent@R event) {
+    private Integer@R addEvent(ServerEvent@R event) {
         try {
             queue.put(event);
             return null@R;
@@ -23,9 +23,9 @@ public class IrcServerLocal@R {
             // Ignore the interrupt and try again.
             return addEvent(event);
         }
-	}
+    }
 
-	public Integer@R addLocalEvent(ServerLocalEvent@R event) {
+    public Integer@R addLocalEvent(ServerLocalEvent@R event) {
         try {
             localQueue.put(event);
             return null@R;
@@ -34,7 +34,7 @@ public class IrcServerLocal@R {
             // Ignore the interrupt and try again.
             return addLocalEvent(event);
         }
-	}
+    }
 
     private ServerLocalEvent@R takeLocalEvent() {
         try {
