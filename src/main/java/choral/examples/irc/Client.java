@@ -3,7 +3,7 @@ package choral.examples.irc;
 import choral.lang.Unit;
 import choral.runtime.Media.SocketByteChannel;
 import choral.runtime.SerializerChannel.SerializerChannel_A;
-import choral.runtime.Serializers.KryoSerializer;
+import choral.runtime.Serializers.JSONSerializer;
 import choral.runtime.WrapperByteChannel.WrapperByteChannel_A;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -69,8 +69,8 @@ public class Client {
                         continue;
                     }
 
-                    ch = new SerializerChannel_A(KryoSerializer.getInstance(),
-                                                new WrapperByteChannel_A(sbc));
+                    ch = new SerializerChannel_A(JSONSerializer.getInstance(),
+                                                 new WrapperByteChannel_A(sbc));
 
                     System.out.println("Connected to " + host + " at " + port);
 

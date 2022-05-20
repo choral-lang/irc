@@ -3,7 +3,7 @@ package choral.examples.irc;
 import choral.lang.Unit;
 import choral.runtime.Media.ServerSocketByteChannel;
 import choral.runtime.SerializerChannel.SerializerChannel_B;
-import choral.runtime.Serializers.KryoSerializer;
+import choral.runtime.Serializers.JSONSerializer;
 import choral.runtime.WrapperByteChannel.WrapperByteChannel_B;
 import java.io.IOException;
 import java.util.Scanner;
@@ -25,7 +25,7 @@ public class Server {
             while (listener.isOpen()) {
                 try {
                     SerializerChannel_B ch = new SerializerChannel_B(
-                        KryoSerializer.getInstance(),
+                        JSONSerializer.getInstance(),
                         new WrapperByteChannel_B(listener.getNext()));
 
                     System.out.println("Client connected");
