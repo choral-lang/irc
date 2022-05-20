@@ -5,7 +5,11 @@ import java.io.PrintStream;
 public class ServerState {
     private String username, realname, nickname;
 
-    public ServerState() {}
+    public ServerState() {
+        this.username = null;
+        this.realname = null;
+        this.nickname = null;
+    }
 
     public String getUsername() {
         return username;
@@ -39,9 +43,10 @@ public class ServerState {
         return false;
     }
 
-    public boolean isRegistrationDone() {
-        return (this.username != null && this.realname != null &&
-                this.nickname != null);
+    public boolean isRegistered() {
+        return this.username != null &&
+               this.realname != null &&
+               this.nickname != null;
     }
 
     public PrintStream getOut() {

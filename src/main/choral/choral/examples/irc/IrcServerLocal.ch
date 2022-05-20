@@ -110,7 +110,7 @@ public class IrcServerLocal@R {
                     else {
                         state.setNickname(nickname);
 
-                        if (state.isRegistrationDone()) {
+                        if (state.isRegistered()) {
                             addWelcome();
                         }
                     }
@@ -131,16 +131,16 @@ public class IrcServerLocal@R {
                     String@R username = m.getUsername();
                     String@R realname = m.getRealname();
 
-                    if (state.usernameRegistered(username)) {
+                    if (state.isRegistered()) {
                         Message@R r = new ErrAlreadyRegisteredMessage@R(
-                            state.getNickname(), "Username is already registered"@R);
+                            state.getNickname(), "You cannot register again"@R);
                         addEvent(new ServerUserErrorEvent@R(m, r));
                     }
                     else {
                         state.setUsername(username);
                         state.setRealname(realname);
 
-                        if (state.isRegistrationDone()) {
+                        if (state.isRegistered()) {
                             addWelcome();
                         }
                     }
