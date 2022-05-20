@@ -32,7 +32,7 @@ public class Server {
 
                     executor.submit(() -> {
                         try {
-                            Irc.runServer(new Irc_Server(ch, Unit.id(), state),
+                            Irc.runServer(new Irc_Server(ch, Unit.id, state),
                                           executor);
                         }
                         catch (Exception e) {

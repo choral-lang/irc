@@ -74,7 +74,7 @@ public class Client {
 
                     System.out.println("Connected to " + host + " at " + port);
 
-                    irc = new Irc_Client(ch, state, Unit.id());
+                    irc = new Irc_Client(ch, state, Unit.id);
                     Irc.runClient(irc, executor);
                 }
                 else if (cmd.equalsIgnoreCase("/nick")) {
