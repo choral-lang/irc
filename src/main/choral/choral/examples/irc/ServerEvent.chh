@@ -9,6 +9,8 @@ public abstract class ServerEvent@R {
 
     public ServerUserErrorEvent@R asServerUserErrorEvent() {}
 
+    public ServerForwardMessageEvent@R asServerForwardMessageEvent() {}
+
     public ServerMessageEvent@R asServerMessageEvent() {}
 
     public ServerJoinEvent@R asServerJoinEvent() {}

@@ -46,6 +46,41 @@ public class IrcServerLocal@R {
         }
     }
 
+    public void addForwardMessageEvent(String@R command, String@R param) {
+        Message@R m = MessageBuilder@R
+            .build()
+            .source(Source@R.parse("irc.choral.net"@R))
+            .command(command)
+            .param(state.getNickname())
+            .param(param)
+            .message();
+
+        addEvent(new ServerForwardMessageEvent@R(m));
+    }
+
+    private void addWelcome() {
+        addForwardMessageEvent(Message@R.RPL_WELCOME, "Welcome to ChoralNet!"@R);
+        addForwardMessageEvent(Message@R.RPL_YOURHOST, "Your host is irc.choral.net"@R);
+        addForwardMessageEvent(Message@R.RPL_CREATED, "The server was created at IMADA"@R);
+        addForwardMessageEvent(Message@R.RPL_MYINFO, "I'm running ChoralIRC 0.0.1"@R);
+        addForwardMessageEvent(Message@R.RPL_ISUPPORT, "NICKLEN=32"@R);
+        addForwardMessageEvent(Message@R.RPL_UMODEIS, "+i"@R);
+
+        addForwardMessageEvent(Message@R.RPL_LUSERCLIENT, "There's only me and you here"@R);
+        // addForwardMessageEvent(Message@R.RPL_LUSEROP, ""@R);
+        // addForwardMessageEvent(Message@R.RPL_LUSERUNKNOWN, ""@R);
+        // addForwardMessageEvent(Message@R.RPL_LUSERCHANNELS, ""@R);
+        addForwardMessageEvent(Message@R.RPL_LUSERME, "I have exactly one user---you"@R);
+        // addForwardMessageEvent(Message@R.RPL_LOCALUSERS, ""@R);
+        // addForwardMessageEvent(Message@R.RPL_GLOBALUSERS, ""@R);
+
+        addForwardMessageEvent(Message@R.RPL_MOTDSTART, "ChoralNet Message of the Day"@R);
+        addForwardMessageEvent(Message@R.RPL_MOTD, "Hopefully you're having a nice day!"@R);
+        addForwardMessageEvent(Message@R.RPL_MOTD, "Come find us in the office working..."@R);
+        addForwardMessageEvent(Message@R.RPL_MOTD, "...or having a choco break in the lunchroom!"@R);
+        addForwardMessageEvent(Message@R.RPL_ENDOFMOTD, "End of /MOTD command"@R);
+    }
+
     public void run() {
         ServerLocalEvent@R event = takeLocalEvent();
 
@@ -76,7 +111,7 @@ public class IrcServerLocal@R {
                         state.setNickname(nickname);
 
                         if (state.isRegistrationDone()) {
-                            addEvent(new ServerRegistrationCompleteEvent@R());
+                            addWelcome();
                         }
                     }
                 }
@@ -106,7 +141,7 @@ public class IrcServerLocal@R {
                         state.setRealname(realname);
 
                         if (state.isRegistrationDone()) {
-                            addEvent(new ServerRegistrationCompleteEvent@R());
+                            addWelcome();
                         }
                     }
                 }

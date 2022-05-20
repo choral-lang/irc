@@ -21,6 +21,11 @@ public abstract class ServerEvent {
         return (ServerUserErrorEvent) this;
     }
 
+    public ServerForwardMessageEvent asServerForwardMessageEvent() {
+        assert eventType == ServerEventType.FORWARD_MESSAGE;
+        return (ServerForwardMessageEvent) this;
+    }
+
     public ServerMessageEvent asServerMessageEvent() {
         assert eventType == ServerEventType.MESSAGE;
         return (ServerMessageEvent)this;

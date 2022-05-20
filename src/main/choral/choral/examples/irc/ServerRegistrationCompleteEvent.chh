@@ -1,5 +1,0 @@
-package choral.examples.irc;
-
-public class ServerRegistrationCompleteEvent@R extends ServerEvent@R {
-    public ServerRegistrationCompleteEvent() {}
-}

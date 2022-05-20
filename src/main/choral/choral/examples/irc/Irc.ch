@@ -146,29 +146,13 @@ public class Irc@(Client, Server) {
                     m.serialize() + "'"@Client);
             }}
             else {
-                if (event.getType() == ServerEventType@Server.REGISTRATION_COMPLETE) {
-                    ch_AB.<ServerEventType>select(ServerEventType@Server.REGISTRATION_COMPLETE);
+                if (event.getType() == ServerEventType@Server.FORWARD_MESSAGE) {
+                    ch_AB.<ServerEventType>select(ServerEventType@Server.FORWARD_MESSAGE);
 
-                    clientRecvAndDisplay(Message@Server.RPL_WELCOME, "Welcome to ChoralNet!"@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_YOURHOST, "Your host is irc.choral.net"@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_CREATED, "The server was created at IMADA"@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_MYINFO, "I'm running ChoralIRC 0.0.1"@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_ISUPPORT, "NICKLEN=32"@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_UMODEIS, "+i"@Server);
+                    ServerForwardMessageEvent@Server e = event.asServerForwardMessageEvent();
+                    Message@Client m = ch_AB.<Message>com(e.getMessage());
 
-                    clientRecvAndDisplay(Message@Server.RPL_LUSERCLIENT, "There's only me and you here"@Server);
-                    // clientRecvAndDisplay(Message@Server.RPL_LUSEROP, ""@Server);
-                    // clientRecvAndDisplay(Message@Server.RPL_LUSERUNKNOWN, ""@Server);
-                    // clientRecvAndDisplay(Message@Server.RPL_LUSERCHANNELS, ""@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_LUSERME, "I have exactly one user---you"@Server);
-                    // clientRecvAndDisplay(Message@Server.RPL_LOCALUSERS, ""@Server);
-                    // clientRecvAndDisplay(Message@Server.RPL_GLOBALUSERS, ""@Server);
-
-                    clientRecvAndDisplay(Message@Server.RPL_MOTDSTART, "ChoralNet Message of the Day"@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_MOTD, "Hopefully you're having a nice day!"@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_MOTD, "Come find us in the office working..."@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_MOTD, "...or having a choco break in the lunchroom!"@Server);
-                    clientRecvAndDisplay(Message@Server.RPL_ENDOFMOTD, "End of /MOTD command"@Server);
+                    clientState.getOut().println(m.serialize());
                 }
                 else {
                     ch_AB.<ServerEventType>select(ServerEventType@Server.UNKNOWN);

@@ -5,6 +5,6 @@ enum ServerEventType@R {
     USER_ERROR,
     JOIN,
     MESSAGE,
-    REGISTRATION_COMPLETE,
+    FORWARD_MESSAGE,
     UNKNOWN
 }
