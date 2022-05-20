@@ -5,6 +5,7 @@ import choral.runtime.Media.SocketByteChannel;
 import choral.runtime.SerializerChannel.SerializerChannel_A;
 import choral.runtime.Serializers.JSONSerializer;
 import choral.runtime.WrapperByteChannel.WrapperByteChannel_A;
+import com.google.gson.Gson;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,12 +22,13 @@ public class Client {
 
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
+        Gson gson = new Gson();
         ClientState state = new ClientState("choralbot");
         ExecutorService executor = Executors.newCachedThreadPool();
         IrcChannel_A ch = null;
         Irc_Client irc = null;
 
-        System.out.println("Commands: /connect, /nick, /user, /quit");
+        System.out.println("Commands: /connect, /nick, /user, /state, /quit");
 
         try {
             while (true) {
@@ -109,6 +111,9 @@ public class Client {
                     String realname = parts.length - 1 < 2 ? username : parts[2];
 
                     irc.addClientEvent(new ClientUserEvent(username, realname));
+                }
+                else if (cmd.equalsIgnoreCase("/state")) {
+                    System.out.println(gson.toJson(state));
                 }
                 else if (cmd.equalsIgnoreCase("/quit")) {
                     break;
