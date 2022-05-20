@@ -17,6 +17,10 @@ public class ServerState@R {
 
     public void setNickname(String@R nickname) {}
 
+    public boolean@R isWelcomeDone() {}
+
+    public void setWelcomeDone(boolean@R welcomeDone) {}
+
     public boolean@R nicknameInUse(String@R nickname) {}
 
     public boolean@R isRegistered() {}

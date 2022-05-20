@@ -4,11 +4,13 @@ import java.io.PrintStream;
 
 public class ServerState {
     private String username, realname, nickname;
+    private boolean welcomeDone;
 
     public ServerState() {
         this.username = null;
         this.realname = null;
         this.nickname = null;
+        this.welcomeDone = false;
     }
 
     public String getUsername() {
@@ -33,6 +35,14 @@ public class ServerState {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public boolean isWelcomeDone() {
+        return welcomeDone;
+    }
+
+    public void setWelcomeDone(boolean welcomeDone) {
+        this.welcomeDone = welcomeDone;
     }
 
     public boolean nicknameInUse(String nickname) {

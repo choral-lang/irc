@@ -79,6 +79,8 @@ public class IrcServerLocal@R {
         addForwardMessageEvent(Message@R.RPL_MOTD, "Come find us in the office working..."@R);
         addForwardMessageEvent(Message@R.RPL_MOTD, "...or having a choco break in the lunchroom!"@R);
         addForwardMessageEvent(Message@R.RPL_ENDOFMOTD, "End of /MOTD command"@R);
+
+        state.setWelcomeDone(true@R);
     }
 
     public void run() {
@@ -110,7 +112,7 @@ public class IrcServerLocal@R {
                     else {
                         state.setNickname(nickname);
 
-                        if (state.isRegistered()) {
+                        if (state.isRegistered() && !state.isWelcomeDone()) {
                             addWelcome();
                         }
                     }
@@ -140,7 +142,7 @@ public class IrcServerLocal@R {
                         state.setUsername(username);
                         state.setRealname(realname);
 
-                        if (state.isRegistered()) {
+                        if (state.isRegistered() && !state.isWelcomeDone()) {
                             addWelcome();
                         }
                     }
