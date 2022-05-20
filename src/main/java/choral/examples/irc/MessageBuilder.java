@@ -46,10 +46,6 @@ public class MessageBuilder {
     }
 
     public Message message() {
-        if (command == null) {
-            throw new IllegalArgumentException("Command cannot be null");
-        }
-
         return new Message(source, command, params);
     }
 }
