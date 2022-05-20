@@ -51,6 +51,11 @@ public class Client {
                         continue;
                     }
 
+                    if (irc != null) {
+                        System.out.println("Already connected!");
+                        continue;
+                    }
+
                     String host = parts[1];
                     Integer port = parseInt(parts[2]);
 
