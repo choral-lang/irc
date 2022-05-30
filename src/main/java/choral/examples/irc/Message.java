@@ -130,7 +130,9 @@ public class Message {
         int len = str.length();
 
         int i = 0;
-        String source = null, command = null;
+        boolean hasSource = false;
+        Source source = null;
+        String command = null;
         List<String> params = new ArrayList<>();
 
         while (true) {
@@ -141,28 +143,27 @@ public class Message {
                 break;
 
             if (str.charAt(i) == ':') {
-                // Source.
-                if (source == null) {
+                // Parse the source
+                if (!hasSource) {
                     j = untilWhitespace(str, i + 1);
-                    source = str.substring(i + 1, j);
+                    source = Source.parse(str.substring(i + 1, j));
+                    hasSource = true;
                 }
-                // Trailing parameter.
+                // Parse the trailing parameter
                 else {
                     params.add(str.substring(i + 1));
                     break;
                 }
             }
-            // Command.
+            // Parse the command
             else if (command == null) {
                 j = untilWhitespace(str, i);
                 command = str.substring(i, j);
 
-                // Treat an unspecified source as empty. The next occurrence of
-                // a colon can then only start a trailing parameter.
                 if (source == null)
-                    source = "";
+                    hasSource = true;
             }
-            // Parameter.
+            // Parse a non-trailing parameter
             else {
                 j = untilWhitespace(str, i);
                 params.add(str.substring(i, j));
@@ -174,7 +175,7 @@ public class Message {
         if (command == null)
             return null;
 
-        return new Message(Source.parse(source), command, params);
+        return new Message(source, command, params);
     }
 
     /**
