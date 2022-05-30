@@ -104,10 +104,10 @@ public class Message {
     public static Message construct(Message m) {
         String command = m.getCommand();
 
-        if (command == NICK) {
+        if (command.equals(NICK)) {
             return new NickMessage(m);
         }
-        else if (command == USER) {
+        else if (command.equals(USER)) {
             return new UserMessage(m);
         }
 
