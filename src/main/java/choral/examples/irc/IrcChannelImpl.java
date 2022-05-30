@@ -13,6 +13,7 @@ import java.util.List;
 public class IrcChannelImpl implements SymChannelImpl<Message> {
     private static final int MAX_SIZE = 512;
     private static final byte[] MARKER = new byte[] {0x0D, 0x0A};
+    private static final String SELECT = "SELECT";
 
     private ByteChannel channel;
     private Writer writer;
@@ -97,7 +98,12 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             buffer.compact();
 
         // Parse the message
-        Message m = Message.construct(Message.parse(s));
+        Message m = Message.parse(s);
+
+        // Handle selection messages at the channel level
+        if (!m.getCommand().equals(SELECT)) {
+            m = Message.construct(m);
+        }
 
         if (m == null)
             throw new UnrecognizedMessageException(s);
@@ -114,8 +120,8 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
 
     @Override
     public <T extends Enum<T>> Unit select(T l) {
-        return com(new Message(null, "SELECT", List.of(l.getClass().getName(),
-                                                       l.name())));
+        return com(new Message(null, SELECT, List.of(l.getClass().getName(),
+                                                     l.name())));
     }
 
     @Override
@@ -127,7 +133,7 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     public <T extends Enum<T>> T select() {
         Message m = com();
 
-        assert m.getCommand().equals("SELECT");
+        assert m.getCommand().equals(SELECT);
         assert m.getParams().size() == 2;
 
         String className = m.getParam(0);
