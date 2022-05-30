@@ -1,8 +1,12 @@
 package choral.examples.irc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.lang.StringBuilder;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 public class Message {
     public static final String NICK = "NICK";
@@ -33,6 +37,36 @@ public class Message {
     public static final String ERR_NICKNAMEINUSE = "433";
     public static final String ERR_NEEDMOREPARAMS = "461";
     public static final String ERR_ALREADYREGISTERED = "462";
+
+    public static final Map<String, Class<? extends Message>> MESSAGES = new HashMap<>() {{
+        put(NICK, NickMessage.class);
+        put(USER, UserMessage.class);
+        put(RPL_WELCOME, Message.class);
+        put(RPL_YOURHOST, Message.class);
+        put(RPL_CREATED, Message.class);
+        put(RPL_MYINFO, Message.class);
+        put(RPL_ISUPPORT, Message.class);
+        put(RPL_UMODEIS, Message.class);
+
+        put(RPL_LUSERCLIENT, Message.class);
+        put(RPL_LUSEROP, Message.class);
+        put(RPL_LUSERUNKNOWN, Message.class);
+        put(RPL_LUSERCHANNELS, Message.class);
+        put(RPL_LUSERME, Message.class);
+        put(RPL_LOCALUSERS, Message.class);
+        put(RPL_GLOBALUSERS, Message.class);
+
+        put(RPL_MOTD, Message.class);
+        put(RPL_MOTDSTART, Message.class);
+        put(RPL_ENDOFMOTD, Message.class);
+        put(ERR_NOMOTD, Message.class);
+
+        put(ERR_NONICKNAMEGIVEN, Message.class);
+        put(ERR_ERRONEOUSNICKNAME, Message.class);
+        put(ERR_NICKNAMEINUSE, Message.class);
+        put(ERR_NEEDMOREPARAMS, Message.class);
+        put(ERR_ALREADYREGISTERED, Message.class);
+    }};
 
     protected Source source;
     protected String command;
@@ -102,16 +136,19 @@ public class Message {
        match any of the known subclasses.
      */
     public static Message construct(Message m) {
-        String command = m.getCommand();
+        Class<? extends Message> cls = MESSAGES.get(m.getCommand());
 
-        if (command.equals(NICK)) {
-            return new NickMessage(m);
-        }
-        else if (command.equals(USER)) {
-            return new UserMessage(m);
-        }
+        if (cls == null)
+            return null;
 
-        return null;
+        try {
+            Constructor<? extends Message> ctor = cls.getConstructor(Message.class);
+            return ctor.newInstance(m);
+        }
+        catch (NoSuchMethodException | InstantiationException |
+               IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
