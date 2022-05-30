@@ -54,13 +54,14 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             ++i;
         }
 
-        return i < limit ? i : -1;
+        return m == marker.length ? (i - marker.length) : -1;
     }
 
     @Override
     public <M extends Message> M com() {
+        // Read until we have at least one complete message
         while (current == -1) {
-            // If the buffer filled up and no marker was seen yet, throw away.
+            // If the buffer filled up and no marker was seen yet, throw away
             if (buffer.remaining() == 0)
                 buffer.clear();
 
@@ -72,24 +73,30 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
                 throw new RuntimeException(e.getMessage());
             }
 
-            // Put the buffer into "read mode".
+            // Put the buffer into "read mode" to try to find the marker
             buffer.flip();
+            current = findMarker(buffer, MARKER);
 
-            if ((current = findMarker(buffer, MARKER)) == -1) {
-                // Put the buffer back into "write mode".
+            // Put the buffer back into "write mode" if no marker was found
+            if (current == -1) {
                 buffer.position(buffer.limit());
                 buffer.limit(buffer.capacity());
             }
         }
 
-        ByteBuffer b = buffer.slice().limit(current - MARKER.length);
-        buffer.position(current);
+        // Extract the current message
+        ByteBuffer b = buffer.duplicate().limit(current);
+        String s = StandardCharsets.UTF_8.decode(b).toString();
 
-        if ((current = findMarker(buffer, MARKER)) == -1)
-            // Rotate the buffer for the upcoming write.
+        // Advance the position and attempt to find another complete message
+        buffer.position(current + MARKER.length);
+        current = findMarker(buffer, MARKER);
+
+        // Rotate the buffer if this was the last complete message
+        if (current == -1)
             buffer.compact();
 
-        String s = StandardCharsets.UTF_8.decode(b).toString();
+        // Parse the message
         Message m = Message.construct(Message.parse(s));
 
         if (m == null)
