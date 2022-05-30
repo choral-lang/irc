@@ -2,7 +2,7 @@ package choral.examples.irc;
 
 import java.util.List;
 
-public class NickMessage@R {
+public class NickMessage@R extends Message@R {
     public NickMessage(String@R nickname) {}
 
     public NickMessage(Message@R message) {}

@@ -2,7 +2,7 @@ package choral.examples.irc;
 
 import java.util.List;
 
-public class UserMessage@R {
+public class UserMessage@R extends Message@R {
     public UserMessage(String@R username, String@R realname) {}
 
     public UserMessage(Message@R message) {}
