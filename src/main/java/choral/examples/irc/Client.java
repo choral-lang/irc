@@ -23,7 +23,7 @@ public class Client {
         Scanner s = new Scanner(System.in);
         ClientState state = new ClientState("choralbot");
         ExecutorService executor = Executors.newCachedThreadPool();
-        SerializerChannel_A ch = null;
+        IrcChannel_A ch = null;
         Irc_Client irc = null;
 
         System.out.println("Commands: /connect, /nick, /user, /quit");
@@ -74,8 +74,7 @@ public class Client {
                         continue;
                     }
 
-                    ch = new SerializerChannel_A(JSONSerializer.getInstance(),
-                                                 new WrapperByteChannel_A(sbc));
+                    ch = new IrcChannel_A(sbc);
 
                     System.out.println("Connected to " + host + " at " + port);
 

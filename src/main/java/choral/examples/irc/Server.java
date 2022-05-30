@@ -24,9 +24,7 @@ public class Server {
 
             while (listener.isOpen()) {
                 try {
-                    SerializerChannel_B ch = new SerializerChannel_B(
-                        JSONSerializer.getInstance(),
-                        new WrapperByteChannel_B(listener.getNext()));
+                    IrcChannel_B ch = new IrcChannel_B(listener.getNext());
 
                     System.out.println("Client connected");
 
