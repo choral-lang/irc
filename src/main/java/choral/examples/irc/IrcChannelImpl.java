@@ -30,6 +30,7 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     public <M extends Message> Unit com(M m) {
         try {
             writer.write(m.serialize());
+            writer.flush();
         }
         catch (IOException e) {
             throw new RuntimeException(e.getMessage());
