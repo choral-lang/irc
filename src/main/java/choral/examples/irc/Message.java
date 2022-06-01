@@ -200,6 +200,10 @@ public class Message {
                 j = untilWhitespace(str, i);
                 command = str.substring(i, j);
 
+                if (!Util.validCommand(command)) {
+                    return null;
+                }
+
                 if (source == null)
                     hasSource = true;
             }

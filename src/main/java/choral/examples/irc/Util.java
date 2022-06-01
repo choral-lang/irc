@@ -2,6 +2,18 @@ package choral.examples.irc;
 
 public class Util {
     /**
+     * Check whether a command is valid.
+     *
+     * A valid command is a sequence of one or more ASCII letters, or a sequence
+     * of exactly 3 ASCII digits.
+     *
+     * See RFC 1459, section 2.3.1.
+     */
+    public static boolean validCommand(String command) {
+        return command.matches("[a-zA-Z]+|\\d{3}");
+    }
+
+    /**
      * Check whether a nickname is valid.
      *
      * A valid nickname starts with an ASCII letter and is followed by one or
