@@ -161,9 +161,6 @@ public class Message {
        See RFC 1459, section 2.3.1.
      */
     public static Message parse(String str) {
-        // TODO: Fail when the string contains NUL, CR or LF characters. Fail
-        // when a non-trailing parameter contains a colon character.
-
         int len = str.length();
 
         int i = 0;
@@ -179,7 +176,13 @@ public class Message {
             if (i == len)
                 break;
 
-            if (str.charAt(i) == ':') {
+            char c = str.charAt(i);
+
+            if (c == '\0' || c == '\r' || c == '\n') {
+                return null;
+            }
+
+            if (c == ':') {
                 // Parse the source
                 if (!hasSource) {
                     j = untilWhitespace(str, i + 1);
