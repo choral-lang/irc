@@ -139,11 +139,13 @@ public class IrcServerLocal@R {
                         addEvent(new ServerUserErrorEvent@R(m, r));
                     }
                     else {
-                        state.setUsername(username);
-                        state.setRealname(realname);
+                        if (Util@R.validUsername(username)) {
+                            state.setUsername(username);
+                            state.setRealname(realname);
 
-                        if (state.isRegistered() && !state.isWelcomeDone()) {
-                            addWelcome();
+                            if (state.isRegistered() && !state.isWelcomeDone()) {
+                                addWelcome();
+                            }
                         }
                     }
                 }
