@@ -3,10 +3,8 @@ package choral.examples.irc;
 import choral.channels.SymChannelImpl;
 import choral.lang.Unit;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
-import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -16,13 +14,11 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     private static final String SELECT = "SELECT";
 
     private ByteChannel channel;
-    private Writer writer;
     private ByteBuffer buffer;
     private int current;
 
     IrcChannelImpl(ByteChannel channel) {
         this.channel = channel;
-        this.writer = Channels.newWriter(channel, StandardCharsets.UTF_8);
         this.buffer = ByteBuffer.allocate(MAX_SIZE);
         this.current = -1;
     }
@@ -30,8 +26,13 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     @Override
     public <M extends Message> Unit com(M m) {
         try {
-            writer.write(m.serialize());
-            writer.flush();
+            byte[] b = m.serialize().getBytes(StandardCharsets.UTF_8);
+
+            if (b.length > 512)
+                throw new RuntimeException(
+                    "Message exceeds the maximum length of 512 bytes");
+
+            channel.write(ByteBuffer.wrap(b));
         }
         catch (IOException e) {
             throw new RuntimeException(e.getMessage());
