@@ -33,7 +33,7 @@ public class Source {
         return new Source(userParts[0], userParts[1], hostParts[1]);
     }
 
-    public String serialize() {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
 
         sb.append(nickname);

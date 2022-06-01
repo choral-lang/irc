@@ -223,20 +223,19 @@ public class Message {
     }
 
     /**
-       Serialize the `Message` instance to a string following the format
-       specified by the IRC protocol.
-
-       The last parameter, even if the only one, is always serialized as a
-       trailing parameter.
+     * Serialize the `Message` instance to a string following the format
+     * specified by the IRC protocol, but leaving out the trailing CRLF
+     * sequence.
+     *
+     * The last parameter, even if the only one, is always serialized as a
+     * trailing parameter.
      */
-    public String serialize() {
-        // TODO: Make sure there are no NUL, CR or LF characters in the message
-        // parts.
+    public String toString() {
         StringBuilder sb = new StringBuilder();
 
         if (source != null) {
             sb.append(":");
-            sb.append(source.serialize());
+            sb.append(source.toString());
             sb.append(" ");
         }
 
@@ -250,8 +249,6 @@ public class Message {
 
             sb.append(params.get(i));
         }
-
-        sb.append("\r\n");
 
         return sb.toString();
     }

@@ -115,7 +115,7 @@ public class Irc@(Client, Server) {
             .message();
 
         Message@Client mc = ch_AB.<Message>com(ms);
-        clientState.getOut().println(mc.serialize());
+        clientState.getOut().println(mc.toString());
     }
 
     /**
@@ -132,7 +132,7 @@ public class Irc@(Client, Server) {
 
             clientState.getOut().println(
                 "Error while changing nickname: '"@Client +
-                m.serialize() + "'"@Client);
+                m.toString() + "'"@Client);
         }}}
         else {
             if (event.getType() == ServerEventType@Server.USER_ERROR) {{
@@ -143,7 +143,7 @@ public class Irc@(Client, Server) {
 
                 clientState.getOut().println(
                     "Error while registering username: '"@Client +
-                    m.serialize() + "'"@Client);
+                    m.toString() + "'"@Client);
             }}
             else {
                 if (event.getType() == ServerEventType@Server.FORWARD_MESSAGE) {
@@ -152,7 +152,7 @@ public class Irc@(Client, Server) {
                     ServerForwardMessageEvent@Server e = event.asServerForwardMessageEvent();
                     Message@Client m = ch_AB.<Message>com(e.getMessage());
 
-                    clientState.getOut().println(m.serialize());
+                    clientState.getOut().println(m.toString());
                 }
                 else {
                     ch_AB.<ServerEventType>select(ServerEventType@Server.UNKNOWN);

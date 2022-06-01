@@ -45,5 +45,5 @@ public class Message@R {
 
     public static Message@R parse(String@R str) {}
 
-    public String@R serialize() {}
+    public String@R toString() {}
 }

@@ -26,7 +26,8 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     @Override
     public <M extends Message> Unit com(M m) {
         try {
-            byte[] b = m.serialize().getBytes(StandardCharsets.UTF_8);
+            String s = m.toString() + "\r\n";
+            byte[] b = s.getBytes(StandardCharsets.UTF_8);
 
             if (b.length > 512)
                 throw new RuntimeException(

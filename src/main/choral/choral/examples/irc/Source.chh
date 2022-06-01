@@ -11,5 +11,5 @@ public class Source@R {
 
     public static Source@R parse(String@R source) {}
 
-    public String@R serialize() {}
+    public String@R toString() {}
 }
