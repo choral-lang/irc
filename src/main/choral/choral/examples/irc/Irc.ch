@@ -156,8 +156,7 @@ public class Irc@(Client, Server) {
                 ch_AB.<ServerEventType>select(ServerEventType@Server.PONG);
 
                 if (!serverState.isRegistered()) {{
-                    // TODO: Dummy label
-                    ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_ERROR);
+                    ch_AB.<Command>select(Command@Server.ERR_NOTREGISTERED);
 
                     Message@Client m = ch_AB.<Message>com(new ErrNotRegisteredMessage@Server(
                         "unknown"@Server, "You must register first!"@Server));
@@ -169,8 +168,7 @@ public class Irc@(Client, Server) {
                     PingMessage@Server ping = e.getMessage();
 
                     if (!ping.hasEnoughParams()) {
-                        // TODO: Dummy label
-                        ch_AB.<ServerEventType>select(ServerEventType@Server.USER_ERROR);
+                        ch_AB.<Command>select(Command@Server.ERR_NEEDMOREPARAMS);
 
                         Message@Client m = ch_AB.<Message>com(new ErrNeedMoreParamsMessage@Server(
                             serverState.getNickname(),
@@ -179,8 +177,7 @@ public class Irc@(Client, Server) {
                         clientState.getOut().println("Error: "@Client + m.toString());
                     }
                     else {
-                        // TODO: Dummy label
-                        ch_AB.<ServerEventType>select(ServerEventType@Server.PONG);
+                        ch_AB.<Command>select(Command@Server.PONG);
 
                         PongMessage@Client m = ch_AB.<PongMessage>com(new PongMessage@Server(
                             "irc.choral.net"@Server, ping.getToken()));
