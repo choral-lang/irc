@@ -1,7 +1,5 @@
 package choral.examples.irc;
 
-import java.util.List;
-
 public class ServerUserErrorEvent@R extends ServerEvent@R {
     public ServerUserErrorEvent(UserMessage@R origin, Message@R reply) {}
 

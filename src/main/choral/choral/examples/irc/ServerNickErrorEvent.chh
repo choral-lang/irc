@@ -1,7 +1,5 @@
 package choral.examples.irc;
 
-import java.util.List;
-
 public class ServerNickErrorEvent@R extends ServerEvent@R {
     public ServerNickErrorEvent(NickMessage@R origin, Message@R reply) {}
 

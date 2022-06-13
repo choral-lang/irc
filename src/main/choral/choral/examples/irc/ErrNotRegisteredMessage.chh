@@ -1,7 +1,5 @@
 package choral.examples.irc;
 
-import java.util.List;
-
 public class ErrNotRegisteredMessage@R extends Message@R {
     public ErrNotRegisteredMessage(String@R nickname, String@R message) {}
 }
