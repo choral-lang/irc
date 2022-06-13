@@ -4,4 +4,6 @@ public class Util@R {
     public static boolean@R validNickname(String@R nickname) {}
 
     public static boolean@R validUsername(String@R username) {}
+
+    public static String@R commandCode(Command@R command) {}
 }

@@ -122,8 +122,8 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
 
     @Override
     public <T extends Enum<T>> Unit select(T l) {
-        return com(new Message(null, SELECT, List.of(l.getClass().getName(),
-                                                     l.name())));
+        return com(new Message(null, SELECT,
+                               List.of(l.getClass().getName(), l.name())));
     }
 
     @Override

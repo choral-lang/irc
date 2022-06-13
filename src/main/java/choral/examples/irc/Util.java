@@ -44,4 +44,14 @@ public class Util {
         return username.matches("[\\x21-\\x3F\\x41-\\x7E]+");
 
     }
+
+    /**
+     * Equivalent to command.code().
+     *
+     * NOTE: This only exists as a workaround for Choral's enums not supporting
+     * methods.
+     */
+    public static String commandCode(Command command) {
+        return command.code();
+    }
 }

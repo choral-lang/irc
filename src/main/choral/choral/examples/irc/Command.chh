@@ -1,0 +1,38 @@
+package choral.examples.irc;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public enum Command@R {
+    PING,
+    PONG,
+    NICK,
+    USER,
+
+    RPL_WELCOME,
+    RPL_YOURHOST,
+    RPL_CREATED,
+    RPL_MYINFO,
+    RPL_ISUPPORT,
+    RPL_UMODEIS,
+
+    RPL_LUSERCLIENT,
+    RPL_LUSEROP,
+    RPL_LUSERUNKNOWN,
+    RPL_LUSERCHANNELS,
+    RPL_LUSERME,
+    RPL_LOCALUSERS,
+    RPL_GLOBALUSERS,
+
+    RPL_MOTD,
+    RPL_MOTDSTART,
+    RPL_ENDOFMOTD,
+
+    ERR_NOMOTD,
+    ERR_NONICKNAMEGIVEN,
+    ERR_ERRONEOUSNICKNAME,
+    ERR_NICKNAMEINUSE,
+    ERR_NOTREGISTERED,
+    ERR_NEEDMOREPARAMS,
+    ERR_ALREADYREGISTERED
+}

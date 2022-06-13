@@ -9,69 +9,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class Message {
-    public static final String PING = "PING";
-    public static final String PONG = "PONG";
-    public static final String NICK = "NICK";
-    public static final String USER = "USER";
-
-    public static final String RPL_WELCOME = "001";
-    public static final String RPL_YOURHOST = "002";
-    public static final String RPL_CREATED = "003";
-    public static final String RPL_MYINFO = "004";
-    public static final String RPL_ISUPPORT = "005";
-    public static final String RPL_UMODEIS = "221";
-
-    public static final String RPL_LUSERCLIENT = "251";
-    public static final String RPL_LUSEROP = "252";
-    public static final String RPL_LUSERUNKNOWN = "253";
-    public static final String RPL_LUSERCHANNELS = "254";
-    public static final String RPL_LUSERME = "255";
-    public static final String RPL_LOCALUSERS = "265";
-    public static final String RPL_GLOBALUSERS = "266";
-
-    public static final String RPL_MOTD = "372";
-    public static final String RPL_MOTDSTART = "375";
-    public static final String RPL_ENDOFMOTD = "376";
-    public static final String ERR_NOMOTD = "422";
-
-    public static final String ERR_NONICKNAMEGIVEN = "431";
-    public static final String ERR_ERRONEOUSNICKNAME = "432";
-    public static final String ERR_NICKNAMEINUSE = "433";
-    public static final String ERR_NOTREGISTERED = "451";
-    public static final String ERR_NEEDMOREPARAMS = "461";
-    public static final String ERR_ALREADYREGISTERED = "462";
-
-    public static final Map<String, Class<? extends Message>> MESSAGES = new HashMap<>() {{
-        put(PING, PingMessage.class);
-        put(PONG, PongMessage.class);
-        put(NICK, NickMessage.class);
-        put(USER, UserMessage.class);
-        put(RPL_WELCOME, Message.class);
-        put(RPL_YOURHOST, Message.class);
-        put(RPL_CREATED, Message.class);
-        put(RPL_MYINFO, Message.class);
-        put(RPL_ISUPPORT, Message.class);
-        put(RPL_UMODEIS, Message.class);
-
-        put(RPL_LUSERCLIENT, Message.class);
-        put(RPL_LUSEROP, Message.class);
-        put(RPL_LUSERUNKNOWN, Message.class);
-        put(RPL_LUSERCHANNELS, Message.class);
-        put(RPL_LUSERME, Message.class);
-        put(RPL_LOCALUSERS, Message.class);
-        put(RPL_GLOBALUSERS, Message.class);
-
-        put(RPL_MOTD, Message.class);
-        put(RPL_MOTDSTART, Message.class);
-        put(RPL_ENDOFMOTD, Message.class);
-        put(ERR_NOMOTD, Message.class);
-
-        put(ERR_NONICKNAMEGIVEN, Message.class);
-        put(ERR_ERRONEOUSNICKNAME, Message.class);
-        put(ERR_NICKNAMEINUSE, Message.class);
-        put(ERR_NEEDMOREPARAMS, Message.class);
-        put(ERR_ALREADYREGISTERED, Message.class);
-    }};
+    public static final Map<Command, Class<? extends Message>> MESSAGES =
+        new HashMap<>() {{
+            put(Command.PING, PingMessage.class);
+            put(Command.PONG, PongMessage.class);
+            put(Command.NICK, NickMessage.class);
+            put(Command.USER, UserMessage.class);
+        }};
 
     protected Source source;
     protected String command;
@@ -141,13 +85,20 @@ public class Message {
        match any of the known subclasses.
      */
     public static Message construct(Message m) {
-        Class<? extends Message> cls = MESSAGES.get(m.getCommand());
+        String code = m.getCommand();
+        Command command = Command.fromCode(code);
 
-        if (cls == null)
+        if (command == null)
             return null;
 
+        Class<? extends Message> cls = MESSAGES.get(command);
+
+        if (cls == null)
+            return m;
+
         try {
-            Constructor<? extends Message> ctor = cls.getConstructor(Message.class);
+            Constructor<? extends Message> ctor =
+                cls.getConstructor(Message.class);
             return ctor.newInstance(m);
         }
         catch (NoSuchMethodException | InstantiationException |

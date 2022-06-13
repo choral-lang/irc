@@ -4,12 +4,12 @@ import java.util.List;
 
 public class NickMessage extends Message {
     public NickMessage(String nickname) {
-        super(null, Message.NICK, List.of(nickname));
+        super(null, Command.NICK.code(), List.of(nickname));
     }
 
     public NickMessage(Message message) {
         super(message);
-        assert command == Message.NICK;
+        assert command == Command.NICK.code();
     }
 
     public boolean hasEnoughParams() {

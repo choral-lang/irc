@@ -4,12 +4,12 @@ import java.util.List;
 
 public class PingMessage extends Message {
     public PingMessage(String token) {
-        super(null, Message.PING, List.of(token));
+        super(null, Command.PING.code(), List.of(token));
     }
 
     public PingMessage(Message message) {
         super(message);
-        assert command == Message.PING;
+        assert command == Command.PING.code();
     }
 
     public boolean hasEnoughParams() {

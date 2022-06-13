@@ -4,6 +4,7 @@ import java.util.List;
 
 public class ErrNotRegisteredMessage extends Message {
     public ErrNotRegisteredMessage(String nickname, String message) {
-        super(null, Message.ERR_NOTREGISTERED, List.of(nickname, message));
+        super(null, Command.ERR_NOTREGISTERED.code(),
+              List.of(nickname, message));
     }
 }

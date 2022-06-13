@@ -46,11 +46,11 @@ public class IrcServerLocal@R {
         }
     }
 
-    public void addForwardMessageEvent(String@R command, String@R param) {
+    public void addForwardMessageEvent(Command@R command, String@R param) {
         Message@R m = MessageBuilder@R
             .build()
             .source(Source@R.parse("irc.choral.net"@R))
-            .command(command)
+            .command(Util@R.commandCode(command))
             .param(state.getNickname())
             .param(param)
             .message();
@@ -59,26 +59,26 @@ public class IrcServerLocal@R {
     }
 
     private void addWelcome() {
-        addForwardMessageEvent(Message@R.RPL_WELCOME, "Welcome to ChoralNet!"@R);
-        addForwardMessageEvent(Message@R.RPL_YOURHOST, "Your host is irc.choral.net"@R);
-        addForwardMessageEvent(Message@R.RPL_CREATED, "The server was created at IMADA"@R);
-        addForwardMessageEvent(Message@R.RPL_MYINFO, "I'm running ChoralIRC 0.0.1"@R);
-        addForwardMessageEvent(Message@R.RPL_ISUPPORT, "NICKLEN=32"@R);
-        addForwardMessageEvent(Message@R.RPL_UMODEIS, "+i"@R);
+        addForwardMessageEvent(Command@R.RPL_WELCOME, "Welcome to ChoralNet!"@R);
+        addForwardMessageEvent(Command@R.RPL_YOURHOST, "Your host is irc.choral.net"@R);
+        addForwardMessageEvent(Command@R.RPL_CREATED, "The server was created at IMADA"@R);
+        addForwardMessageEvent(Command@R.RPL_MYINFO, "I'm running ChoralIRC 0.0.1"@R);
+        addForwardMessageEvent(Command@R.RPL_ISUPPORT, "NICKLEN=32"@R);
+        addForwardMessageEvent(Command@R.RPL_UMODEIS, "+i"@R);
 
-        addForwardMessageEvent(Message@R.RPL_LUSERCLIENT, "There's only me and you here"@R);
-        // addForwardMessageEvent(Message@R.RPL_LUSEROP, ""@R);
-        // addForwardMessageEvent(Message@R.RPL_LUSERUNKNOWN, ""@R);
-        // addForwardMessageEvent(Message@R.RPL_LUSERCHANNELS, ""@R);
-        addForwardMessageEvent(Message@R.RPL_LUSERME, "I have exactly one user---you"@R);
-        // addForwardMessageEvent(Message@R.RPL_LOCALUSERS, ""@R);
-        // addForwardMessageEvent(Message@R.RPL_GLOBALUSERS, ""@R);
+        addForwardMessageEvent(Command@R.RPL_LUSERCLIENT, "There's only me and you here"@R);
+        // addForwardMessageEvent(Command@R.RPL_LUSEROP, ""@R);
+        // addForwardMessageEvent(Command@R.RPL_LUSERUNKNOWN, ""@R);
+        // addForwardMessageEvent(Command@R.RPL_LUSERCHANNELS, ""@R);
+        addForwardMessageEvent(Command@R.RPL_LUSERME, "I have exactly one user---you"@R);
+        // addForwardMessageEvent(Command@R.RPL_LOCALUSERS, ""@R);
+        // addForwardMessageEvent(Command@R.RPL_GLOBALUSERS, ""@R);
 
-        addForwardMessageEvent(Message@R.RPL_MOTDSTART, "ChoralNet Message of the Day"@R);
-        addForwardMessageEvent(Message@R.RPL_MOTD, "Hopefully you're having a nice day!"@R);
-        addForwardMessageEvent(Message@R.RPL_MOTD, "Come find us in the office working..."@R);
-        addForwardMessageEvent(Message@R.RPL_MOTD, "...or having a choco break in the lunchroom!"@R);
-        addForwardMessageEvent(Message@R.RPL_ENDOFMOTD, "End of /MOTD command"@R);
+        addForwardMessageEvent(Command@R.RPL_MOTDSTART, "ChoralNet Message of the Day"@R);
+        addForwardMessageEvent(Command@R.RPL_MOTD, "Hopefully you're having a nice day!"@R);
+        addForwardMessageEvent(Command@R.RPL_MOTD, "Come find us in the office working..."@R);
+        addForwardMessageEvent(Command@R.RPL_MOTD, "...or having a choco break in the lunchroom!"@R);
+        addForwardMessageEvent(Command@R.RPL_ENDOFMOTD, "End of /MOTD command"@R);
 
         state.setWelcomeDone(true@R);
     }
