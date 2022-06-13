@@ -78,11 +78,14 @@ public class Message {
     }
 
     /**
-       Construct an instance of the appropriate subclass of `Message` by
-       switching on the value of the command.
-
-       Return the newly constructed instance or null if the command doesn't
-       match any of the known subclasses.
+     * Construct an instance of the appropriate subclass of <code>Message</code>
+     * by switching on the value of the command.
+     *
+     * Return null if the command of the message is not one of the known
+     * standard commands (@see <code>Command</code>). Return the given message
+     * if its command does not have a specific <code>Message</code> subclass.
+     * Otherwise, return the newly constructed instance of the appropriate
+     * <code>Message</code> subclass.
      */
     public static Message construct(Message m) {
         String code = m.getCommand();
@@ -108,13 +111,13 @@ public class Message {
     }
 
     /**
-       Parse an IRC message as specified by the IRC protocol. Assume there's no
-       trailing CRLF sequence.
-
-       Return either a new `Message` instance or null if the message couldn't be
-       parsed (missing command, invalid characters, etc.).
-
-       See RFC 1459, section 2.3.1.
+     * Parse an IRC message as specified by the IRC protocol. Assume there's no
+     * trailing <code>CRLF</code> sequence.
+     *
+     * Return either a new <code>Message</code> instance or null if the message
+     * couldn't be parsed (missing command, invalid characters, etc.).
+     *
+     * See RFC 1459, section 2.3.1.
      */
     public static Message parse(String str) {
         int len = str.length();
@@ -179,9 +182,9 @@ public class Message {
     }
 
     /**
-     * Serialize the `Message` instance to a string following the format
-     * specified by the IRC protocol, but leaving out the trailing CRLF
-     * sequence.
+     * Serialize the <code>Message</code> instance to a string following the
+     * format specified by the IRC protocol, but leaving out the trailing
+     * <code>CRLF</code> sequence.
      *
      * The last parameter, even if the only one, is always serialized as a
      * trailing parameter.
