@@ -133,19 +133,6 @@ public class Irc@(Client, Server) {
         clientDrivenLoop();
     }
 
-    public void clientRecvAndDisplay(String@Server command, String@Server param) {
-        Message@Server ms = MessageBuilder@Server
-            .build()
-            .source(Source@Server.parse("irc.choral.net"@Server))
-            .command(command)
-            .param(serverState.getNickname())
-            .param(param)
-            .message();
-
-        Message@Client mc = ch_AB.<Message>com(ms);
-        clientState.getOut().println(mc.toString());
-    }
-
     /**
      * A loop driven by the server's event queue. The server initiates requests.
      */
