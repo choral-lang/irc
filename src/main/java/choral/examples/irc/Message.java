@@ -9,6 +9,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class Message {
+    public static final String PING = "PING";
+    public static final String PONG = "PONG";
     public static final String NICK = "NICK";
     public static final String USER = "USER";
 
@@ -35,10 +37,13 @@ public class Message {
     public static final String ERR_NONICKNAMEGIVEN = "431";
     public static final String ERR_ERRONEOUSNICKNAME = "432";
     public static final String ERR_NICKNAMEINUSE = "433";
+    public static final String ERR_NOTREGISTERED = "451";
     public static final String ERR_NEEDMOREPARAMS = "461";
     public static final String ERR_ALREADYREGISTERED = "462";
 
     public static final Map<String, Class<? extends Message>> MESSAGES = new HashMap<>() {{
+        put(PING, PingMessage.class);
+        put(PONG, PongMessage.class);
         put(NICK, NickMessage.class);
         put(USER, UserMessage.class);
         put(RPL_WELCOME, Message.class);

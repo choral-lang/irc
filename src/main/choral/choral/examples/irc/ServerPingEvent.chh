@@ -1,0 +1,7 @@
+package choral.examples.irc;
+
+public class ServerPingEvent@R extends ServerEvent@R {
+    public ServerPingEvent(String@R token) {}
+
+    public String@R getToken() {}
+}

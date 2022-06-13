@@ -1,0 +1,9 @@
+package choral.examples.irc;
+
+public abstract class ClientLocalEvent@R {
+    ClientLocalEvent(ClientLocalEventType@R eventType) {}
+
+    public ClientLocalEventType@R getType() {}
+
+    public ClientLocalPongEvent@R asClientLocalPongEvent() {}
+}

@@ -6,6 +6,7 @@ public class Irc {
     public static void runClient(Irc_Client client, ExecutorService executor) {
         executor.execute(client::clientDrivenLoop);
         executor.execute(client::serverDrivenLoop);
+        executor.execute(client::clientLocalLoop);
     }
 
     public static void runServer(Irc_Server server, ExecutorService executor) {

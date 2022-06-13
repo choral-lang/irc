@@ -1,0 +1,13 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class PingMessage@R extends Message@R {
+    public PingMessage(String@R token) {}
+
+    public PingMessage(Message@R message) {}
+
+    public boolean@R hasEnoughParams() {}
+
+    public String@R getToken() {}
+}

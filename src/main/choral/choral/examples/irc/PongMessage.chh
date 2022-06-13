@@ -1,0 +1,15 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class PongMessage@R extends Message@R {
+    public PongMessage(String@R token) {}
+
+    public PongMessage(String@R host, String@R token) {}
+
+    public PongMessage(Message@R message) {}
+
+    public boolean@R hasEnoughParams() {}
+
+    public String@R getToken() {}
+}

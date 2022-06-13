@@ -5,6 +5,10 @@ public abstract class ServerEvent@R {
 
     public ServerEventType@R getType() {}
 
+    public ServerPingEvent@R asServerPingEvent() {}
+
+    public ServerPongEvent@R asServerPongEvent() {}
+
     public ServerNickErrorEvent@R asServerNickErrorEvent() {}
 
     public ServerUserErrorEvent@R asServerUserErrorEvent() {}

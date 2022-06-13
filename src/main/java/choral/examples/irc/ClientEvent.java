@@ -11,6 +11,16 @@ public abstract class ClientEvent {
         return eventType;
     }
 
+    public ClientPingEvent asClientPingEvent() {
+        assert eventType == ClientEventType.PING;
+        return (ClientPingEvent) this;
+    }
+
+    public ClientPongEvent asClientPongEvent() {
+        assert eventType == ClientEventType.PONG;
+        return (ClientPongEvent) this;
+    }
+
     public ClientNickEvent asClientNickEvent() {
         assert eventType == ClientEventType.NICK;
         return (ClientNickEvent) this;

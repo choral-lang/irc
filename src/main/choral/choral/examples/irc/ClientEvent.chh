@@ -5,6 +5,10 @@ public abstract class ClientEvent@R {
 
     public ClientEventType@R getType() {}
 
+    public ClientPingEvent@R asClientPingEvent() {}
+
+    public ClientPongEvent@R asClientPongEvent() {}
+
     public ClientNickEvent@R asClientNickEvent() {}
 
     public ClientUserEvent@R asClientUserEvent() {}

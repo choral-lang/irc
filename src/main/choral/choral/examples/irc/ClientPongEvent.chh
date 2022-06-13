@@ -1,0 +1,7 @@
+package choral.examples.irc;
+
+public class ClientPongEvent@R extends ClientEvent@R {
+    public ClientPongEvent(String@R token) {}
+
+    public String@R getToken() {}
+}

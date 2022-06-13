@@ -11,6 +11,16 @@ public abstract class ServerEvent {
         return eventType;
     }
 
+    public ServerPingEvent asServerPingEvent() {
+        assert eventType == ServerEventType.PING;
+        return (ServerPingEvent) this;
+    }
+
+    public ServerPongEvent asServerPongEvent() {
+        assert eventType == ServerEventType.PONG;
+        return (ServerPongEvent) this;
+    }
+
     public ServerNickErrorEvent asServerNickErrorEvent() {
         assert eventType == ServerEventType.NICK_ERROR;
         return (ServerNickErrorEvent) this;
