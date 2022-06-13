@@ -45,4 +45,9 @@ public abstract class ServerEvent {
         assert eventType == ServerEventType.JOIN;
         return (ServerJoinEvent)this;
     }
+
+    public ServerPartEvent asServerPartEvent() {
+        assert eventType == ServerEventType.PART;
+        return (ServerPartEvent) this;
+    }
 }

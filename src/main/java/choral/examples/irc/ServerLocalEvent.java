@@ -20,4 +20,14 @@ public abstract class ServerLocalEvent {
         assert eventType == ServerLocalEventType.CHECK_USER;
         return (ServerLocalCheckUserEvent) this;
     }
+
+    public ServerLocalJoinEvent asServerLocalJoinEvent() {
+        assert eventType == ServerLocalEventType.JOIN;
+        return (ServerLocalJoinEvent) this;
+    }
+
+    public ServerLocalPartEvent asServerLocalPartEvent() {
+        assert eventType == ServerLocalEventType.PART;
+        return (ServerLocalPartEvent) this;
+    }
 }

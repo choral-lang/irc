@@ -40,4 +40,9 @@ public abstract class ClientEvent {
         assert eventType == ClientEventType.JOIN;
         return (ClientJoinEvent)this;
     }
+
+    public ClientPartEvent asClientPartEvent() {
+        assert eventType == ClientEventType.PART;
+        return (ClientPartEvent) this;
+    }
 }

@@ -16,4 +16,6 @@ public abstract class ClientEvent@R {
     public ClientMessageEvent@R asClientMessageEvent() {}
 
     public ClientJoinEvent@R asClientJoinEvent() {}
+
+    public ClientPartEvent@R asClientPartEvent() {}
 }

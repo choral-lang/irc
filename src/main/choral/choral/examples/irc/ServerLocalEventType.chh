@@ -2,5 +2,7 @@ package choral.examples.irc;
 
 public enum ServerLocalEventType@R {
     CHECK_NICK,
-    CHECK_USER
+    CHECK_USER,
+    JOIN,
+    PART
 }

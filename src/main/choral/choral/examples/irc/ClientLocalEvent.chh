@@ -6,4 +6,8 @@ public abstract class ClientLocalEvent@R {
     public ClientLocalEventType@R getType() {}
 
     public ClientLocalPongEvent@R asClientLocalPongEvent() {}
+
+    public ClientLocalJoinEvent@R asClientLocalJoinEvent() {}
+
+    public ClientLocalPartEvent@R asClientLocalPartEvent() {}
 }

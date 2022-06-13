@@ -1,0 +1,19 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class PartMessage@R extends Message@R {
+    public PartMessage(List@R<String> channels) {}
+
+    public PartMessage(String@R channel) {}
+
+    public PartMessage(Message@R message) {}
+
+    public boolean@R hasEnoughParams() {}
+
+    public List@R<String> getChannels() {}
+
+    public boolean@R hasReason() {}
+
+    public String@R getReason() {}
+}

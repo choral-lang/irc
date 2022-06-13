@@ -1,0 +1,16 @@
+package choral.examples.irc;
+
+import java.util.List;
+import java.util.Set;
+
+public class IrcServerLocalUtil@R {
+    public static boolean@R validChannelnames(List@R<String> channels) {}
+
+    public static void processJoin(IrcServerLocal@R local, JoinMessage@R message);
+
+    public static void processPart(IrcServerLocal@R local, PartMessage@R message);
+
+    public static String@R commandCode(Command@R command) {}
+
+    public static <T@R extends Message@R> T@R withSource(T@R message, Source@R source) {}
+}

@@ -6,5 +6,6 @@ enum ClientEventType {
     NICK,
     USER,
     JOIN,
-    MESSAGE
+    MESSAGE,
+    PART
 }

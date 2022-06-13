@@ -46,12 +46,20 @@ public class Util {
     }
 
     /**
-     * Equivalent to command.code().
+     * Check whether a channel name is valid.
      *
-     * NOTE: This only exists as a workaround for Choral's enums not supporting
-     * methods.
+     * A valid channel name starts with either '&' or '#' and is followed by one
+     * or more non-control non-whitespace ASCII characters (characters between
+     * SPC (0x20) and DEL (0x7F), exclusive), and also cannot include commas.
+     *
+     * This differs from RFC 1459 where channel names can contain ASCII control
+     * characters.
+     *
+     * See RFC 1459, section 2.3.1.
      */
-    public static String commandCode(Command command) {
-        return command.code();
+    public static boolean validChannelname(String channel) {
+        // SPC (\x20), '!' (\x21), ..., '+' (\x2B), ',' (\x2C), '-' (\x2D), ...,
+        // DEL (\x7E)
+        return channel.matches("(?:&|#)[\\x21-\\x2B\\x2D-\\x7E]+");
     }
 }

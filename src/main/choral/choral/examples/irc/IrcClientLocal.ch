@@ -1,5 +1,6 @@
 package choral.examples.irc;
 
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class IrcClientLocal@R {
@@ -55,6 +56,38 @@ public class IrcClientLocal@R {
 
             if (m.hasEnoughParams()) {
                 addEvent(new ClientPongEvent@R(m.getToken()));
+            }
+        }
+        else {
+            if (event.getType() == ClientLocalEventType@R.JOIN) {
+                ClientLocalJoinEvent@R e = event.asClientLocalJoinEvent();
+                JoinMessage@R m = e.getMessage();
+                Source@R source = m.getSource();
+
+                if (source != null@R && m.hasEnoughParams()) {
+                    List@R<String> channels = m.getChannels();
+
+                    if (source.getNickname().equals(state.getNickname()) &&
+                        channels.size() == 1@R) {
+                        state.joinChannel(channels.get(0@R));
+                    }
+                }
+            }
+            else {
+                if (event.getType() == ClientLocalEventType@R.PART) {
+                    ClientLocalPartEvent@R e = event.asClientLocalPartEvent();
+                    PartMessage@R m = e.getMessage();
+                    Source@R source = m.getSource();
+
+                    if (source != null@R && m.hasEnoughParams()) {
+                        List@R<String> channels = m.getChannels();
+
+                        if (source.getNickname().equals(state.getNickname()) &&
+                            channels.size() == 1@R) {
+                            state.partChannel(channels.get(0@R));
+                        }
+                    }
+                }
             }
         }
 

@@ -1,0 +1,7 @@
+package choral.examples.irc;
+
+public class ErrNoSuchChannelMessage@R extends Message@R {
+    public ErrNoSuchChannelMessage(String@R nickname, String@R message) {}
+
+    public ErrNoSuchChannelMessage(Message@R message) {}
+}

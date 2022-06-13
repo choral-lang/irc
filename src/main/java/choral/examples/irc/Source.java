@@ -19,6 +19,18 @@ public class Source {
         this.username = username;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
     public static Source parse(String str) {
         String[] hostParts = str.split("@", 2);
 

@@ -6,6 +6,7 @@ import choral.runtime.SerializerChannel.SerializerChannel_A;
 import choral.runtime.Serializers.JSONSerializer;
 import choral.runtime.WrapperByteChannel.WrapperByteChannel_A;
 import com.google.gson.Gson;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -111,6 +112,26 @@ public class Client {
                     String realname = parts.length - 1 < 2 ? username : parts[2];
 
                     irc.addClientEvent(new ClientUserEvent(username, realname));
+                }
+                else if (cmd.equalsIgnoreCase("/join")) {
+                    if (parts.length - 1 < 1) {
+                        System.out.println("Usage: /join <channel>[,<channel>]...");
+                        continue;
+                    }
+
+                    irc.addClientEvent(new ClientJoinEvent(
+                        List.of(parts[1].split(","))));
+                }
+                else if (cmd.equalsIgnoreCase("/part")) {
+                    if (parts.length - 1 < 1) {
+                        System.out.println("Usage: /part <channel>[,<channel>]... [<reason>]");
+                        continue;
+                    }
+
+                    String reason = parts.length - 1 < 2 ? null : parts[2];
+
+                    irc.addClientEvent(new ClientPartEvent(
+                        List.of(parts[1].split(",")), reason));
                 }
                 else if (cmd.equalsIgnoreCase("/state")) {
                     System.out.println(gson.toJson(state));

@@ -1,10 +1,10 @@
 package choral.examples.irc;
 
-public class ServerJoinEvent extends ServerEvent {
+public class ClientLocalJoinEvent extends ClientLocalEvent {
     private JoinMessage message;
 
-    public ServerJoinEvent(JoinMessage message) {
-        super(ServerEventType.JOIN);
+    public ClientLocalJoinEvent(JoinMessage message) {
+        super(ClientLocalEventType.JOIN);
         this.message = message;
     }
 

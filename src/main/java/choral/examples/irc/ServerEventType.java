@@ -7,6 +7,7 @@ enum ServerEventType {
     USER_ERROR,
     JOIN,
     MESSAGE,
+    PART,
     FORWARD_MESSAGE,
     UNKNOWN
 }

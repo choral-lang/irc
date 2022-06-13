@@ -1,15 +1,20 @@
 package choral.examples.irc;
 
 import java.io.PrintStream;
+import java.util.Set;
+import java.util.HashSet;
 
 public class ClientState {
     private String username, realname, nickname;
     private String lastNickname;
+    private Set<String> channels;
 
     public ClientState(String username, String realname, String nickname) {
         this.username = username;
         this.realname = realname;
-        setNickname(nickname);
+        this.nickname = nickname;
+        this.lastNickname = null;
+        this.channels = new HashSet<>();
     }
 
     public ClientState(String nickname) {
@@ -43,6 +48,22 @@ public class ClientState {
 
     public void revertNickname() {
         this.nickname = this.lastNickname;
+    }
+
+    public Set<String> getChannels() {
+        return new HashSet<>(channels);
+    }
+
+    public boolean inChannel(String channel) {
+        return channels.contains(channel);
+    }
+
+    public void joinChannel(String channel) {
+        channels.add(channel);
+    }
+
+    public void partChannel(String channel) {
+        channels.remove(channel);
     }
 
     public PrintStream getOut() {

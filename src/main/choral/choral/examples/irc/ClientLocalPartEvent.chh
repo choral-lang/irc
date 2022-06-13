@@ -1,0 +1,7 @@
+package choral.examples.irc;
+
+public class ClientLocalPartEvent@R extends ClientLocalEvent@R {
+    public ClientLocalPartEvent(PartMessage@R message) {}
+
+    public PartMessage@R getMessage() {}
+}

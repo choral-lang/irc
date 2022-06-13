@@ -6,6 +6,7 @@ enum ServerEventType@R {
     NICK_ERROR,
     USER_ERROR,
     JOIN,
+    PART,
     MESSAGE,
     FORWARD_MESSAGE,
     UNKNOWN

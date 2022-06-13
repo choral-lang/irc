@@ -1,6 +1,7 @@
 package choral.examples.irc;
 
 import java.io.PrintStream;
+import java.util.Set;
 
 public class ServerState@R {
     public ServerState() {}
@@ -24,6 +25,14 @@ public class ServerState@R {
     public boolean@R nicknameInUse(String@R nickname) {}
 
     public boolean@R isRegistered() {}
+
+    public Set@R<String> getChannels() {}
+
+    public boolean@R inChannel(String@R channel) {}
+
+    public void joinChannel(String@R channel) {}
+
+    public void partChannel(String@R channel) {}
 
     public PrintStream@R getOut() {}
 }

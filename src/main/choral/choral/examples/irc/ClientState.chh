@@ -1,6 +1,7 @@
 package choral.examples.irc;
 
 import java.io.PrintStream;
+import java.util.Set;
 
 public class ClientState@R {
     public ClientState(String@R username, String@R realname, String@R nickname) {}
@@ -20,6 +21,14 @@ public class ClientState@R {
     public void setNickname(String@R nickname) {}
 
     public void revertNickname() {}
+
+    public Set@R<String> getChannels() {}
+
+    public boolean@R inChannel(String@R channel) {}
+
+    public void joinChannel(String@R channel) {}
+
+    public void partChannel(String@R channel) {}
 
     public PrintStream@R getOut() {}
 }

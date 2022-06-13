@@ -8,4 +8,8 @@ public abstract class ServerLocalEvent@R {
     public ServerLocalCheckNickEvent@R asServerLocalCheckNickEvent() {}
 
     public ServerLocalCheckUserEvent@R asServerLocalCheckUserEvent() {}
+
+    public ServerLocalJoinEvent@R asServerLocalJoinEvent() {}
+
+    public ServerLocalPartEvent@R asServerLocalPartEvent() {}
 }

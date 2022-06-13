@@ -15,6 +15,8 @@ public class Message {
             put(Command.PONG, PongMessage.class);
             put(Command.NICK, NickMessage.class);
             put(Command.USER, UserMessage.class);
+            put(Command.JOIN, JoinMessage.class);
+            put(Command.PART, PartMessage.class);
         }};
 
     protected Source source;

@@ -77,7 +77,7 @@ public class Irc@(Client, Server) {
     public void clientDrivenLoop() {
         ClientEvent@Client event = takeClientEvent();
 
-        if (event.getType() == ClientEventType@Client.PING) {{{
+        if (event.getType() == ClientEventType@Client.PING) {{{{{
             ch_AB.<ClientEventType>select(ClientEventType@Client.PING);
 
             ClientPingEvent@Client e = event.asClientPingEvent();
@@ -87,9 +87,9 @@ public class Irc@(Client, Server) {
                 new PingMessage@Client(token));
 
             addServerEvent(new ServerPongEvent@Server(m));
-        }}}
+        }}}}}
         else {
-            if (event.getType() == ClientEventType@Client.PONG) {{
+            if (event.getType() == ClientEventType@Client.PONG) {{{{
                 ch_AB.<ClientEventType>select(ClientEventType@Client.PONG);
 
                 ClientPongEvent@Client e = event.asClientPongEvent();
@@ -99,9 +99,9 @@ public class Irc@(Client, Server) {
                     new PongMessage@Client(token));
 
                 serverState.getOut().println(m.toString());
-            }}
+            }}}}
             else {
-                if (event.getType() == ClientEventType@Client.NICK) {
+                if (event.getType() == ClientEventType@Client.NICK) {{{
                     ch_AB.<ClientEventType>select(ClientEventType@Client.NICK);
 
                     ClientNickEvent@Client e = event.asClientNickEvent();
@@ -112,20 +112,46 @@ public class Irc@(Client, Server) {
 
                     clientState.setNickname(cNickname);
                     serverLocal.addLocalEvent(new ServerLocalCheckNickEvent@Server(m));
-                }
+                }}}
                 else {
-                    ch_AB.<ClientEventType>select(ClientEventType@Client.USER);
+                    if (event.getType() == ClientEventType@Client.USER) {{
+                        ch_AB.<ClientEventType>select(ClientEventType@Client.USER);
 
-                    ClientUserEvent@Client e = event.asClientUserEvent();
-                    String@Client cUsername = e.getUsername();
-                    String@Client cRealname = e.getRealname();
+                        ClientUserEvent@Client e = event.asClientUserEvent();
+                        String@Client cUsername = e.getUsername();
+                        String@Client cRealname = e.getRealname();
 
-                    UserMessage@Server m = ch_AB.<UserMessage>com(
-                        new UserMessage@Client(cUsername, cRealname));
+                        UserMessage@Server m = ch_AB.<UserMessage>com(
+                            new UserMessage@Client(cUsername, cRealname));
 
-                    clientState.setUsername(cUsername);
-                    clientState.setRealname(cRealname);
-                    serverLocal.addLocalEvent(new ServerLocalCheckUserEvent@Server(m));
+                        clientState.setUsername(cUsername);
+                        clientState.setRealname(cRealname);
+                        serverLocal.addLocalEvent(new ServerLocalCheckUserEvent@Server(m));
+                    }}
+                    else {
+                        if (event.getType() == ClientEventType@Client.JOIN) {
+                            ch_AB.<ClientEventType>select(ClientEventType@Client.JOIN);
+
+                            ClientJoinEvent@Client e = event.asClientJoinEvent();
+                            List@Client<String> channels = e.getChannels();
+
+                            JoinMessage@Server m = ch_AB.<JoinMessage>com(
+                                new JoinMessage@Client(channels));
+
+                            serverLocal.addLocalEvent(new ServerLocalJoinEvent@Server(m));
+                        }
+                        else {
+                            ch_AB.<ClientEventType>select(ClientEventType@Client.PART);
+
+                            ClientPartEvent@Client e = event.asClientPartEvent();
+                            List@Client<String> channels = e.getChannels();
+
+                            PartMessage@Server m = ch_AB.<PartMessage>com(
+                                new PartMessage@Client(channels));
+
+                            serverLocal.addLocalEvent(new ServerLocalPartEvent@Server(m));
+                        }
+                    }
                 }
             }
         }
@@ -139,7 +165,7 @@ public class Irc@(Client, Server) {
     public void serverDrivenLoop() {
         ServerEvent@Server event = takeServerEvent();
 
-        if (event.getType() == ServerEventType@Server.PING) {{{{
+        if (event.getType() == ServerEventType@Server.PING) {{{{{{
             ch_AB.<ServerEventType>select(ServerEventType@Server.PING);
 
             ServerPingEvent@Server e = event.asServerPingEvent();
@@ -149,9 +175,9 @@ public class Irc@(Client, Server) {
                 new PingMessage@Server(sToken));
 
             clientLocal.addLocalEvent(new ClientLocalPongEvent@Client(m));
-        }}}}
+        }}}}}}
         else {
-            if (event.getType() == ServerEventType@Server.PONG) {{{
+            if (event.getType() == ServerEventType@Server.PONG) {{{{{
                 // TODO: Why is this necessary?
                 ch_AB.<ServerEventType>select(ServerEventType@Server.PONG);
 
@@ -185,9 +211,9 @@ public class Irc@(Client, Server) {
                         clientState.getOut().println("PONG"@Client);
                     }
                 }
-            }}}
+            }}}}}
             else {
-                if (event.getType() == ServerEventType@Server.NICK_ERROR) {{
+                if (event.getType() == ServerEventType@Server.NICK_ERROR) {{{{
                     ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_ERROR);
 
                     ServerNickErrorEvent@Server e = event.asServerNickErrorEvent();
@@ -196,9 +222,9 @@ public class Irc@(Client, Server) {
                     clientState.getOut().println(
                         "Error while changing nickname: '"@Client +
                         m.toString() + "'"@Client);
-                }}
+                }}}}
                 else {
-                    if (event.getType() == ServerEventType@Server.USER_ERROR) {
+                    if (event.getType() == ServerEventType@Server.USER_ERROR) {{{
                         ch_AB.<ServerEventType>select(ServerEventType@Server.USER_ERROR);
 
                         ServerUserErrorEvent@Server e = event.asServerUserErrorEvent();
@@ -207,14 +233,34 @@ public class Irc@(Client, Server) {
                         clientState.getOut().println(
                             "Error while registering username: '"@Client +
                             m.toString() + "'"@Client);
-                    }
+                    }}}
                     else {
-                        ch_AB.<ServerEventType>select(ServerEventType@Server.FORWARD_MESSAGE);
+                        if (event.getType() == ServerEventType@Server.JOIN) {{
+                            ch_AB.<ServerEventType>select(ServerEventType@Server.JOIN);
 
-                        ServerForwardMessageEvent@Server e = event.asServerForwardMessageEvent();
-                        Message@Client m = ch_AB.<Message>com(e.getMessage());
+                            ServerJoinEvent@Server e = event.asServerJoinEvent();
+                            JoinMessage@Client m = ch_AB.<JoinMessage>com(e.getMessage());
 
-                        clientState.getOut().println(m.toString());
+                            clientLocal.addLocalEvent(new ClientLocalJoinEvent@Client(m));
+                        }}
+                        else {
+                            if (event.getType() == ServerEventType@Server.PART) {
+                                ch_AB.<ServerEventType>select(ServerEventType@Server.PART);
+
+                                ServerPartEvent@Server e = event.asServerPartEvent();
+                                PartMessage@Client m = ch_AB.<PartMessage>com(e.getMessage());
+
+                                clientLocal.addLocalEvent(new ClientLocalPartEvent@Client(m));
+                            }
+                            else {
+                                ch_AB.<ServerEventType>select(ServerEventType@Server.FORWARD_MESSAGE);
+
+                                ServerForwardMessageEvent@Server e = event.asServerForwardMessageEvent();
+                                Message@Client m = ch_AB.<Message>com(e.getMessage());
+
+                                clientState.getOut().println(m.toString());
+                            }
+                        }
                     }
                 }
             }

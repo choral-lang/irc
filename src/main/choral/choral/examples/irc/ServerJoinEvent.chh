@@ -3,9 +3,7 @@ package choral.examples.irc;
 import java.util.List;
 
 public class ServerJoinEvent@R extends ServerEvent@R {
-    public ServerJoinEvent(List@R<String> channels) {}
+    public ServerJoinEvent(JoinMessage@R message) {}
 
-    public ServerJoinEvent(String@R channel) {}
-
-    public List@R<String> getChannels() {}
+    public JoinMessage@R getMessage() {}
 }

@@ -1,0 +1,9 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class ErrNotOnChannelMessage@R extends Message@R {
+    public ErrNotOnChannelMessage(String@R nickname, String@R message) {}
+
+    public ErrNotOnChannelMessage(Message@R message) {}
+}

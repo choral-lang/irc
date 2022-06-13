@@ -1,5 +1,7 @@
 package choral.examples.irc;
 
 public enum ClientLocalEventType {
-    PONG
+    PONG,
+    JOIN,
+    PART
 }
