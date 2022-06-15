@@ -102,10 +102,10 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         // Parse the message
         Message m = Message.parse(s);
 
-        // Handle selection messages at the channel level
-        if (!m.getCommand().equals(SELECT)) {
+        // SELECT messages are handled internally as part of the channel
+        // implementation
+        if (!m.getCommand().equals(SELECT))
             m = Message.construct(m);
-        }
 
         if (m == null)
             throw new UnrecognizedMessageException(s);
