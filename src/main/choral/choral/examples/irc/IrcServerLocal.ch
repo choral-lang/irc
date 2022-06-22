@@ -19,25 +19,23 @@ public class IrcServerLocal@R {
         return state;
     }
 
-    public Integer@R addEvent(ServerEvent@R event) {
+    public void addEvent(ServerEvent@R event) {
         try {
             queue.put(event);
-            return null@R;
         }
         catch (InterruptedException@R e) {
             // Ignore the interrupt and try again.
-            return addEvent(event);
+            addEvent(event);
         }
     }
 
-    public Integer@R addLocalEvent(ServerLocalEvent@R event) {
+    public void addLocalEvent(ServerLocalEvent@R event) {
         try {
             localQueue.put(event);
-            return null@R;
         }
         catch (InterruptedException@R e) {
             // Ignore the interrupt and try again.
-            return addLocalEvent(event);
+            addLocalEvent(event);
         }
     }
 

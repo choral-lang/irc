@@ -15,25 +15,23 @@ public class IrcClientLocal@R {
         this.localQueue = new LinkedBlockingQueue@R<ClientLocalEvent>();
     }
 
-    private Integer@R addEvent(ClientEvent@R event) {
+    private void addEvent(ClientEvent@R event) {
         try {
             queue.put(event);
-            return null@R;
         }
         catch (InterruptedException@R e) {
             // Ignore the interrupt and try again.
-            return addEvent(event);
+            addEvent(event);
         }
     }
 
-    public Integer@R addLocalEvent(ClientLocalEvent@R event) {
+    public void addLocalEvent(ClientLocalEvent@R event) {
         try {
             localQueue.put(event);
-            return null@R;
         }
         catch (InterruptedException@R e) {
             // Ignore the interrupt and try again.
-            return addLocalEvent(event);
+            addLocalEvent(event);
         }
     }
 
