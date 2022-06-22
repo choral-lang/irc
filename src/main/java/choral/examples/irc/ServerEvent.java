@@ -41,11 +41,6 @@ public abstract class ServerEvent {
         return (ServerForwardMessageEvent) this;
     }
 
-    public ServerMessageEvent asServerMessageEvent() {
-        assert eventType == ServerEventType.MESSAGE;
-        return (ServerMessageEvent)this;
-    }
-
     public ServerJoinEvent asServerJoinEvent() {
         assert eventType == ServerEventType.JOIN;
         return (ServerJoinEvent)this;
@@ -54,6 +49,11 @@ public abstract class ServerEvent {
     public ServerPartEvent asServerPartEvent() {
         assert eventType == ServerEventType.PART;
         return (ServerPartEvent) this;
+    }
+
+    public ServerPrivmsgEvent asServerPrivmsgEvent() {
+        assert eventType == ServerEventType.PRIVMSG;
+        return (ServerPrivmsgEvent)this;
     }
 
     public ServerRplWelcomeEvent asServerRplWelcomeEvent() {

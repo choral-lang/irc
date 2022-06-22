@@ -31,9 +31,9 @@ public abstract class ClientEvent {
         return (ClientUserEvent) this;
     }
 
-    public ClientMessageEvent asClientMessageEvent() {
-        assert eventType == ClientEventType.MESSAGE;
-        return (ClientMessageEvent)this;
+    public ClientPrivmsgEvent asClientPrivmsgEvent() {
+        assert eventType == ClientEventType.PRIVMSG;
+        return (ClientPrivmsgEvent)this;
     }
 
     public ClientJoinEvent asClientJoinEvent() {

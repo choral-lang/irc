@@ -1,0 +1,21 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class PrivmsgMessage@R extends Message@R {
+    public PrivmsgMessage(List@R<String> targets, String@R text) {}
+
+    public PrivmsgMessage(String@R target, String@R text) {}
+
+    public PrivmsgMessage(Message@R message) {}
+
+    public boolean@R hasEnoughParams() {}
+
+    public boolean@R hasTargets() {}
+
+    public List@R<String> getTargets() {}
+
+    public boolean@R hasText() {}
+
+    public String@R getText() {}
+}

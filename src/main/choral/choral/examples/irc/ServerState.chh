@@ -11,6 +11,8 @@ public class ServerState@R {
 
     public void addEvent(long@R clientId, ServerEvent@R event) {}
 
+    public long@R getClientId(String@R nickname) {}
+
     public String@R getUsername(long@R clientId) {}
 
     public void setUsername(long@R clientId, String@R username) {}
@@ -27,11 +29,13 @@ public class ServerState@R {
 
     public void setWelcomeDone(long@R clientId, boolean@R welcomeDone) {}
 
-    public boolean@R nicknameInUse(String@R nickname) {}
+    public boolean@R nicknameExists(String@R nickname) {}
 
     public boolean@R isRegistered(long@R clientId) {}
 
     public Set@R<String> getChannels(long@R clientId) {}
+
+    public boolean@R channelExists(String@R channel) {}
 
     public Set@R<Long> getMembers(String@R channel) {}
 

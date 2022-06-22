@@ -1,0 +1,9 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class ErrNoTextToSendMessage@R extends Message@R {
+    public ErrNoTextToSendMessage(String@R nickname, String@R message) {}
+
+    public ErrNoTextToSendMessage(Message@R message) {}
+}

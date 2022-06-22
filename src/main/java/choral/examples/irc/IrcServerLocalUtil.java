@@ -137,6 +137,70 @@ public class IrcServerLocalUtil {
         }
     }
 
+    public static void processPrivmsg(ServerState state, long clientId,
+                                      PrivmsgMessage message) {
+        if (!state.isRegistered(clientId)) {
+            Message m = new ErrNotRegisteredMessage(
+                "*", "You must register first!");
+            state.addEvent(clientId, new ServerForwardMessageEvent(m));
+        }
+        else if (!message.hasTargets()) {
+            Message m = new ErrNoRecipientMessage(
+                state.getNickname(clientId), "No recipient");
+            state.addEvent(clientId, new ServerForwardMessageEvent(m));
+        }
+        else if (!message.hasText()) {
+            Message m = new ErrNoTextToSendMessage(
+                state.getNickname(clientId), "No text to send");
+            state.addEvent(clientId, new ServerForwardMessageEvent(m));
+        }
+        else {
+            String nickname = state.getNickname(clientId);
+            String text = message.getText();
+
+            for (String target : message.getTargets()) {
+                if (Util.validChannelname(target)) {
+                    if (!state.channelExists(target)) {
+                        Message m = new ErrNoSuchNickMessage(
+                            nickname, "No such channel");
+                        state.addEvent(clientId, new ServerForwardMessageEvent(m));
+                    }
+                    else if (!state.inChannel(clientId, target)) {
+                        Message m = new ErrCannotSendToChanMessage(
+                            nickname, "Cannot send to channel");
+                        state.addEvent(clientId, new ServerForwardMessageEvent(m));
+                    }
+                    else {
+                        PrivmsgMessage m = IrcServerLocalUtil.<PrivmsgMessage>withSource(
+                            new PrivmsgMessage(target, text),
+                            new Source(nickname));
+
+                        Set<Long> others = state.getMembers(target);
+                        others.remove(clientId);
+
+                        for (long otherId : others) {
+                            state.addEvent(otherId, new ServerPrivmsgEvent(m));
+                        }
+                    }
+                }
+                else {
+                    if (!state.nicknameExists(target)) {
+                        Message m = new ErrNoSuchNickMessage(
+                            nickname, "No such nickname");
+                        state.addEvent(clientId, new ServerForwardMessageEvent(m));
+                    }
+                    else {
+                        PrivmsgMessage m = IrcServerLocalUtil.<PrivmsgMessage>withSource(
+                            new PrivmsgMessage(target, text),
+                            new Source(nickname));
+
+                        state.addEvent(state.getClientId(target), new ServerPrivmsgEvent(m));
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Equivalent to command.code().
      *

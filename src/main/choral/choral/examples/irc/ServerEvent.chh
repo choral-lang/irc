@@ -17,11 +17,11 @@ public abstract class ServerEvent@R {
 
     public ServerForwardMessageEvent@R asServerForwardMessageEvent() {}
 
-    public ServerMessageEvent@R asServerMessageEvent() {}
-
     public ServerJoinEvent@R asServerJoinEvent() {}
 
     public ServerPartEvent@R asServerPartEvent() {}
+
+    public ServerPrivmsgEvent@R asServerPrivmsgEvent() {}
 
     public ServerRplWelcomeEvent@R asServerRplWelcomeEvent() {}
 

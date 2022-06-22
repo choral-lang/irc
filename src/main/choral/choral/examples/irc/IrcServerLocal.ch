@@ -82,7 +82,7 @@ public class IrcServerLocal@R {
                     state.addEvent(clientId, new ServerNickErrorEvent@R(m, r));
                 }
                 else {
-                    if (state.nicknameInUse(nickname)) {
+                    if (state.nicknameExists(nickname)) {
                         Message@R r = new ErrNicknameInUseMessage@R(
                             state.getNickname(clientId), "Nickname is in use"@R);
                         state.addEvent(clientId, new ServerNickErrorEvent@R(m, r));

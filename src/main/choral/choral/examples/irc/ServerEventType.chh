@@ -8,7 +8,7 @@ enum ServerEventType@R {
     USER_ERROR,
     JOIN,
     PART,
-    MESSAGE,
+    PRIVMSG,
     RPL_WELCOME,
     RPL_NAMREPLY,
     FORWARD_MESSAGE,

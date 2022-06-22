@@ -30,7 +30,7 @@ public class Client {
         IrcChannel_A ch = null;
         Irc_Client irc = null;
 
-        System.out.println("Commands: /connect, /nick, /user, /join, /part, /state, /quit");
+        System.out.println("Commands: /connect, /nick, /user, /join, /part, /privmsg, /state, /quit");
 
         try {
             while (true) {
@@ -133,6 +133,16 @@ public class Client {
 
                     irc.addClientEvent(new ClientPartEvent(
                         Arrays.asList(parts[1].split(",")), reason));
+                }
+                else if (cmd.equalsIgnoreCase("/privmsg")) {
+                    if (parts.length - 1 < 2) {
+                        System.out.println("Usage: /part <target>[,<target>]... <text>");
+                        continue;
+                    }
+
+                    irc.addClientEvent(new ClientPrivmsgEvent(
+                        new PrivmsgMessage(
+                            Arrays.asList(parts[1].split(",")), parts[2])));
                 }
                 else if (cmd.equalsIgnoreCase("/state")) {
                     System.out.println(gson.toJson(state));

@@ -11,11 +11,13 @@ import java.util.stream.Collectors;
 public class ServerState {
     private long lastClientId;
     private Map<Long, ServerClientState> clients;
+    private Map<String, ServerClientState> nicknames;
     private Map<String, Set<ServerClientState>> channels;
 
     public ServerState() {
         this.lastClientId = 0;
         this.clients = new HashMap<>();
+        this.nicknames = new HashMap<>();
         this.channels = new HashMap<>();
     }
 
@@ -28,6 +30,10 @@ public class ServerState {
 
     public void addEvent(long clientId, ServerEvent event) {
         Util.<ServerEvent>put(clients.get(clientId).queue, event);
+    }
+
+    public long getClientId(String nickname) {
+        return nicknames.get(nickname).clientId;
     }
 
     public String getUsername(long clientId) {
@@ -51,7 +57,14 @@ public class ServerState {
     }
 
     public void setNickname(long clientId, String nickname) {
-        this.clients.get(clientId).nickname = nickname;
+        ServerClientState client = clients.get(clientId);
+
+        if (client.nickname != null) {
+            nicknames.remove(nickname);
+        }
+
+        nicknames.put(nickname, client);
+        client.nickname = nickname;
     }
 
     public boolean isWelcomeDone(long clientId) {
@@ -59,11 +72,11 @@ public class ServerState {
     }
 
     public void setWelcomeDone(long clientId, boolean welcomeDone) {
-        this.clients.get(clientId).welcomeDone = welcomeDone;
+        clients.get(clientId).welcomeDone = welcomeDone;
     }
 
-    public boolean nicknameInUse(String nickname) {
-        return clients.values().stream().anyMatch(c -> c.nickname == nickname);
+    public boolean nicknameExists(String nickname) {
+        return nicknames.containsKey(nickname);
     }
 
     public boolean isRegistered(long clientId) {
@@ -75,6 +88,10 @@ public class ServerState {
 
     public Set<String> getChannels(long clientId) {
         return new HashSet<>(clients.get(clientId).channels);
+    }
+
+    public boolean channelExists(String channel) {
+        return channels.containsKey(channel);
     }
 
     public Set<Long> getMembers(String channel) {

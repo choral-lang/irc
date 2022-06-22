@@ -10,6 +10,7 @@ public enum Command {
     USER("USER"),
     JOIN("JOIN"),
     PART("PART"),
+    PRIVMSG("PRIVMSG"),
 
     RPL_WELCOME("001"),
     RPL_YOURHOST("002"),
@@ -32,7 +33,11 @@ public enum Command {
     RPL_MOTDSTART("375"),
     RPL_ENDOFMOTD("376"),
 
+    ERR_NOSUCHNICK("401"),
     ERR_NOSUCHCHANNEL("403"),
+    ERR_CANNOTSENDTOCHAN("404"),
+    ERR_NORECIPIENT("411"),
+    ERR_NOTEXTTOSEND("412"),
     ERR_NOMOTD("422"),
     ERR_NONICKNAMEGIVEN("431"),
     ERR_ERRONEOUSNICKNAME("432"),
