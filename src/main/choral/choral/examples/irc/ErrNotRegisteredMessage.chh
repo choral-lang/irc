@@ -2,4 +2,6 @@ package choral.examples.irc;
 
 public class ErrNotRegisteredMessage@R extends Message@R {
     public ErrNotRegisteredMessage(String@R nickname, String@R message) {}
+
+    public ErrNotRegisteredMessage(Message@R message) {}
 }

@@ -7,4 +7,9 @@ public class ErrNicknameInUseMessage extends Message {
         super(null, Command.ERR_NICKNAMEINUSE.code(),
               List.of(nickname, message));
     }
+
+    public ErrNicknameInUseMessage(Message message) {
+        super(message);
+        assert command == Command.ERR_NICKNAMEINUSE.code();
+    }
 }

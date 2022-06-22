@@ -7,4 +7,9 @@ public class ErrNeedMoreParamsMessage extends Message {
         super(null, Command.ERR_NEEDMOREPARAMS.code(),
               List.of(nickname, message));
     }
+
+    public ErrNeedMoreParamsMessage(Message message) {
+        super(message);
+        assert command == Command.ERR_NEEDMOREPARAMS.code();
+    }
 }

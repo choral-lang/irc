@@ -7,4 +7,9 @@ public class ErrErroneousNicknameMessage extends Message {
         super(null, Command.ERR_ERRONEOUSNICKNAME.code(),
               List.of(nickname, message));
     }
+
+    public ErrErroneousNicknameMessage(Message message) {
+        super(message);
+        assert command == Command.ERR_ERRONEOUSNICKNAME.code();
+    }
 }

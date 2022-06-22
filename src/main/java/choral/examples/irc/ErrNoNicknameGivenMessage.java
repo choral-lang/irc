@@ -7,4 +7,9 @@ public class ErrNoNicknameGivenMessage extends Message {
         super(null, Command.ERR_NONICKNAMEGIVEN.code(),
               List.of(nickname, message));
     }
+
+    public ErrNoNicknameGivenMessage(Message message) {
+        super(message);
+        assert command == Command.ERR_NONICKNAMEGIVEN.code();
+    }
 }

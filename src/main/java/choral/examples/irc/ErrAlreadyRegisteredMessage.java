@@ -7,4 +7,9 @@ public class ErrAlreadyRegisteredMessage extends Message {
         super(null, Command.ERR_ALREADYREGISTERED.code(),
               List.of(nickname, message));
     }
+
+    public ErrAlreadyRegisteredMessage(Message message) {
+        super(message);
+        assert command == Command.ERR_ALREADYREGISTERED.code();
+    }
 }

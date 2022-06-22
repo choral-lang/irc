@@ -7,4 +7,9 @@ public class ErrNotRegisteredMessage extends Message {
         super(null, Command.ERR_NOTREGISTERED.code(),
               List.of(nickname, message));
     }
+
+    public ErrNotRegisteredMessage(Message message) {
+        super(message);
+        assert command == Command.ERR_NOTREGISTERED.code();
+    }
 }
