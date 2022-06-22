@@ -41,10 +41,10 @@ public class Message {
         this.params = params;
     }
 
-    public Message(Message m) {
-        this.source = m.source;
-        this.command = m.command;
-        this.params = new ArrayList<>(m.params);
+    public Message(Message message) {
+        this.source = message.source;
+        this.command = message.command;
+        this.params = new ArrayList<>(message.params);
     }
 
     public Source getSource() {
@@ -89,8 +89,8 @@ public class Message {
      * Otherwise, return the newly constructed instance of the appropriate
      * <code>Message</code> subclass.
      */
-    public static Message construct(Message m) {
-        String code = m.getCommand();
+    public static Message construct(Message message) {
+        String code = message.getCommand();
         Command command = Command.fromCode(code);
 
         if (command == null)
@@ -99,12 +99,12 @@ public class Message {
         Class<? extends Message> cls = MESSAGES.get(command);
 
         if (cls == null)
-            return m;
+            return message;
 
         try {
             Constructor<? extends Message> ctor =
                 cls.getConstructor(Message.class);
-            return ctor.newInstance(m);
+            return ctor.newInstance(message);
         }
         catch (NoSuchMethodException | InstantiationException |
                IllegalAccessException | InvocationTargetException e) {
