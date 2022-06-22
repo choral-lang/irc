@@ -7,7 +7,7 @@ public class Message@R {
 
     public Message(Message@R message) {}
 
-    public String@R getSource() {}
+    public Source@R getSource() {}
 
     public String@R getCommand() {}
 
