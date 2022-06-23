@@ -28,15 +28,16 @@ public class IrcServerLocalUtil {
      * NOTE: Choral doesn't support loops.
      */
     public static void processJoin(IrcServerLocal local, JoinMessage message) {
+        long clientId = local.getClientId();
         List<String> channels = message.getChannels();
 
         if (channels.size() == 1 && channels.get(0) == "0") {
             processPart(local, new PartMessage(
-                new ArrayList<>(local.getState().getChannels())));
+                new ArrayList<>(local.getState().getChannels(clientId))));
         }
         else {
             ServerState state = local.getState();
-            String nickname = state.getNickname();
+            String nickname = state.getNickname(clientId);
 
             for (String channel : new HashSet<>(channels)) {
                 if (!Util.validChannelname(channel)) {
@@ -44,11 +45,11 @@ public class IrcServerLocalUtil {
                         nickname, "Invalid channel name");
                     local.addEvent(new ServerForwardMessageEvent(r));
                 }
-                else if (!state.inChannel(channel)) {
+                else if (!state.inChannel(clientId, channel)) {
                     JoinMessage r = IrcServerLocalUtil.<JoinMessage>withSource(
                         new JoinMessage(channel),
                         new Source(nickname));
-                    state.joinChannel(channel);
+                    state.joinChannel(clientId, channel);
                     local.addEvent(new ServerJoinEvent(r));
                 }
             }
@@ -64,10 +65,11 @@ public class IrcServerLocalUtil {
      * NOTE: Choral doesn't support loops.
      */
     public static void processPart(IrcServerLocal local, PartMessage message) {
+        long clientId = local.getClientId();
         List<String> channels = message.getChannels();
 
         ServerState state = local.getState();
-        String nickname = state.getNickname();
+        String nickname = state.getNickname(clientId);
 
         for (String channel : new HashSet<>(channels)) {
             if (!Util.validChannelname(channel)) {
@@ -75,7 +77,7 @@ public class IrcServerLocalUtil {
                     nickname, "Invalid channel name");
                 local.addEvent(new ServerForwardMessageEvent(r));
             }
-            else if (!state.inChannel(channel)) {
+            else if (!state.inChannel(clientId, channel)) {
                 Message r = new ErrNotOnChannelMessage(
                     nickname, "You are not in that channel");
                 local.addEvent(new ServerForwardMessageEvent(r));
@@ -94,7 +96,7 @@ public class IrcServerLocalUtil {
                 PartMessage r = IrcServerLocalUtil.<PartMessage>withSource(
                     new PartMessage(mb.message()),
                     new Source(nickname));
-                state.partChannel(channel);
+                state.partChannel(clientId, channel);
                 local.addEvent(new ServerPartEvent(r));
             }
         }

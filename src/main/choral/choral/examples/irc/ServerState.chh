@@ -6,33 +6,35 @@ import java.util.Set;
 public class ServerState@R {
     public ServerState() {}
 
-    public String@R getUsername() {}
+    public long@R newClient() {}
 
-    public void setUsername(String@R username) {}
+    public String@R getUsername(long@R clientId) {}
 
-    public String@R getRealname() {}
+    public void setUsername(long@R clientId, String@R username) {}
 
-    public void setRealname(String@R realname) {}
+    public String@R getRealname(long@R clientId) {}
 
-    public String@R getNickname() {}
+    public void setRealname(long@R clientId, String@R realname) {}
 
-    public void setNickname(String@R nickname) {}
+    public String@R getNickname(long@R clientId) {}
 
-    public boolean@R isWelcomeDone() {}
+    public void setNickname(long@R clientId, String@R nickname) {}
 
-    public void setWelcomeDone(boolean@R welcomeDone) {}
+    public boolean@R isWelcomeDone(long@R clientId) {}
+
+    public void setWelcomeDone(long@R clientId, boolean@R welcomeDone) {}
 
     public boolean@R nicknameInUse(String@R nickname) {}
 
-    public boolean@R isRegistered() {}
+    public boolean@R isRegistered(long@R clientId) {}
 
-    public Set@R<String> getChannels() {}
+    public Set@R<String> getChannels(long@R clientId) {}
 
-    public boolean@R inChannel(String@R channel) {}
+    public boolean@R inChannel(long@R clientId, String@R channel) {}
 
-    public void joinChannel(String@R channel) {}
+    public void joinChannel(long@R clientId, String@R channel) {}
 
-    public void partChannel(String@R channel) {}
+    public void partChannel(long@R clientId, String@R channel) {}
 
     public PrintStream@R getOut() {}
 }

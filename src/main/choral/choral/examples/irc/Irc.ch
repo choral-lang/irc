@@ -14,6 +14,7 @@ public class Irc@(Client, Server) {
     private IrcClientLocal@Client clientLocal;
 
     private ServerState@Server serverState;
+    private long@Server clientId;
     private LinkedBlockingQueue@Server<ServerEvent> serverQueue;
     private IrcServerLocal@Server serverLocal;
 
@@ -21,12 +22,15 @@ public class Irc@(Client, Server) {
                ClientState@Client clientState,
                ServerState@Server serverState) {
         this.ch_AB = ch_AB;
+
         this.clientState = clientState;
         this.clientQueue = new LinkedBlockingQueue@Client<ClientEvent>();
         this.clientLocal = new IrcClientLocal@Client(clientState, clientQueue);
+
         this.serverState = serverState;
+        this.clientId = serverState.newClient();
         this.serverQueue = new LinkedBlockingQueue@Server<ServerEvent>();
-        this.serverLocal = new IrcServerLocal@Server(serverState, serverQueue);
+        this.serverLocal = new IrcServerLocal@Server(serverState, clientId, serverQueue);
     }
 
     private ClientEvent@Client takeClientEvent() {
@@ -179,7 +183,7 @@ public class Irc@(Client, Server) {
                 // TODO: Why is this necessary?
                 ch_AB.<ServerEventType>select(ServerEventType@Server.PONG);
 
-                if (!serverState.isRegistered()) {{
+                if (!serverState.isRegistered(clientId)) {{
                     ch_AB.<Command>select(Command@Server.ERR_NOTREGISTERED);
 
                     Message@Client m = ch_AB.<Message>com(new ErrNotRegisteredMessage@Server(
@@ -195,7 +199,7 @@ public class Irc@(Client, Server) {
                         ch_AB.<Command>select(Command@Server.ERR_NEEDMOREPARAMS);
 
                         Message@Client m = ch_AB.<Message>com(new ErrNeedMoreParamsMessage@Server(
-                            serverState.getNickname(),
+                            serverState.getNickname(clientId),
                             "Need at least 1 parameter!"@Server));
 
                         clientState.getOut().println("Error: "@Client + m.toString());

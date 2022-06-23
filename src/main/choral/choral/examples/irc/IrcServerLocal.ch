@@ -5,14 +5,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class IrcServerLocal@R {
     private ServerState@R state;
+    private long@R clientId;
     private LinkedBlockingQueue@R<ServerEvent> queue;
     private LinkedBlockingQueue@R<ServerLocalEvent> localQueue;
 
     public IrcServerLocal(ServerState@R state,
+                          long@R clientId,
                           LinkedBlockingQueue@R<ServerEvent> queue) {
         this.state = state;
+        this.clientId = clientId;
         this.queue = queue;
         this.localQueue = new LinkedBlockingQueue@R<ServerLocalEvent>();
+    }
+
+    public long@R getClientId() {
+        return clientId;
     }
 
     public ServerState@R getState() {
@@ -54,7 +61,7 @@ public class IrcServerLocal@R {
             .build()
             .source(new Source@R("irc.choral.net"@R))
             .command(IrcServerLocalUtil@R.commandCode(command))
-            .param(state.getNickname())
+            .param(state.getNickname(clientId))
             .param(param)
             .message();
 
@@ -83,7 +90,7 @@ public class IrcServerLocal@R {
         addWelcomeMessage(Command@R.RPL_MOTD, "...or having a choco break in the lunchroom!"@R);
         addWelcomeMessage(Command@R.RPL_ENDOFMOTD, "End of /MOTD command"@R);
 
-        state.setWelcomeDone(true@R);
+        state.setWelcomeDone(clientId, true@R);
     }
 
     public void run() {
@@ -95,7 +102,7 @@ public class IrcServerLocal@R {
 
             if (!m.hasEnoughParams()) {
                 Message@R r = new ErrNoNicknameGivenMessage@R(
-                    state.getNickname(), "No nickname given"@R);
+                    state.getNickname(clientId), "No nickname given"@R);
                 addEvent(new ServerNickErrorEvent@R(m, r));
             }
             else {
@@ -103,19 +110,19 @@ public class IrcServerLocal@R {
 
                 if (!Util@R.validNickname(nickname)) {
                     Message@R r = new ErrErroneousNicknameMessage@R(
-                        state.getNickname(), "Nickname is invalid"@R);
+                        state.getNickname(clientId), "Nickname is invalid"@R);
                     addEvent(new ServerNickErrorEvent@R(m, r));
                 }
                 else {
                     if (state.nicknameInUse(nickname)) {
                         Message@R r = new ErrNicknameInUseMessage@R(
-                            state.getNickname(), "Nickname is in use"@R);
+                            state.getNickname(clientId), "Nickname is in use"@R);
                         addEvent(new ServerNickErrorEvent@R(m, r));
                     }
                     else {
-                        state.setNickname(nickname);
+                        state.setNickname(clientId, nickname);
 
-                        if (state.isRegistered() && !state.isWelcomeDone()) {
+                        if (state.isRegistered(clientId) && !state.isWelcomeDone(clientId)) {
                             addWelcome();
                         }
                     }
@@ -129,24 +136,24 @@ public class IrcServerLocal@R {
 
                 if (!m.hasEnoughParams()) {
                     Message@R r = new ErrNeedMoreParamsMessage@R(
-                        state.getNickname(), "Need at least 4 parameters!"@R);
+                        state.getNickname(clientId), "Need at least 4 parameters!"@R);
                     addEvent(new ServerUserErrorEvent@R(m, r));
                 }
                 else {
                     String@R username = m.getUsername();
                     String@R realname = m.getRealname();
 
-                    if (state.isRegistered()) {
+                    if (state.isRegistered(clientId)) {
                         Message@R r = new ErrAlreadyRegisteredMessage@R(
-                            state.getNickname(), "You cannot register again"@R);
+                            state.getNickname(clientId), "You cannot register again"@R);
                         addEvent(new ServerUserErrorEvent@R(m, r));
                     }
                     else {
                         if (Util@R.validUsername(username)) {
-                            state.setUsername(username);
-                            state.setRealname(realname);
+                            state.setUsername(clientId, username);
+                            state.setRealname(clientId, realname);
 
-                            if (state.isRegistered() && !state.isWelcomeDone()) {
+                            if (state.isRegistered(clientId) && !state.isWelcomeDone(clientId)) {
                                 addWelcome();
                             }
                         }
@@ -155,7 +162,7 @@ public class IrcServerLocal@R {
             }
             else {
                 if (event.getType() == ServerLocalEventType@R.JOIN) {
-                    if (!state.isRegistered()) {
+                    if (!state.isRegistered(clientId)) {
                         Message@R r = new ErrNotRegisteredMessage@R(
                             "unknown"@R, "You must register first!"@R);
                         addEvent(new ServerForwardMessageEvent@R(r));
@@ -166,7 +173,7 @@ public class IrcServerLocal@R {
 
                         if (!m.hasEnoughParams()) {
                             Message@R r = new ErrNeedMoreParamsMessage@R(
-                                state.getNickname(), "Need at least 1 parameter!"@R);
+                                state.getNickname(clientId), "Need at least 1 parameter!"@R);
                             addEvent(new ServerForwardMessageEvent@R(r));
                         }
                         else {
@@ -176,7 +183,7 @@ public class IrcServerLocal@R {
                 }
                 else {
                     if (event.getType() == ServerLocalEventType@R.PART) {
-                        if (!state.isRegistered()) {
+                        if (!state.isRegistered(clientId)) {
                             Message@R r = new ErrNotRegisteredMessage@R(
                                 "unknown"@R, "You must register first!"@R);
                             addEvent(new ServerForwardMessageEvent@R(r));
@@ -187,7 +194,7 @@ public class IrcServerLocal@R {
 
                             if (!m.hasEnoughParams()) {
                                 Message@R r = new ErrNeedMoreParamsMessage@R(
-                                    state.getNickname(), "Need at least 1 parameter!"@R);
+                                    state.getNickname(clientId), "Need at least 1 parameter!"@R);
                                 addEvent(new ServerForwardMessageEvent@R(r));
                             }
                             else {
