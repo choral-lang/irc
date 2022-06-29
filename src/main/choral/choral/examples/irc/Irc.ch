@@ -14,8 +14,8 @@ public class Irc@(Client, Server) {
     private IrcClientLocal@Client clientLocal;
 
     private ServerState@Server serverState;
-    private long@Server clientId;
     private LinkedBlockingQueue@Server<ServerEvent> serverQueue;
+    private long@Server clientId;
     private IrcServerLocal@Server serverLocal;
 
     public Irc(SymChannel@(Client, Server)<Message> ch_AB,
@@ -28,56 +28,24 @@ public class Irc@(Client, Server) {
         this.clientLocal = new IrcClientLocal@Client(clientState, clientQueue);
 
         this.serverState = serverState;
-        this.clientId = serverState.newClient();
         this.serverQueue = new LinkedBlockingQueue@Server<ServerEvent>();
-        this.serverLocal = new IrcServerLocal@Server(serverState, clientId, serverQueue);
-    }
-
-    private ClientEvent@Client takeClientEvent() {
-        try {
-            return clientQueue.take();
-        }
-        catch (InterruptedException@Client e) {
-            // Ignore the interrupt and try again.
-            return takeClientEvent();
-        }
-    }
-
-    private ServerEvent@Server takeServerEvent() {
-        try {
-            return serverQueue.take();
-        }
-        catch (InterruptedException@Server e) {
-            // Ignore the interrupt and try again.
-            return takeServerEvent();
-        }
+        this.clientId = serverState.newClient(serverQueue);
+        this.serverLocal = new IrcServerLocal@Server(serverState, clientId);
     }
 
     public void addClientEvent(ClientEvent@Client event) {
-        try {
-            clientQueue.put(event);
-        }
-        catch (InterruptedException@Client e) {
-            // Ignore the interrupt and try again.
-            addClientEvent(event);
-        }
+        Util@Client.<ClientEvent>put(clientQueue, event);
     }
 
     public void addServerEvent(ServerEvent@Server event) {
-        try {
-            serverQueue.put(event);
-        }
-        catch (InterruptedException@Server e) {
-            // Ignore the interrupt and try again.
-            addServerEvent(event);
-        }
+        Util@Server.<ServerEvent>put(serverQueue, event);
     }
 
     /**
      * A loop driven by the client's event queue. The client initiates requests.
      */
     public void clientDrivenLoop() {
-        ClientEvent@Client event = takeClientEvent();
+        ClientEvent@Client event = Util@Client.<ClientEvent>take(clientQueue);
 
         if (event.getType() == ClientEventType@Client.PING) {{{{{
             ch_AB.<ClientEventType>select(ClientEventType@Client.PING);
@@ -165,7 +133,7 @@ public class Irc@(Client, Server) {
      * A loop driven by the server's event queue. The server initiates requests.
      */
     public void serverDrivenLoop() {
-        ServerEvent@Server event = takeServerEvent();
+        ServerEvent@Server event = Util@Server.<ServerEvent>take(serverQueue);
 
         if (event.getType() == ServerEventType@Server.PING) {{{{{{
             ch_AB.<ServerEventType>select(ServerEventType@Server.PING);

@@ -1,8 +1,13 @@
 package choral.examples.irc;
 
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Util@R {
+    public static <T@R> T@R take(LinkedBlockingQueue@R<T> queue) {}
+
+    public static <T@R> void put(LinkedBlockingQueue@R<T> queue, T@R item) {}
+
     public static boolean@R validNickname(String@R nickname) {}
 
     public static boolean@R validUsername(String@R username) {}

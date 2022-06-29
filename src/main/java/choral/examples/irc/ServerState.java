@@ -1,10 +1,11 @@
 package choral.examples.irc;
 
 import java.io.PrintStream;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ServerState {
     private long lastClientId;
@@ -17,11 +18,15 @@ public class ServerState {
         this.channels = new HashMap<>();
     }
 
-    public long newClient() {
+    public long newClient(LinkedBlockingQueue<ServerEvent> queue) {
         long clientId = ++lastClientId;
-        ServerClientState client = new ServerClientState(clientId);
+        ServerClientState client = new ServerClientState(clientId, queue);
         clients.put(clientId, client);
         return clientId;
+    }
+
+    public void addEvent(long clientId, ServerEvent event) {
+        Util.<ServerEvent>put(clients.get(clientId).queue, event);
     }
 
     public String getUsername(long clientId) {

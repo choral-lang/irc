@@ -16,37 +16,15 @@ public class IrcClientLocal@R {
     }
 
     private void addEvent(ClientEvent@R event) {
-        try {
-            queue.put(event);
-        }
-        catch (InterruptedException@R e) {
-            // Ignore the interrupt and try again.
-            addEvent(event);
-        }
+        Util@R.<ClientEvent>put(queue, event);
     }
 
     public void addLocalEvent(ClientLocalEvent@R event) {
-        try {
-            localQueue.put(event);
-        }
-        catch (InterruptedException@R e) {
-            // Ignore the interrupt and try again.
-            addLocalEvent(event);
-        }
-    }
-
-    private ClientLocalEvent@R takeLocalEvent() {
-        try {
-            return localQueue.take();
-        }
-        catch (InterruptedException@R e) {
-            // Ignore the interrupt and try again.
-            return takeLocalEvent();
-        }
+        Util@R.<ClientLocalEvent>put(localQueue, event);
     }
 
     public void run() {
-        ClientLocalEvent@R event = takeLocalEvent();
+        ClientLocalEvent@R event = Util@R.<ClientLocalEvent>take(localQueue);
 
         if (event.getType() == ClientLocalEventType@R.PONG) {
             ClientLocalPongEvent@R e = event.asClientLocalPongEvent();

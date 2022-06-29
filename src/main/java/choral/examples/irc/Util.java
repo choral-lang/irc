@@ -1,6 +1,29 @@
 package choral.examples.irc;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class Util {
+    public static <T> T take(LinkedBlockingQueue<T> queue) {
+        while (true) {
+            try {
+                return queue.take();
+            } catch (InterruptedException e) {
+                // Ignore and keep trying
+            }
+        }
+    }
+
+    public static <T> void put(LinkedBlockingQueue<T> queue, T item) {
+        while (true) {
+            try {
+                queue.put(item);
+                break;
+            } catch (InterruptedException e) {
+                // Ignore and keep trying
+            }
+        }
+    }
+
     /**
      * Check whether a command is valid.
      *
