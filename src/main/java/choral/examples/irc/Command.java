@@ -26,6 +26,8 @@ public enum Command {
     RPL_LOCALUSERS("265"),
     RPL_GLOBALUSERS("266"),
 
+    RPL_NAMREPLY("353"),
+    RPL_ENDOFNAMES("366"),
     RPL_MOTD("372"),
     RPL_MOTDSTART("375"),
     RPL_ENDOFMOTD("376"),

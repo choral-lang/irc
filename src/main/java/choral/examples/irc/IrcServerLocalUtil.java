@@ -3,6 +3,7 @@ package choral.examples.irc;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The only purpose of this class is to be a collection of utilities useful for
@@ -21,9 +22,6 @@ public class IrcServerLocalUtil {
 
     /**
      * Process a client's JOIN message.
-     *
-     * Each channel mentioned in the message is inspected individually and an
-     * appropriate response is returned.
      *
      * NOTE: Choral doesn't support loops.
      */
@@ -49,12 +47,26 @@ public class IrcServerLocalUtil {
                         new JoinMessage(channel),
                         new Source(nickname));
 
-                    for (Long otherId : state.getMembers(channel)) {
-                        state.addEvent(otherId, new ServerJoinEvent(r));
-                    }
+                    Set<Long> members = state.getMembers(channel);
 
                     state.joinChannel(clientId, channel);
                     state.addEvent(clientId, new ServerJoinEvent(r));
+                    state.addEvent(clientId, new ServerRplNamReplyEvent(
+                        new RplNamReplyMessage(nickname, "=", channel,
+                                               List.of(nickname))));
+
+                    for (Long otherId : members) {
+                        state.addEvent(otherId, new ServerJoinEvent(r));
+
+                        RplNamReplyMessage m = new RplNamReplyMessage(
+                            nickname, "=", channel,
+                            List.of(state.getNickname(otherId)));
+                        state.addEvent(clientId, new ServerRplNamReplyEvent(m));
+                    }
+
+                    state.addEvent(clientId, new ServerForwardMessageEvent(
+                        new RplEndOfNamesMessage(nickname, channel,
+                                                 "End of names list")));
                 }
             }
         }
@@ -62,9 +74,6 @@ public class IrcServerLocalUtil {
 
     /**
      * Process a client's PART message.
-     *
-     * Each channel mentioned in the message is inspected individually and an
-     * appropriate response is returned.
      *
      * NOTE: Choral doesn't support loops.
      */

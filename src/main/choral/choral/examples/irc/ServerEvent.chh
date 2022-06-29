@@ -20,4 +20,6 @@ public abstract class ServerEvent@R {
     public ServerJoinEvent@R asServerJoinEvent() {}
 
     public ServerPartEvent@R asServerPartEvent() {}
+
+    public ServerRplNamReplyEvent@R asServerRplNamReplyEvent() {}
 }

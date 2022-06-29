@@ -23,6 +23,8 @@ public enum Command@R {
     RPL_LOCALUSERS,
     RPL_GLOBALUSERS,
 
+    RPL_NAMREPLY,
+    RPL_ENDOFNAMES,
     RPL_MOTD,
     RPL_MOTDSTART,
     RPL_ENDOFMOTD,

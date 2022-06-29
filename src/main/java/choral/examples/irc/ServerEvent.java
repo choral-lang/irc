@@ -50,4 +50,9 @@ public abstract class ServerEvent {
         assert eventType == ServerEventType.PART;
         return (ServerPartEvent) this;
     }
+
+    public ServerRplNamReplyEvent asServerRplNamReplyEvent() {
+        assert eventType == ServerEventType.RPL_NAMREPLY;
+        return (ServerRplNamReplyEvent) this;
+    }
 }

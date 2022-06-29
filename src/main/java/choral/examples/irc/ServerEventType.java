@@ -6,8 +6,9 @@ enum ServerEventType {
     NICK_ERROR,
     USER_ERROR,
     JOIN,
-    MESSAGE,
     PART,
+    MESSAGE,
+    RPL_NAMREPLY,
     FORWARD_MESSAGE,
     UNKNOWN
 }
