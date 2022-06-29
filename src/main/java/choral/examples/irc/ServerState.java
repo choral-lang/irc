@@ -6,11 +6,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 public class ServerState {
     private long lastClientId;
     private Map<Long, ServerClientState> clients;
-    private Map<String, ServerClientState> channels;
+    private Map<String, Set<ServerClientState>> channels;
 
     public ServerState() {
         this.lastClientId = 0;
@@ -62,8 +63,7 @@ public class ServerState {
     }
 
     public boolean nicknameInUse(String nickname) {
-        return clients.entrySet().stream()
-            .anyMatch(e -> e.getValue().nickname == nickname);
+        return clients.values().stream().anyMatch(c -> c.nickname == nickname);
     }
 
     public boolean isRegistered(long clientId) {
@@ -77,16 +77,31 @@ public class ServerState {
         return new HashSet<>(clients.get(clientId).channels);
     }
 
+    public Set<Long> getMembers(String channel) {
+        return channels.getOrDefault(channel, Set.of()).stream()
+            .map(c -> c.clientId).collect(Collectors.toSet());
+    }
+
     public boolean inChannel(long clientId, String channel) {
         return clients.get(clientId).channels.contains(channel);
     }
 
     public void joinChannel(long clientId, String channel) {
-        clients.get(clientId).channels.add(channel);
+        ServerClientState client = clients.get(clientId);
+        client.channels.add(channel);
+        channels.computeIfAbsent(channel, k -> new HashSet<>()).add(client);
     }
 
     public void partChannel(long clientId, String channel) {
-        clients.get(clientId).channels.remove(channel);
+        ServerClientState client = clients.get(clientId);
+        client.channels.remove(channel);
+
+        Set<ServerClientState> members = channels.get(channel);
+        members.remove(client);
+
+        if (members.isEmpty()) {
+            channels.remove(channel);
+        }
     }
 
     public PrintStream getOut() {

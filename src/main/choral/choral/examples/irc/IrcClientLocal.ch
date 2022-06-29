@@ -42,10 +42,19 @@ public class IrcClientLocal@R {
 
                 if (source != null@R && m.hasEnoughParams()) {
                     List@R<String> channels = m.getChannels();
+                    String@R nickname = source.getNickname();
+                    // NOTE: We expect just a single channel, so ignore the others, if any
+                    String@R channel = channels.get(0@R);
 
-                    if (source.getNickname().equals(state.getNickname()) &&
-                        channels.size() == 1@R) {
-                        state.joinChannel(channels.get(0@R));
+                    if (nickname.equals(state.getNickname())) {
+                        if (!state.inChannel(channel)) {
+                            state.joinChannel(channel);
+                        }
+                    }
+                    else {
+                        if (state.inChannel(channel)) {
+                            state.addMember(channel, nickname);
+                        }
                     }
                 }
             }
@@ -57,10 +66,19 @@ public class IrcClientLocal@R {
 
                     if (source != null@R && m.hasEnoughParams()) {
                         List@R<String> channels = m.getChannels();
+                        String@R nickname = source.getNickname();
+                        // NOTE: We expect just a single channel, so ignore the others, if any
+                        String@R channel = channels.get(0@R);
 
-                        if (source.getNickname().equals(state.getNickname()) &&
-                            channels.size() == 1@R) {
-                            state.partChannel(channels.get(0@R));
+                        if (nickname.equals(state.getNickname())) {
+                            if (state.inChannel(channel)) {
+                                state.partChannel(channel);
+                            }
+                        }
+                        else {
+                            if (state.inChannel(channel)) {
+                                state.removeMember(channel, nickname);
+                            }
                         }
                     }
                 }

@@ -33,6 +33,8 @@ public class ServerState@R {
 
     public Set@R<String> getChannels(long@R clientId) {}
 
+    public Set@R<Long> getMembers(String@R channel) {}
+
     public boolean@R inChannel(long@R clientId, String@R channel) {}
 
     public void joinChannel(long@R clientId, String@R channel) {}

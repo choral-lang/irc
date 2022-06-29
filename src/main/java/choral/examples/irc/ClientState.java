@@ -1,20 +1,22 @@
 package choral.examples.irc;
 
 import java.io.PrintStream;
-import java.util.Set;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class ClientState {
     private String username, realname, nickname;
     private String lastNickname;
-    private Set<String> channels;
+    private Map<String, Set<String>> channels;
 
     public ClientState(String username, String realname, String nickname) {
         this.username = username;
         this.realname = realname;
         this.nickname = nickname;
         this.lastNickname = null;
-        this.channels = new HashSet<>();
+        this.channels = new HashMap<>();
     }
 
     public ClientState(String nickname) {
@@ -51,19 +53,31 @@ public class ClientState {
     }
 
     public Set<String> getChannels() {
-        return new HashSet<>(channels);
+        return new HashSet<>(channels.keySet());
     }
 
     public boolean inChannel(String channel) {
-        return channels.contains(channel);
+        return channels.containsKey(channel);
     }
 
     public void joinChannel(String channel) {
-        channels.add(channel);
+        assert !channels.containsKey(channel);
+        channels.put(channel, new HashSet<>());
     }
 
     public void partChannel(String channel) {
+        assert channels.containsKey(channel);
         channels.remove(channel);
+    }
+
+    public void addMember(String channel, String nickname) {
+        assert channels.containsKey(channel);
+        channels.get(channel).add(nickname);
+    }
+
+    public void removeMember(String channel, String nickname) {
+        assert channels.containsKey(channel);
+        channels.get(channel).remove(nickname);
     }
 
     public PrintStream getOut() {

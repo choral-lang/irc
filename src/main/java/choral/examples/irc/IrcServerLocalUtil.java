@@ -48,6 +48,11 @@ public class IrcServerLocalUtil {
                     JoinMessage r = IrcServerLocalUtil.<JoinMessage>withSource(
                         new JoinMessage(channel),
                         new Source(nickname));
+
+                    for (Long otherId : state.getMembers(channel)) {
+                        state.addEvent(otherId, new ServerJoinEvent(r));
+                    }
+
                     state.joinChannel(clientId, channel);
                     state.addEvent(clientId, new ServerJoinEvent(r));
                 }
@@ -56,7 +61,7 @@ public class IrcServerLocalUtil {
     }
 
     /**
-     * Process a client's JOIN message.
+     * Process a client's PART message.
      *
      * Each channel mentioned in the message is inspected individually and an
      * appropriate response is returned.
@@ -94,8 +99,13 @@ public class IrcServerLocalUtil {
                 PartMessage r = IrcServerLocalUtil.<PartMessage>withSource(
                     new PartMessage(mb.message()),
                     new Source(nickname));
+
                 state.partChannel(clientId, channel);
                 state.addEvent(clientId, new ServerPartEvent(r));
+
+                for (Long otherId : state.getMembers(channel)) {
+                    state.addEvent(otherId, new ServerPartEvent(r));
+                }
             }
         }
     }

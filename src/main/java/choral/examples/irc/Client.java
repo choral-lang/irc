@@ -29,7 +29,7 @@ public class Client {
         IrcChannel_A ch = null;
         Irc_Client irc = null;
 
-        System.out.println("Commands: /connect, /nick, /user, /state, /quit");
+        System.out.println("Commands: /connect, /nick, /user, /join, /part, /state, /quit");
 
         try {
             while (true) {
