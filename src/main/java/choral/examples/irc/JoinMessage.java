@@ -1,5 +1,6 @@
 package choral.examples.irc;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class JoinMessage extends Message {
@@ -22,6 +23,6 @@ public class JoinMessage extends Message {
 
     public List<String> getChannels() {
         assert params.size() >= 1;
-        return List.of(getParam(0).split(","));
+        return Arrays.asList(getParam(0).split(","));
     }
 }

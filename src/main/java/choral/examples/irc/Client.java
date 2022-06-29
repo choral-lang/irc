@@ -6,6 +6,7 @@ import choral.runtime.SerializerChannel.SerializerChannel_A;
 import choral.runtime.Serializers.JSONSerializer;
 import choral.runtime.WrapperByteChannel.WrapperByteChannel_A;
 import com.google.gson.Gson;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -120,7 +121,7 @@ public class Client {
                     }
 
                     irc.addClientEvent(new ClientJoinEvent(
-                        List.of(parts[1].split(","))));
+                        Arrays.asList(parts[1].split(","))));
                 }
                 else if (cmd.equalsIgnoreCase("/part")) {
                     if (parts.length - 1 < 1) {
@@ -131,7 +132,7 @@ public class Client {
                     String reason = parts.length - 1 < 2 ? null : parts[2];
 
                     irc.addClientEvent(new ClientPartEvent(
-                        List.of(parts[1].split(",")), reason));
+                        Arrays.asList(parts[1].split(",")), reason));
                 }
                 else if (cmd.equalsIgnoreCase("/state")) {
                     System.out.println(gson.toJson(state));
