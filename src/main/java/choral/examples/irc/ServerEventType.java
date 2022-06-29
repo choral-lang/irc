@@ -3,6 +3,7 @@ package choral.examples.irc;
 enum ServerEventType {
     PING,
     PONG,
+    NICK,
     NICK_ERROR,
     USER_ERROR,
     JOIN,

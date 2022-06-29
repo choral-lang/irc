@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The only purpose of this class is to be a collection of utilities useful for
@@ -18,6 +19,23 @@ public class IrcServerLocalUtil {
      */
     public static boolean validChannelnames(List<String> channels) {
         return channels.stream().allMatch(c -> Util.validChannelname(c));
+    }
+
+    public static void processNick(ServerState state, long clientId,
+                                   NickMessage message) {
+        String nickname = state.getNickname(clientId);
+        NickMessage m = IrcServerLocalUtil.<NickMessage>withSource(
+            message, new Source(nickname));
+
+        state.addEvent(clientId, new ServerNickEvent(m));
+
+        Set<Long> others = state.getChannels(clientId).stream()
+            .flatMap(c -> state.getMembers(c).stream())
+            .collect(Collectors.toSet());
+
+        for (long otherId : others) {
+            state.addEvent(otherId, new ServerNickEvent(m));
+        }
     }
 
     /**

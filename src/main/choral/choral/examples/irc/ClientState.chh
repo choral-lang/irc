@@ -32,6 +32,8 @@ public class ClientState@R {
 
     public void addMember(String@R channel, String@R nickname) {}
 
+    public void renameMember(String@R from, String@R to) {}
+
     public void removeMember(String@R channel, String@R nickname) {}
 
     public PrintStream@R getOut() {}

@@ -75,6 +75,13 @@ public class ClientState {
         channels.get(channel).add(nickname);
     }
 
+    public void renameMember(String from, String to) {
+        for (Set<String> members : channels.values()) {
+            members.remove(from);
+            members.add(to);
+        }
+    }
+
     public void removeMember(String channel, String nickname) {
         assert channels.containsKey(channel);
         channels.get(channel).remove(nickname);

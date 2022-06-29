@@ -21,6 +21,11 @@ public abstract class ServerEvent {
         return (ServerPongEvent) this;
     }
 
+    public ServerNickEvent asServerNickEvent() {
+        assert eventType == ServerEventType.NICK;
+        return (ServerNickEvent) this;
+    }
+
     public ServerNickErrorEvent asServerNickErrorEvent() {
         assert eventType == ServerEventType.NICK_ERROR;
         return (ServerNickErrorEvent) this;

@@ -85,8 +85,13 @@ public class IrcServerLocal@R {
                     else {
                         state.setNickname(clientId, nickname);
 
-                        if (state.isRegistered(clientId) && !state.isWelcomeDone(clientId)) {
-                            addWelcome();
+                        if (state.isRegistered(clientId)) {
+                            if (!state.isWelcomeDone(clientId)) {
+                                addWelcome();
+                            }
+                            else {
+                                IrcServerLocalUtil@R.processNick(state, clientId, m);
+                            }
                         }
                     }
                 }

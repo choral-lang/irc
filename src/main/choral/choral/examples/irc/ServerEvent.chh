@@ -9,6 +9,8 @@ public abstract class ServerEvent@R {
 
     public ServerPongEvent@R asServerPongEvent() {}
 
+    public ServerNickEvent@R asServerNickEvent() {}
+
     public ServerNickErrorEvent@R asServerNickErrorEvent() {}
 
     public ServerUserErrorEvent@R asServerUserErrorEvent() {}

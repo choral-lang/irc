@@ -135,7 +135,7 @@ public class Irc@(Client, Server) {
     public void serverDrivenLoop() {
         ServerEvent@Server event = Util@Server.<ServerEvent>take(serverQueue);
 
-        if (event.getType() == ServerEventType@Server.PING) {{{{{{{
+        if (event.getType() == ServerEventType@Server.PING) {{{{{{{{
             ch_AB.<ServerEventType>select(ServerEventType@Server.PING);
 
             ServerPingEvent@Server e = event.asServerPingEvent();
@@ -145,9 +145,9 @@ public class Irc@(Client, Server) {
                 new PingMessage@Server(sToken));
 
             clientLocal.addLocalEvent(new ClientLocalPongEvent@Client(m));
-        }}}}}}}
+        }}}}}}}}
         else {
-            if (event.getType() == ServerEventType@Server.PONG) {{{{{{
+            if (event.getType() == ServerEventType@Server.PONG) {{{{{{{
                 // TODO: Why is this necessary?
                 ch_AB.<ServerEventType>select(ServerEventType@Server.PONG);
 
@@ -181,66 +181,78 @@ public class Irc@(Client, Server) {
                         clientState.getOut().println("PONG"@Client);
                     }
                 }
-            }}}}}}
+            }}}}}}}
             else {
-                if (event.getType() == ServerEventType@Server.NICK_ERROR) {{{{{
-                    ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_ERROR);
+                if (event.getType() == ServerEventType@Server.NICK) {{{{{{
+                    ch_AB.<ServerEventType>select(ServerEventType@Server.NICK);
 
-                    ServerNickErrorEvent@Server e = event.asServerNickErrorEvent();
-                    Message@Client m = ch_AB.<Message>com(e.getReply());
+                    ServerNickEvent@Server e = event.asServerNickEvent();
+                    NickMessage@Client m = ch_AB.<NickMessage>com(e.getMessage());
 
-                    clientState.getOut().println(
-                        "Error while changing nickname: '"@Client +
-                        m.toString() + "'"@Client);
-                }}}}}
+                    if (m.hasEnoughParams()) {
+                        IrcClientLocalUtil@Client.processNick(clientState, m);
+                    }
+                }}}}}}
                 else {
-                    if (event.getType() == ServerEventType@Server.USER_ERROR) {{{{
-                        ch_AB.<ServerEventType>select(ServerEventType@Server.USER_ERROR);
+                    if (event.getType() == ServerEventType@Server.NICK_ERROR) {{{{{
+                        ch_AB.<ServerEventType>select(ServerEventType@Server.NICK_ERROR);
 
-                        ServerUserErrorEvent@Server e = event.asServerUserErrorEvent();
+                        ServerNickErrorEvent@Server e = event.asServerNickErrorEvent();
                         Message@Client m = ch_AB.<Message>com(e.getReply());
 
                         clientState.getOut().println(
-                            "Error while registering username: '"@Client +
+                            "Error while changing nickname: '"@Client +
                             m.toString() + "'"@Client);
-                    }}}}
+                    }}}}}
                     else {
-                        if (event.getType() == ServerEventType@Server.JOIN) {{{
-                            ch_AB.<ServerEventType>select(ServerEventType@Server.JOIN);
+                        if (event.getType() == ServerEventType@Server.USER_ERROR) {{{{
+                            ch_AB.<ServerEventType>select(ServerEventType@Server.USER_ERROR);
 
-                            ServerJoinEvent@Server e = event.asServerJoinEvent();
-                            JoinMessage@Client m = ch_AB.<JoinMessage>com(e.getMessage());
+                            ServerUserErrorEvent@Server e = event.asServerUserErrorEvent();
+                            Message@Client m = ch_AB.<Message>com(e.getReply());
 
-                            clientLocal.addLocalEvent(new ClientLocalJoinEvent@Client(m));
-                        }}}
+                            clientState.getOut().println(
+                                "Error while registering username: '"@Client +
+                                m.toString() + "'"@Client);
+                        }}}}
                         else {
-                            if (event.getType() == ServerEventType@Server.PART) {{
-                                ch_AB.<ServerEventType>select(ServerEventType@Server.PART);
+                            if (event.getType() == ServerEventType@Server.JOIN) {{{
+                                ch_AB.<ServerEventType>select(ServerEventType@Server.JOIN);
 
-                                ServerPartEvent@Server e = event.asServerPartEvent();
-                                PartMessage@Client m = ch_AB.<PartMessage>com(e.getMessage());
+                                ServerJoinEvent@Server e = event.asServerJoinEvent();
+                                JoinMessage@Client m = ch_AB.<JoinMessage>com(e.getMessage());
 
-                                clientLocal.addLocalEvent(new ClientLocalPartEvent@Client(m));
-                            }}
+                                clientLocal.addLocalEvent(new ClientLocalJoinEvent@Client(m));
+                            }}}
                             else {
-                                if (event.getType() == ServerEventType@Server.RPL_NAMREPLY) {
-                                    ch_AB.<ServerEventType>select(ServerEventType@Server.RPL_NAMREPLY);
+                                if (event.getType() == ServerEventType@Server.PART) {{
+                                    ch_AB.<ServerEventType>select(ServerEventType@Server.PART);
 
-                                    ServerRplNamReplyEvent@Server e = event.asServerRplNamReplyEvent();
-                                    RplNamReplyMessage@Client m = ch_AB.<RplNamReplyMessage>com(e.getMessage());
+                                    ServerPartEvent@Server e = event.asServerPartEvent();
+                                    PartMessage@Client m = ch_AB.<PartMessage>com(e.getMessage());
 
-                                    if (m.hasEnoughParams()) {
-                                        IrcClientLocalUtil@Client.addMembers(
-                                            clientState, m.getChannel(), m.getNicknames());
-                                    }
-                                }
+                                    clientLocal.addLocalEvent(new ClientLocalPartEvent@Client(m));
+                                }}
                                 else {
-                                    ch_AB.<ServerEventType>select(ServerEventType@Server.FORWARD_MESSAGE);
+                                    if (event.getType() == ServerEventType@Server.RPL_NAMREPLY) {
+                                        ch_AB.<ServerEventType>select(ServerEventType@Server.RPL_NAMREPLY);
 
-                                    ServerForwardMessageEvent@Server e = event.asServerForwardMessageEvent();
-                                    Message@Client m = ch_AB.<Message>com(e.getMessage());
+                                        ServerRplNamReplyEvent@Server e = event.asServerRplNamReplyEvent();
+                                        RplNamReplyMessage@Client m = ch_AB.<RplNamReplyMessage>com(e.getMessage());
 
-                                    clientState.getOut().println(m.toString());
+                                        if (m.hasEnoughParams()) {
+                                            IrcClientLocalUtil@Client.addMembers(
+                                                clientState, m.getChannel(), m.getNicknames());
+                                        }
+                                    }
+                                    else {
+                                        ch_AB.<ServerEventType>select(ServerEventType@Server.FORWARD_MESSAGE);
+
+                                        ServerForwardMessageEvent@Server e = event.asServerForwardMessageEvent();
+                                        Message@Client m = ch_AB.<Message>com(e.getMessage());
+
+                                        clientState.getOut().println(m.toString());
+                                    }
                                 }
                             }
                         }
