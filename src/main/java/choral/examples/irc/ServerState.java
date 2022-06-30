@@ -15,10 +15,10 @@ public class ServerState {
     private Map<String, Set<ServerClientState>> channels;
 
     public ServerState() {
-        this.lastClientId = 0;
-        this.clients = new HashMap<>();
-        this.nicknames = new HashMap<>();
-        this.channels = new HashMap<>();
+        lastClientId = 0;
+        clients = new HashMap<>();
+        nicknames = new HashMap<>();
+        channels = new HashMap<>();
     }
 
     public long newClient(LinkedBlockingQueue<ServerEvent> queue) {

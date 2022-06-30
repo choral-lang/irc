@@ -14,7 +14,7 @@ public class ClientState {
         this.username = username;
         this.realname = realname;
         this.nickname = nickname;
-        this.channels = new HashMap<>();
+        channels = new HashMap<>();
     }
 
     public ClientState(String nickname) {
