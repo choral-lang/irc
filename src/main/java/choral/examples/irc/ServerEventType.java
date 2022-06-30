@@ -9,6 +9,5 @@ enum ServerEventType {
     PRIVMSG,
     RPL_WELCOME,
     RPL_NAMREPLY,
-    FORWARD_MESSAGE,
-    UNKNOWN
+    FORWARD_MESSAGE
 }
