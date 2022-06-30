@@ -1,11 +1,10 @@
 package choral.examples.irc;
 
 import choral.lang.Unit;
-import choral.runtime.Media.ServerSocketByteChannel;
-import choral.runtime.SerializerChannel.SerializerChannel_B;
-import choral.runtime.Serializers.JSONSerializer;
-import choral.runtime.WrapperByteChannel.WrapperByteChannel_B;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,24 +13,28 @@ public class Server {
     private static final String HOST = "localhost";
     private static final int PORT = 8667;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ServerState state = new ServerState();
         ExecutorService executor = Executors.newCachedThreadPool();
-        ServerSocketByteChannel listener = ServerSocketByteChannel.at(HOST, PORT);
+
+        ServerSocketChannel listener = ServerSocketChannel.open();
+        listener.bind(new InetSocketAddress(HOST, PORT));
 
         executor.submit(() -> {
             System.out.println("Listening on " + HOST + ":" + PORT);
 
             while (listener.isOpen()) {
                 try {
-                    IrcChannel_B ch = new IrcChannel_B(listener.getNext());
+                    SocketChannel client = listener.accept();
+                    client.configureBlocking(true);
 
                     System.out.println("Client connected");
 
                     executor.submit(() -> {
                         try {
-                            Irc.runServer(new Irc_Server(ch, Unit.id, state),
-                                          executor);
+                            IrcChannel_B ch = new IrcChannel_B(client);
+                            Irc_Server irc = new Irc_Server(ch, Unit.id, state);
+                            Irc.runServer(irc, executor);
                         }
                         catch (Exception e) {
                             e.printStackTrace();

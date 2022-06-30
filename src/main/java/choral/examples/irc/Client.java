@@ -1,11 +1,10 @@
 package choral.examples.irc;
 
 import choral.lang.Unit;
-import choral.runtime.Media.SocketByteChannel;
-import choral.runtime.SerializerChannel.SerializerChannel_A;
-import choral.runtime.Serializers.JSONSerializer;
-import choral.runtime.WrapperByteChannel.WrapperByteChannel_A;
 import com.google.gson.Gson;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -22,12 +21,11 @@ public class Client {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner s = new Scanner(System.in);
         Gson gson = new Gson();
         ClientState state = new ClientState("choralbot");
         ExecutorService executor = Executors.newCachedThreadPool();
-        IrcChannel_A ch = null;
         Irc_Client irc = null;
 
         System.out.println("Commands: /connect, /nick, /user, /join, /part, /privmsg, /state, /quit");
@@ -70,18 +68,13 @@ public class Client {
 
                     System.out.println("Connecting to the server");
 
-                    SocketByteChannel sbc = SocketByteChannel.connect(
-                        host, port.intValue());
-
-                    if (sbc == null) {
-                        System.out.println("Failed to connect!");
-                        continue;
-                    }
-
-                    ch = new IrcChannel_A(sbc);
+                    SocketChannel sc = SocketChannel.open();
+                    sc.configureBlocking(true);
+                    sc.connect(new InetSocketAddress(host, port.intValue()));
 
                     System.out.println("Connected to " + host + " at " + port);
 
+                    IrcChannel_A ch = new IrcChannel_A(sc);
                     irc = new Irc_Client(ch, state, Unit.id);
                     Irc.runClient(irc, executor);
                 }
