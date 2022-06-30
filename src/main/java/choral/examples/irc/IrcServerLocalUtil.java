@@ -16,6 +16,11 @@ import java.util.stream.Collectors;
 public class IrcServerLocalUtil {
     public static final String HOSTNAME = "irc.choral.net";
 
+    /**
+     * Process a client's NICK message.
+     *
+     * NOTE: Choral doesn't support loops.
+     */
     public static void processWelcome(ServerState state, long clientId) {
         BiConsumer<Command, String> add = (command, text) -> {
             state.addEvent(clientId, makeNumeric(
@@ -23,22 +28,22 @@ public class IrcServerLocalUtil {
         };
 
         state.addEvent(clientId, new ServerRplWelcomeEvent(
-            IrcServerLocalUtil.<RplWelcomeMessage>withSource(
+            IrcServerLocalUtil.withSource(
                 new RplWelcomeMessage(state.getNickname(clientId),
                                       "Welcome to ChoralNet!"),
                 new Source(HOSTNAME))));
 
-        add.accept(Command.RPL_YOURHOST, "Your host is " + HOSTNAME);
-        add.accept(Command.RPL_CREATED, "The server was created at IMADA");
-        add.accept(Command.RPL_MYINFO, "I'm running ChoralIRC 0.0.1");
+        add.accept(Command.RPL_YOURHOST, "Your host is " + HOSTNAME + "!");
+        add.accept(Command.RPL_CREATED, "The server was created at IMADA!");
+        add.accept(Command.RPL_MYINFO, "I'm running ChoralIRC 0.0.1!");
         add.accept(Command.RPL_ISUPPORT, "NICKLEN=32");
         add.accept(Command.RPL_UMODEIS, "+i");
 
-        add.accept(Command.RPL_LUSERCLIENT, "There's only me and you here");
+        add.accept(Command.RPL_LUSERCLIENT, "There's only me and you here!");
         // add.accept(Command.RPL_LUSEROP, "");
         // add.accept(Command.RPL_LUSERUNKNOWN, "");
         // add.accept(Command.RPL_LUSERCHANNELS, "");
-        add.accept(Command.RPL_LUSERME, "I have exactly one user---you");
+        add.accept(Command.RPL_LUSERME, "I have exactly one user---you!");
         // add.accept(Command.RPL_LOCALUSERS, "");
         // add.accept(Command.RPL_GLOBALUSERS, "");
 
@@ -51,6 +56,11 @@ public class IrcServerLocalUtil {
         state.setWelcomeDone(clientId, true);
     }
 
+    /**
+     * Process a client's NICK message.
+     *
+     * NOTE: Choral doesn't support loops.
+     */
     public static void processNick(ServerState state, long clientId,
                                    NickMessage message) {
         String current = state.getNickname(clientId);
@@ -79,7 +89,7 @@ public class IrcServerLocalUtil {
                         processWelcome(state, clientId);
                     }
                     else {
-                        NickMessage m = IrcServerLocalUtil.<NickMessage>withSource(
+                        NickMessage m = IrcServerLocalUtil.withSource(
                             message, new Source(current));
 
                         state.addEvent(clientId, new ServerNickEvent(m));
@@ -130,7 +140,7 @@ public class IrcServerLocalUtil {
                             "Invalid channel name"));
                     }
                     else if (!state.inChannel(clientId, channel)) {
-                        JoinMessage m1 = IrcServerLocalUtil.<JoinMessage>withSource(
+                        JoinMessage m1 = IrcServerLocalUtil.withSource(
                             new JoinMessage(channel),
                             new Source(nickname));
 
@@ -202,7 +212,7 @@ public class IrcServerLocalUtil {
                         mb.param(message.getReason());
                     }
 
-                    PartMessage m = IrcServerLocalUtil.<PartMessage>withSource(
+                    PartMessage m = IrcServerLocalUtil.withSource(
                         new PartMessage(mb.message()),
                         new Source(nickname));
 
@@ -217,6 +227,11 @@ public class IrcServerLocalUtil {
         }
     }
 
+    /**
+     * Process a client's PRIVMSG message.
+     *
+     * NOTE: Choral doesn't support loops.
+     */
     public static void processPrivmsg(ServerState state, long clientId,
                                       PrivmsgMessage message) {
         if (!state.isRegistered(clientId)) {
@@ -250,7 +265,7 @@ public class IrcServerLocalUtil {
                             "You are not in that channel"));
                     }
                     else {
-                        PrivmsgMessage m = IrcServerLocalUtil.<PrivmsgMessage>withSource(
+                        PrivmsgMessage m = IrcServerLocalUtil.withSource(
                             new PrivmsgMessage(target, text),
                             new Source(nickname));
 
@@ -269,7 +284,7 @@ public class IrcServerLocalUtil {
                             "No such nickname"));
                     }
                     else {
-                        PrivmsgMessage m = IrcServerLocalUtil.<PrivmsgMessage>withSource(
+                        PrivmsgMessage m = IrcServerLocalUtil.withSource(
                             new PrivmsgMessage(target, text),
                             new Source(nickname));
 
