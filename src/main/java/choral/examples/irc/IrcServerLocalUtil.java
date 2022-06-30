@@ -19,8 +19,8 @@ public class IrcServerLocalUtil {
         BiConsumer<Command, String> add = (command, text) -> {
             Message m = MessageBuilder
                 .build()
-                .command(IrcServerLocalUtil.commandCode(command))
                 .source(new Source(HOSTNAME))
+                .command(command.code())
                 .param(state.getNickname(clientId))
                 .param(text)
                 .message();
@@ -289,16 +289,6 @@ public class IrcServerLocalUtil {
                 }
             }
         }
-    }
-
-    /**
-     * Equivalent to command.code().
-     *
-     * NOTE: Choral's enums do not support methods, so we cannot expose any of
-     * <code>Command</code>'s methods through a Choral header file.
-     */
-    public static String commandCode(Command command) {
-        return command.code();
     }
 
     /**
