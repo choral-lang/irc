@@ -56,7 +56,26 @@ public class Irc@(Client, Server) {
             PingMessage@Server m = ch_AB.<PingMessage>com(
                 new PingMessage@Client(token));
 
-            addServerEvent(new ServerPongEvent@Server(m));
+            serverState.getOut().println(m.toString());
+
+            if (!serverState.isRegistered(clientId)) {{
+                addServerEvent(new ServerForwardMessageEvent@Server(
+                    new ErrNotRegisteredMessage@Server(
+                        "*"@Server, "You must register first!"@Server)));
+            }}
+            else {
+                if (!m.hasEnoughParams()) {
+                    addServerEvent(new ServerForwardMessageEvent@Server(
+                        new ErrNotRegisteredMessage@Server(
+                            serverState.getNickname(clientId),
+                            "Need at least 1 parameter!"@Server)));
+                }
+                else {
+                    addServerEvent(new ServerPongEvent@Server(
+                        new PongMessage@Server(
+                            "irc.choral.net"@Server, m.getToken())));
+                }
+            }
         }}}}}}
         else {
             if (event.getType() == ClientEventType@Client.PONG) {{{{{
@@ -158,39 +177,12 @@ public class Irc@(Client, Server) {
         }}}}}}}}
         else {
             if (event.getType() == ServerEventType@Server.PONG) {{{{{{{
-                // TODO: Why is this necessary?
                 ch_AB.<ServerEventType>select(ServerEventType@Server.PONG);
 
-                if (!serverState.isRegistered(clientId)) {{
-                    ch_AB.<Command>select(Command@Server.ERR_NOTREGISTERED);
+                ServerPongEvent@Server e = event.asServerPongEvent();
+                PongMessage@Client m = ch_AB.<PongMessage>com(e.getMessage());
 
-                    Message@Client m = ch_AB.<Message>com(new ErrNotRegisteredMessage@Server(
-                        "*"@Server, "You must register first!"@Server));
-
-                    clientState.getOut().println("Error: "@Client + m.toString());
-                }}
-                else {
-                    ServerPongEvent@Server e = event.asServerPongEvent();
-                    PingMessage@Server ping = e.getMessage();
-
-                    if (!ping.hasEnoughParams()) {
-                        ch_AB.<Command>select(Command@Server.ERR_NEEDMOREPARAMS);
-
-                        Message@Client m = ch_AB.<Message>com(new ErrNeedMoreParamsMessage@Server(
-                            serverState.getNickname(clientId),
-                            "Need at least 1 parameter!"@Server));
-
-                        clientState.getOut().println("Error: "@Client + m.toString());
-                    }
-                    else {
-                        ch_AB.<Command>select(Command@Server.PONG);
-
-                        PongMessage@Client m = ch_AB.<PongMessage>com(new PongMessage@Server(
-                            "irc.choral.net"@Server, ping.getToken()));
-
-                        clientState.getOut().println("PONG"@Client);
-                    }
-                }
+                clientState.getOut().println(m.toString());
             }}}}}}}
             else {
                 if (event.getType() == ServerEventType@Server.NICK) {{{{{{

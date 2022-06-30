@@ -1,14 +1,14 @@
 package choral.examples.irc;
 
 public class ServerPongEvent extends ServerEvent {
-    private PingMessage message;
+    private PongMessage message;
 
-    public ServerPongEvent(PingMessage message) {
+    public ServerPongEvent(PongMessage message) {
         super(ServerEventType.PONG);
         this.message = message;
     }
 
-    public PingMessage getMessage() {
+    public PongMessage getMessage() {
         return message;
     }
 }
