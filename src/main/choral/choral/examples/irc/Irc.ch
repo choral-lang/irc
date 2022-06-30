@@ -199,6 +199,8 @@ public class Irc@(Client, Server) {
                     ServerNickEvent@Server e = event.asServerNickEvent();
                     NickMessage@Client m = ch_AB.<NickMessage>com(e.getMessage());
 
+                    clientState.getOut().println(m.toString());
+
                     if (m.hasEnoughParams()) {
                         IrcClientLocalUtil@Client.processNick(clientState, m);
                     }
@@ -232,6 +234,8 @@ public class Irc@(Client, Server) {
                                 ServerJoinEvent@Server e = event.asServerJoinEvent();
                                 JoinMessage@Client m = ch_AB.<JoinMessage>com(e.getMessage());
 
+                                clientState.getOut().println(m.toString());
+
                                 clientLocal.addLocalEvent(new ClientLocalJoinEvent@Client(m));
                             }}}}}
                             else {
@@ -240,6 +244,8 @@ public class Irc@(Client, Server) {
 
                                     ServerPartEvent@Server e = event.asServerPartEvent();
                                     PartMessage@Client m = ch_AB.<PartMessage>com(e.getMessage());
+
+                                    clientState.getOut().println(m.toString());
 
                                     clientLocal.addLocalEvent(new ClientLocalPartEvent@Client(m));
                                 }}}}
@@ -259,6 +265,8 @@ public class Irc@(Client, Server) {
                                             ServerRplWelcomeEvent@Server e = event.asServerRplWelcomeEvent();
                                             RplWelcomeMessage@Client m = ch_AB.<RplWelcomeMessage>com(e.getMessage());
 
+                                            clientState.getOut().println(m.toString());
+
                                             if (m.hasEnoughParams()) {
                                                 clientState.setNickname(m.getNickname());
                                             }
@@ -269,6 +277,8 @@ public class Irc@(Client, Server) {
 
                                                 ServerRplNamReplyEvent@Server e = event.asServerRplNamReplyEvent();
                                                 RplNamReplyMessage@Client m = ch_AB.<RplNamReplyMessage>com(e.getMessage());
+
+                                                clientState.getOut().println(m.toString());
 
                                                 if (m.hasEnoughParams()) {
                                                     IrcClientLocalUtil@Client.addMembers(
