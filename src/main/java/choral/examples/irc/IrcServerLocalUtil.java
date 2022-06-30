@@ -13,12 +13,14 @@ import java.util.stream.Collectors;
  * inconvenient, cumbersome or impossible to write directly in Choral.
  */
 public class IrcServerLocalUtil {
+    public static final String HOSTNAME = "irc.choral.net";
+
     public static void processWelcome(ServerState state, long clientId) {
         BiConsumer<Command, String> add = (command, text) -> {
             Message m = MessageBuilder
                 .build()
-                .source(new Source("irc.choral.net"))
                 .command(IrcServerLocalUtil.commandCode(command))
+                .source(new Source(HOSTNAME))
                 .param(state.getNickname(clientId))
                 .param(text)
                 .message();
@@ -30,9 +32,9 @@ public class IrcServerLocalUtil {
             IrcServerLocalUtil.<RplWelcomeMessage>withSource(
                 new RplWelcomeMessage(state.getNickname(clientId),
                                       "Welcome to ChoralNet!"),
-                new Source("irc.choral.net"))));
+                new Source(HOSTNAME))));
 
-        add.accept(Command.RPL_YOURHOST, "Your host is irc.choral.net");
+        add.accept(Command.RPL_YOURHOST, "Your host is " + HOSTNAME);
         add.accept(Command.RPL_CREATED, "The server was created at IMADA");
         add.accept(Command.RPL_MYINFO, "I'm running ChoralIRC 0.0.1");
         add.accept(Command.RPL_ISUPPORT, "NICKLEN=32");

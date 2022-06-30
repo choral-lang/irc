@@ -66,7 +66,7 @@ public class Irc@(Client, Server) {
                 else {
                     addServerEvent(new ServerPongEvent@Server(
                         new PongMessage@Server(
-                            "irc.choral.net"@Server, m.getToken())));
+                            IrcServerLocalUtil@Server.HOSTNAME, m.getToken())));
                 }
             }
         }}}}}}
