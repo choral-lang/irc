@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ErrNeedMoreParamsMessage@R extends Message@R {
-    public ErrNeedMoreParamsMessage(String@R nickname, String@R message) {}
-
-    public ErrNeedMoreParamsMessage(Message@R message) {}
-}

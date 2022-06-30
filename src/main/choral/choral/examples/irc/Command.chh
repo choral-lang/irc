@@ -15,7 +15,6 @@ public enum Command@R {
     RPL_MYINFO,
     RPL_ISUPPORT,
     RPL_UMODEIS,
-
     RPL_LUSERCLIENT,
     RPL_LUSEROP,
     RPL_LUSERUNKNOWN,
@@ -23,7 +22,6 @@ public enum Command@R {
     RPL_LUSERME,
     RPL_LOCALUSERS,
     RPL_GLOBALUSERS,
-
     RPL_NAMREPLY,
     RPL_ENDOFNAMES,
     RPL_MOTD,

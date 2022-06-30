@@ -18,7 +18,6 @@ public enum Command {
     RPL_MYINFO("004"),
     RPL_ISUPPORT("005"),
     RPL_UMODEIS("221"),
-
     RPL_LUSERCLIENT("251"),
     RPL_LUSEROP("252"),
     RPL_LUSERUNKNOWN("253"),
@@ -26,7 +25,6 @@ public enum Command {
     RPL_LUSERME("255"),
     RPL_LOCALUSERS("265"),
     RPL_GLOBALUSERS("266"),
-
     RPL_NAMREPLY("353"),
     RPL_ENDOFNAMES("366"),
     RPL_MOTD("372"),

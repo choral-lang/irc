@@ -52,16 +52,16 @@ public class Irc@(Client, Server) {
             serverState.getOut().println(m.toString());
 
             if (!serverState.isRegistered(clientId)) {{
-                addServerEvent(new ServerForwardMessageEvent@Server(
-                    new ErrNotRegisteredMessage@Server(
-                        "*"@Server, "You must register first"@Server)));
+                addServerEvent(IrcServerLocalUtil@Server.makeNumeric(
+                    Command@Server.ERR_NOTREGISTERED, "*"@Server,
+                    "You must register first"@Server));
             }}
             else {
                 if (!m.hasEnoughParams()) {
-                    addServerEvent(new ServerForwardMessageEvent@Server(
-                        new ErrNotRegisteredMessage@Server(
-                            serverState.getNickname(clientId),
-                            "Need more parameters"@Server)));
+                    addServerEvent(IrcServerLocalUtil@Server.makeNumeric(
+                        Command@Server.ERR_NEEDMOREPARAMS,
+                        serverState.getNickname(clientId),
+                        "Need more parameters"@Server));
                 }
                 else {
                     addServerEvent(new ServerPongEvent@Server(
@@ -102,20 +102,22 @@ public class Irc@(Client, Server) {
                         clientState.setRealname(cMessage.getRealname());
 
                         if (!sMessage.hasEnoughParams()) {{{{
-                            Message@Server m = new ErrNeedMoreParamsMessage@Server(
-                                serverState.getNickname(clientId),
-                                "Need more parameters"@Server);
-                            serverState.addEvent(clientId, new ServerForwardMessageEvent@Server(m));
+                            serverState.addEvent(clientId,
+                                IrcServerLocalUtil@Server.makeNumeric(
+                                    Command@Server.ERR_NEEDMOREPARAMS,
+                                    serverState.getNickname(clientId),
+                                    "Need more parameters"@Server));
                         }}}}
                         else {
                             String@Server username = sMessage.getUsername();
                             String@Server realname = sMessage.getRealname();
 
                             if (serverState.isRegistered(clientId)) {{{
-                                Message@Server m = new ErrAlreadyRegisteredMessage@Server(
-                                    serverState.getNickname(clientId),
-                                    "You cannot register again"@Server);
-                                serverState.addEvent(clientId, new ServerForwardMessageEvent@Server(m));
+                                serverState.addEvent(clientId,
+                                    IrcServerLocalUtil@Server.makeNumeric(
+                                        Command@Server.ERR_ALREADYREGISTERED,
+                                        serverState.getNickname(clientId),
+                                        "You cannot register again"@Server));
                             }}}
                             else {
                                 if (Util@Server.validUsername(username)) {
@@ -306,9 +308,9 @@ public class Irc@(Client, Server) {
                                         }
                                     }
                                     else {
-                                        ch_AB.<ServerEventType>select(ServerEventType@Server.FORWARD_MESSAGE);
+                                        ch_AB.<ServerEventType>select(ServerEventType@Server.FORWARD);
 
-                                        ServerForwardMessageEvent@Server e = event.asServerForwardMessageEvent();
+                                        ServerForwardEvent@Server e = event.asServerForwardEvent();
                                         Message@Client m = ch_AB.<Message>com(e.getMessage());
 
                                         clientState.getOut().println(m.toString());

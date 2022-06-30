@@ -1,9 +1,0 @@
-package choral.examples.irc;
-
-import java.util.List;
-
-public class ErrCannotSendToChanMessage@R extends Message@R {
-    public ErrCannotSendToChanMessage(String@R nickname, String@R message) {}
-
-    public ErrCannotSendToChanMessage(Message@R message) {}
-}

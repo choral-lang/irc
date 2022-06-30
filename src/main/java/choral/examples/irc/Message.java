@@ -18,8 +18,39 @@ public class Message {
             put(Command.JOIN, JoinMessage.class);
             put(Command.PART, PartMessage.class);
             put(Command.PRIVMSG, PrivmsgMessage.class);
+
             put(Command.RPL_WELCOME, RplWelcomeMessage.class);
+            put(Command.RPL_YOURHOST, ForwardMessage.class);
+            put(Command.RPL_CREATED, ForwardMessage.class);
+            put(Command.RPL_MYINFO, ForwardMessage.class);
+            put(Command.RPL_ISUPPORT, ForwardMessage.class);
+            put(Command.RPL_UMODEIS, ForwardMessage.class);
+            put(Command.RPL_LUSERCLIENT, ForwardMessage.class);
+            put(Command.RPL_LUSEROP, ForwardMessage.class);
+            put(Command.RPL_LUSERUNKNOWN, ForwardMessage.class);
+            put(Command.RPL_LUSERCHANNELS, ForwardMessage.class);
+            put(Command.RPL_LUSERME, ForwardMessage.class);
+            put(Command.RPL_LOCALUSERS, ForwardMessage.class);
+            put(Command.RPL_GLOBALUSERS, ForwardMessage.class);
             put(Command.RPL_NAMREPLY, RplNamReplyMessage.class);
+            put(Command.RPL_ENDOFNAMES, ForwardMessage.class);
+            put(Command.RPL_MOTD, ForwardMessage.class);
+            put(Command.RPL_MOTDSTART, ForwardMessage.class);
+            put(Command.RPL_ENDOFMOTD, ForwardMessage.class);
+
+            put(Command.ERR_NOSUCHNICK, ForwardMessage.class);
+            put(Command.ERR_NOSUCHCHANNEL, ForwardMessage.class);
+            put(Command.ERR_CANNOTSENDTOCHAN, ForwardMessage.class);
+            put(Command.ERR_NORECIPIENT, ForwardMessage.class);
+            put(Command.ERR_NOTEXTTOSEND, ForwardMessage.class);
+            put(Command.ERR_NOMOTD, ForwardMessage.class);
+            put(Command.ERR_NONICKNAMEGIVEN, ForwardMessage.class);
+            put(Command.ERR_ERRONEOUSNICKNAME, ForwardMessage.class);
+            put(Command.ERR_NICKNAMEINUSE, ForwardMessage.class);
+            put(Command.ERR_NOTONCHANNEL, ForwardMessage.class);
+            put(Command.ERR_NOTREGISTERED, ForwardMessage.class);
+            put(Command.ERR_NEEDMOREPARAMS, ForwardMessage.class);
+            put(Command.ERR_ALREADYREGISTERED, ForwardMessage.class);
         }};
 
     protected Source source;

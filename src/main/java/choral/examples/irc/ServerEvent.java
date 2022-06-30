@@ -51,8 +51,8 @@ public abstract class ServerEvent {
         return (ServerRplNamReplyEvent) this;
     }
 
-    public ServerForwardMessageEvent asServerForwardMessageEvent() {
-        assert eventType == ServerEventType.FORWARD_MESSAGE;
-        return (ServerForwardMessageEvent) this;
+    public ServerForwardEvent asServerForwardEvent() {
+        assert eventType == ServerEventType.FORWARD;
+        return (ServerForwardEvent) this;
     }
 }

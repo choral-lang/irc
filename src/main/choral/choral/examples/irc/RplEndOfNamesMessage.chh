@@ -1,9 +1,0 @@
-package choral.examples.irc;
-
-import java.util.List;
-
-public class RplEndOfNamesMessage@R extends Message@R {
-    public RplEndOfNamesMessage(String@R nickname, String@R channel, String@R message) {}
-
-    public RplEndOfNamesMessage(Message@R message) {}
-}
