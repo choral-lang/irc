@@ -137,7 +137,7 @@ public class IrcServerLocal@R {
                 if (event.getType() == ServerLocalEventType@R.JOIN) {
                     if (!state.isRegistered(clientId)) {
                         Message@R r = new ErrNotRegisteredMessage@R(
-                            "unknown"@R, "You must register first!"@R);
+                            "*"@R, "You must register first!"@R);
                         state.addEvent(clientId, new ServerForwardMessageEvent@R(r));
                     }
                     else {
@@ -158,7 +158,7 @@ public class IrcServerLocal@R {
                     if (event.getType() == ServerLocalEventType@R.PART) {
                         if (!state.isRegistered(clientId)) {
                             Message@R r = new ErrNotRegisteredMessage@R(
-                                "unknown"@R, "You must register first!"@R);
+                                "*"@R, "You must register first!"@R);
                             state.addEvent(clientId, new ServerForwardMessageEvent@R(r));
                         }
                         else {

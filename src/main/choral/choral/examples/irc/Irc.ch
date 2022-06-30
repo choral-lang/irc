@@ -165,7 +165,7 @@ public class Irc@(Client, Server) {
                     ch_AB.<Command>select(Command@Server.ERR_NOTREGISTERED);
 
                     Message@Client m = ch_AB.<Message>com(new ErrNotRegisteredMessage@Server(
-                        "unknown"@Server, "You must register first!"@Server));
+                        "*"@Server, "You must register first!"@Server));
 
                     clientState.getOut().println("Error: "@Client + m.toString());
                 }}
