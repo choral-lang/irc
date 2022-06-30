@@ -1,6 +1,7 @@
 package choral.examples.irc;
 
 import choral.lang.Unit;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
@@ -14,6 +15,8 @@ public class Server {
     private static final int PORT = 8667;
 
     public static void main(String[] args) throws IOException {
+        Scanner s = new Scanner(System.in);
+        Gson gson = new Gson();
         ServerState state = new ServerState();
         ExecutorService executor = Executors.newCachedThreadPool();
 
@@ -49,15 +52,39 @@ public class Server {
             executor.shutdown();
         });
 
-        System.out.println("Press C-d to stop the server");
+        System.out.println("Commands: /state, /quit");
 
-        Scanner s = new Scanner(System.in);
-        s.hasNextLine();
-        s.close();
+        while (true) {
+            System.out.print("> ");
+
+            if (!s.hasNextLine())
+                break;
+
+            String line = s.nextLine();
+            String[] parts = line.split(" +");
+
+            if (parts.length == 0) {
+                System.out.println("Invalid command");
+                continue;
+            }
+
+            String cmd = parts[0];
+
+            if (cmd.equalsIgnoreCase("/state")) {
+                System.out.println(gson.toJson(state));
+            }
+            else if (cmd.equalsIgnoreCase("/quit")) {
+                break;
+            }
+            else {
+                System.out.println("Unrecognized command");
+            }
+        }
 
         System.out.println("Quitting");
         // TODO: Disconnect properly.
 
+        s.close();
         listener.close();
     }
 }
