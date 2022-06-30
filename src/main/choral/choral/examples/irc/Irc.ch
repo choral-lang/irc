@@ -11,7 +11,6 @@ public class Irc@(Client, Server) {
 
     private ClientState@Client clientState;
     private LinkedBlockingQueue@Client<ClientEvent> clientQueue;
-    private IrcClientLocal@Client clientLocal;
 
     private ServerState@Server serverState;
     private LinkedBlockingQueue@Server<ServerEvent> serverQueue;
@@ -24,7 +23,6 @@ public class Irc@(Client, Server) {
 
         this.clientState = clientState;
         this.clientQueue = new LinkedBlockingQueue@Client<ClientEvent>();
-        this.clientLocal = new IrcClientLocal@Client(clientState, clientQueue);
 
         this.serverState = serverState;
         this.serverQueue = new LinkedBlockingQueue@Server<ServerEvent>();
@@ -180,7 +178,12 @@ public class Irc@(Client, Server) {
             ServerPingEvent@Server e = event.asServerPingEvent();
             PingMessage@Client m = ch_AB.<PingMessage>com(e.getMessage());
 
-            clientLocal.addLocalEvent(new ClientLocalPongEvent@Client(m));
+            clientState.getOut().println(m.toString());
+
+            if (m.hasEnoughParams()) {
+                Util@Client.<ClientEvent>put(clientQueue,
+                    new ClientPongEvent@Client(new PongMessage@Client(m.getToken())));
+            }
         }}}}}}}}
         else {
             if (event.getType() == ServerEventType@Server.PONG) {{{{{{{
@@ -212,7 +215,27 @@ public class Irc@(Client, Server) {
                         JoinMessage@Client m = ch_AB.<JoinMessage>com(e.getMessage());
 
                         clientState.getOut().println(m.toString());
-                        clientLocal.addLocalEvent(new ClientLocalJoinEvent@Client(m));
+
+                        Source@Client source = m.getSource();
+
+                        if (source != null@Client && m.hasEnoughParams()) {
+                            List@Client<String> channels = m.getChannels();
+                            String@Client nickname = source.getNickname();
+                            // We expect just a single channel, so ignore the others, if any
+                            String@Client channel = channels.get(0@Client);
+
+                            if (nickname.equals(clientState.getNickname())) {
+                                if (!clientState.inChannel(channel)) {
+                                    clientState.joinChannel(channel);
+                                }
+                            }
+                            else {
+                                if (clientState.inChannel(channel)) {
+                                    clientState.addMember(channel, nickname);
+                                }
+                            }
+                        }
+                        else {{{}}}
                     }}}}}
                     else {
                         if (event.getType() == ServerEventType@Server.PART) {{{{
@@ -222,7 +245,27 @@ public class Irc@(Client, Server) {
                             PartMessage@Client m = ch_AB.<PartMessage>com(e.getMessage());
 
                             clientState.getOut().println(m.toString());
-                            clientLocal.addLocalEvent(new ClientLocalPartEvent@Client(m));
+
+                            Source@Client source = m.getSource();
+
+                            if (source != null@Client && m.hasEnoughParams()) {
+                                List@Client<String> channels = m.getChannels();
+                                String@Client nickname = source.getNickname();
+                                // NOTE: We expect just a single channel, so ignore the others, if any
+                                String@Client channel = channels.get(0@Client);
+
+                                if (nickname.equals(clientState.getNickname())) {
+                                    if (clientState.inChannel(channel)) {
+                                        clientState.partChannel(channel);
+                                    }
+                                }
+                                else {
+                                    if (clientState.inChannel(channel)) {
+                                        clientState.removeMember(channel, nickname);
+                                    }
+                                }
+                            }
+                            else {{{}}}
                         }}}}
                         else {
                             if (event.getType() == ServerEventType@Server.PRIVMSG) {{{
@@ -279,9 +322,5 @@ public class Irc@(Client, Server) {
         }
 
         serverDrivenLoop();
-    }
-
-    public void clientLocalLoop() {
-        clientLocal.run();
     }
 }
