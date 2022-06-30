@@ -47,7 +47,7 @@ public class IrcServerLocalUtil {
                                    JoinMessage message) {
         List<String> channels = message.getChannels();
 
-        if (channels.size() == 1 && channels.get(0) == "0") {
+        if (channels.size() == 1 && channels.get(0).equals("0")) {
             processPart(state, clientId, new PartMessage(
                 new ArrayList<>(state.getChannels(clientId))));
         }
