@@ -1,0 +1,15 @@
+package choral.examples.irc;
+
+import java.util.List;
+
+public class RplWelcomeMessage@R extends Message@R {
+    public RplWelcomeMessage(String@R nickname, String@R message) {}
+
+    public RplWelcomeMessage(Message@R message) {}
+
+    public boolean@R hasEnoughParams() {}
+
+    public String@R getNickname() {}
+
+    public String@R getMessage() {}
+}

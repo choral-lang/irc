@@ -23,5 +23,7 @@ public abstract class ServerEvent@R {
 
     public ServerPartEvent@R asServerPartEvent() {}
 
+    public ServerRplWelcomeEvent@R asServerRplWelcomeEvent() {}
+
     public ServerRplNamReplyEvent@R asServerRplNamReplyEvent() {}
 }

@@ -17,6 +17,7 @@ public class Message {
             put(Command.USER, UserMessage.class);
             put(Command.JOIN, JoinMessage.class);
             put(Command.PART, PartMessage.class);
+            put(Command.RPL_WELCOME, RplWelcomeMessage.class);
             put(Command.RPL_NAMREPLY, RplNamReplyMessage.class);
         }};
 

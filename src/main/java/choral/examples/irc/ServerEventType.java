@@ -9,6 +9,7 @@ enum ServerEventType {
     JOIN,
     PART,
     MESSAGE,
+    RPL_WELCOME,
     RPL_NAMREPLY,
     FORWARD_MESSAGE,
     UNKNOWN

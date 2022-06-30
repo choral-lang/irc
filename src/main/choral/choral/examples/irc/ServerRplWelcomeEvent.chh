@@ -1,0 +1,7 @@
+package choral.examples.irc;
+
+public class ServerRplWelcomeEvent@R extends ServerEvent@R {
+    public ServerRplWelcomeEvent(RplWelcomeMessage@R message) {}
+
+    public RplWelcomeMessage@R getMessage() {}
+}

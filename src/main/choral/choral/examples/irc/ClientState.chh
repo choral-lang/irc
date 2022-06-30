@@ -20,8 +20,6 @@ public class ClientState@R {
 
     public void setNickname(String@R nickname) {}
 
-    public void revertNickname() {}
-
     public Set@R<String> getChannels() {}
 
     public boolean@R inChannel(String@R channel) {}

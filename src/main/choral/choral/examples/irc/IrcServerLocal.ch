@@ -32,7 +32,12 @@ public class IrcServerLocal@R {
     }
 
     private void addWelcome() {
-        addWelcomeMessage(Command@R.RPL_WELCOME, "Welcome to ChoralNet!"@R);
+        state.addEvent(clientId, new ServerRplWelcomeEvent@R(
+            IrcServerLocalUtil@R.<RplWelcomeMessage>withSource(
+                new RplWelcomeMessage@R(state.getNickname(clientId),
+                                        "Welcome to ChoralNet!"@R),
+                new Source@R("irc.choral.net"@R))));
+
         addWelcomeMessage(Command@R.RPL_YOURHOST, "Your host is irc.choral.net"@R);
         addWelcomeMessage(Command@R.RPL_CREATED, "The server was created at IMADA"@R);
         addWelcomeMessage(Command@R.RPL_MYINFO, "I'm running ChoralIRC 0.0.1"@R);
