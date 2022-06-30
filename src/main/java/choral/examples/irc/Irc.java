@@ -12,6 +12,5 @@ public class Irc {
     public static void runServer(Irc_Server server, ExecutorService executor) {
         executor.execute(server::clientDrivenLoop);
         executor.execute(server::serverDrivenLoop);
-        executor.execute(server::serverLocalLoop);
     }
 }

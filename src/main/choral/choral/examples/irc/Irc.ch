@@ -16,7 +16,6 @@ public class Irc@(Client, Server) {
     private ServerState@Server serverState;
     private LinkedBlockingQueue@Server<ServerEvent> serverQueue;
     private long@Server clientId;
-    private IrcServerLocal@Server serverLocal;
 
     public Irc(SymChannel@(Client, Server)<Message> ch_AB,
                ClientState@Client clientState,
@@ -30,7 +29,6 @@ public class Irc@(Client, Server) {
         this.serverState = serverState;
         this.serverQueue = new LinkedBlockingQueue@Server<ServerEvent>();
         this.clientId = serverState.newClient(serverQueue);
-        this.serverLocal = new IrcServerLocal@Server(serverState, clientId);
     }
 
     public void addClientEvent(ClientEvent@Client event) {
@@ -92,7 +90,7 @@ public class Irc@(Client, Server) {
                     NickMessage@Server sMessage = ch_AB.<NickMessage>com(cMessage);
 
                     clientState.setNickname(cMessage.getNickname());
-                    serverLocal.addLocalEvent(new ServerLocalCheckNickEvent@Server(sMessage));
+                    IrcServerLocalUtil@Server.processNick(serverState, clientId, sMessage);
                 }}}}
                 else {
                     if (event.getType() == ClientEventType@Client.USER) {{{
@@ -104,7 +102,36 @@ public class Irc@(Client, Server) {
 
                         clientState.setUsername(cMessage.getUsername());
                         clientState.setRealname(cMessage.getRealname());
-                        serverLocal.addLocalEvent(new ServerLocalCheckUserEvent@Server(sMessage));
+
+                        if (!sMessage.hasEnoughParams()) {{{{
+                            Message@Server m = new ErrNeedMoreParamsMessage@Server(
+                                serverState.getNickname(clientId),
+                                "Need at least 4 parameters!"@Server);
+                            serverState.addEvent(clientId, new ServerForwardMessageEvent@Server(m));
+                        }}}}
+                        else {
+                            String@Server username = sMessage.getUsername();
+                            String@Server realname = sMessage.getRealname();
+
+                            if (serverState.isRegistered(clientId)) {{{
+                                Message@Server m = new ErrAlreadyRegisteredMessage@Server(
+                                    serverState.getNickname(clientId),
+                                    "You cannot register again"@Server);
+                                serverState.addEvent(clientId, new ServerForwardMessageEvent@Server(m));
+                            }}}
+                            else {
+                                if (Util@Server.validUsername(username)) {
+                                    serverState.setUsername(clientId, username);
+                                    serverState.setRealname(clientId, realname);
+
+                                    if (serverState.isRegistered(clientId) &&
+                                        !serverState.isWelcomeDone(clientId)) {
+                                        IrcServerLocalUtil@Server.processWelcome(serverState, clientId);
+                                    }
+                                }
+                                else {{}}
+                            }
+                        }
                     }}}
                     else {
                         if (event.getType() == ClientEventType@Client.JOIN) {{
@@ -113,7 +140,7 @@ public class Irc@(Client, Server) {
                             ClientJoinEvent@Client e = event.asClientJoinEvent();
                             JoinMessage@Server m = ch_AB.<JoinMessage>com(e.getMessage());
 
-                            serverLocal.addLocalEvent(new ServerLocalJoinEvent@Server(m));
+                            IrcServerLocalUtil@Server.processJoin(serverState, clientId, m);
                         }}
                         else {
                             if (event.getType() == ClientEventType@Client.PART) {
@@ -122,7 +149,7 @@ public class Irc@(Client, Server) {
                                 ClientPartEvent@Client e = event.asClientPartEvent();
                                 PartMessage@Server m = ch_AB.<PartMessage>com(e.getMessage());
 
-                                serverLocal.addLocalEvent(new ServerLocalPartEvent@Server(m));
+                                IrcServerLocalUtil@Server.processPart(serverState, clientId, m);
                             }
                             else {
                                 ch_AB.<ClientEventType>select(ClientEventType@Client.PRIVMSG);
@@ -256,9 +283,5 @@ public class Irc@(Client, Server) {
 
     public void clientLocalLoop() {
         clientLocal.run();
-    }
-
-    public void serverLocalLoop() {
-        serverLocal.run();
     }
 }

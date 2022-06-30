@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ServerLocalCheckUserEvent@R extends ServerLocalEvent@R {
-    public ServerLocalCheckUserEvent(UserMessage@R message) {}
-
-    public UserMessage@R getMessage() {}
-}

@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ServerLocalJoinEvent@R extends ServerLocalEvent@R {
-    public ServerLocalJoinEvent(JoinMessage@R message) {}
-
-    public JoinMessage@R getMessage() {}
-}

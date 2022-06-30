@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 public class IrcServerLocalUtil@R {
-    public static boolean@R validChannelnames(List@R<String> channels) {}
+    public static void processWelcome(ServerState@R state, long@R clientId) {}
 
     public static void processNick(ServerState@R state, long@R clientId, NickMessage@R message) {}
 
