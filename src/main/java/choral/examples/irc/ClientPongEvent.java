@@ -1,14 +1,14 @@
 package choral.examples.irc;
 
 public class ClientPongEvent extends ClientEvent {
-    private String token;
+    private PongMessage message;
 
-    public ClientPongEvent(String token) {
+    public ClientPongEvent(PongMessage message) {
         super(ClientEventType.PONG);
-        this.token = token;
+        this.message = message;
     }
 
-    public String getToken() {
-        return token;
+    public PongMessage getMessage() {
+        return message;
     }
 }

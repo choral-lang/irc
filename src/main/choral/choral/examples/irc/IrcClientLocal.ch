@@ -31,7 +31,7 @@ public class IrcClientLocal@R {
             PingMessage@R m = e.getMessage();
 
             if (m.hasEnoughParams()) {
-                addEvent(new ClientPongEvent@R(m.getToken()));
+                addEvent(new ClientPongEvent@R(new PongMessage@R(m.getToken())));
             }
         }
         else {

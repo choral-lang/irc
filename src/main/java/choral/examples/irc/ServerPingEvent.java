@@ -1,14 +1,14 @@
 package choral.examples.irc;
 
 public class ServerPingEvent extends ServerEvent {
-    private String token;
+    private PingMessage message;
 
-    public ServerPingEvent(String token) {
+    public ServerPingEvent(PingMessage message) {
         super(ServerEventType.PING);
-        this.token = token;
+        this.message = message;
     }
 
-    public String getToken() {
-        return token;
+    public PingMessage getMessage() {
+        return message;
     }
 }

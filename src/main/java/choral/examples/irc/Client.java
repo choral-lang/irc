@@ -89,7 +89,8 @@ public class Client {
                         continue;
                     }
 
-                    irc.addClientEvent(new ClientNickEvent(parts[1]));
+                    irc.addClientEvent(new ClientNickEvent(new NickMessage(
+                        parts[1])));
                 }
                 else if (cmd.equalsIgnoreCase("/user")) {
                     if (parts.length - 1 == 0) {
@@ -105,7 +106,8 @@ public class Client {
                     String username = parts[1];
                     String realname = parts.length - 1 < 2 ? username : parts[2];
 
-                    irc.addClientEvent(new ClientUserEvent(username, realname));
+                    irc.addClientEvent(new ClientUserEvent(new UserMessage(
+                        username, realname)));
                 }
                 else if (cmd.equalsIgnoreCase("/join")) {
                     if (parts.length - 1 < 1) {
@@ -113,8 +115,8 @@ public class Client {
                         continue;
                     }
 
-                    irc.addClientEvent(new ClientJoinEvent(
-                        Arrays.asList(parts[1].split(","))));
+                    irc.addClientEvent(new ClientJoinEvent(new JoinMessage(
+                        Arrays.asList(parts[1].split(",")))));
                 }
                 else if (cmd.equalsIgnoreCase("/part")) {
                     if (parts.length - 1 < 1) {
@@ -122,10 +124,17 @@ public class Client {
                         continue;
                     }
 
-                    String reason = parts.length - 1 < 2 ? null : parts[2];
+                    List<String> channels = Arrays.asList(parts[1].split(","));
+                    PartMessage m = null;
 
-                    irc.addClientEvent(new ClientPartEvent(
-                        Arrays.asList(parts[1].split(",")), reason));
+                    if (parts.length - 1 < 2) {
+                        m = new PartMessage(channels);
+                    }
+                    else {
+                        m = new PartMessage(channels, parts[2]);
+                    }
+
+                    irc.addClientEvent(new ClientPartEvent(m));
                 }
                 else if (cmd.equalsIgnoreCase("/privmsg")) {
                     if (parts.length - 1 < 2) {
@@ -133,9 +142,8 @@ public class Client {
                         continue;
                     }
 
-                    irc.addClientEvent(new ClientPrivmsgEvent(
-                        new PrivmsgMessage(
-                            Arrays.asList(parts[1].split(",")), parts[2])));
+                    irc.addClientEvent(new ClientPrivmsgEvent(new PrivmsgMessage(
+                        Arrays.asList(parts[1].split(",")), parts[2])));
                 }
                 else if (cmd.equalsIgnoreCase("/state")) {
                     System.out.println(gson.toJson(state));

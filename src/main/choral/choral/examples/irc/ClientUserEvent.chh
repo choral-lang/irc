@@ -1,9 +1,7 @@
 package choral.examples.irc;
 
 public class ClientUserEvent@R extends ClientEvent@R {
-    public ClientUserEvent(String@R username, String@R realname) {}
+    public ClientUserEvent(UserMessage@R message) {}
 
-    public String@R getUsername() {}
-
-    public String@R getRealname() {}
+    public UserMessage@R getMessage() {}
 }

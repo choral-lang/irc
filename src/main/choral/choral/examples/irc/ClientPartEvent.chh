@@ -3,15 +3,7 @@ package choral.examples.irc;
 import java.util.List;
 
 public class ClientPartEvent@R extends ClientEvent@R {
-    public ClientPartEvent(List@R<String> channels, String@R reason) {}
+    public ClientPartEvent(PartMessage@R message) {}
 
-    public ClientPartEvent(List@R<String> channels) {}
-
-    public ClientPartEvent(String@R channel, String@R reason) {}
-
-    public ClientPartEvent(String@R channel) {}
-
-    public List@R<String> getChannels() {}
-
-    public String@R getReason() {}
+    public PartMessage@R getMessage() {}
 }

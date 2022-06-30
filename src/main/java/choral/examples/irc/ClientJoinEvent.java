@@ -1,24 +1,14 @@
 package choral.examples.irc;
 
-import java.util.List;
-
 public class ClientJoinEvent extends ClientEvent {
-    private List<String> channels;
+    private JoinMessage message;
 
-    private ClientJoinEvent() {
+    public ClientJoinEvent(JoinMessage message) {
         super(ClientEventType.JOIN);
+        this.message = message;
     }
 
-    public ClientJoinEvent(List<String> channels) {
-        this();
-        this.channels = channels;
-    }
-
-    public ClientJoinEvent(String channel) {
-        this(List.of(channel));
-    }
-
-    public List<String> getChannels() {
-        return channels;
+    public JoinMessage getMessage() {
+        return message;
     }
 }

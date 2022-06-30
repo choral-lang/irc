@@ -1,14 +1,14 @@
 package choral.examples.irc;
 
 public class ClientPingEvent extends ClientEvent {
-    private String token;
+    private PingMessage message;
 
-    public ClientPingEvent(String token) {
+    public ClientPingEvent(PingMessage message) {
         super(ClientEventType.PING);
-        this.token = token;
+        this.message = message;
     }
 
-    public String getToken() {
-        return token;
+    public PingMessage getMessage() {
+        return message;
     }
 }

@@ -51,10 +51,7 @@ public class Irc@(Client, Server) {
             ch_AB.<ClientEventType>select(ClientEventType@Client.PING);
 
             ClientPingEvent@Client e = event.asClientPingEvent();
-            String@Client token = e.getToken();
-
-            PingMessage@Server m = ch_AB.<PingMessage>com(
-                new PingMessage@Client(token));
+            PingMessage@Server m = ch_AB.<PingMessage>com(e.getMessage());
 
             serverState.getOut().println(m.toString());
 
@@ -82,10 +79,7 @@ public class Irc@(Client, Server) {
                 ch_AB.<ClientEventType>select(ClientEventType@Client.PONG);
 
                 ClientPongEvent@Client e = event.asClientPongEvent();
-                String@Client token = e.getToken();
-
-                PongMessage@Server m = ch_AB.<PongMessage>com(
-                    new PongMessage@Client(token));
+                PongMessage@Server m = ch_AB.<PongMessage>com(e.getMessage());
 
                 serverState.getOut().println(m.toString());
             }}}}}
@@ -94,38 +88,30 @@ public class Irc@(Client, Server) {
                     ch_AB.<ClientEventType>select(ClientEventType@Client.NICK);
 
                     ClientNickEvent@Client e = event.asClientNickEvent();
-                    String@Client cNickname = e.getNickname();
+                    NickMessage@Client cMessage = e.getMessage();
+                    NickMessage@Server sMessage = ch_AB.<NickMessage>com(cMessage);
 
-                    NickMessage@Server m = ch_AB.<NickMessage>com(
-                        new NickMessage@Client(cNickname));
-
-                    clientState.setNickname(cNickname);
-                    serverLocal.addLocalEvent(new ServerLocalCheckNickEvent@Server(m));
+                    clientState.setNickname(cMessage.getNickname());
+                    serverLocal.addLocalEvent(new ServerLocalCheckNickEvent@Server(sMessage));
                 }}}}
                 else {
                     if (event.getType() == ClientEventType@Client.USER) {{{
                         ch_AB.<ClientEventType>select(ClientEventType@Client.USER);
 
                         ClientUserEvent@Client e = event.asClientUserEvent();
-                        String@Client cUsername = e.getUsername();
-                        String@Client cRealname = e.getRealname();
+                        UserMessage@Client cMessage = e.getMessage();
+                        UserMessage@Server sMessage = ch_AB.<UserMessage>com(cMessage);
 
-                        UserMessage@Server m = ch_AB.<UserMessage>com(
-                            new UserMessage@Client(cUsername, cRealname));
-
-                        clientState.setUsername(cUsername);
-                        clientState.setRealname(cRealname);
-                        serverLocal.addLocalEvent(new ServerLocalCheckUserEvent@Server(m));
+                        clientState.setUsername(cMessage.getUsername());
+                        clientState.setRealname(cMessage.getRealname());
+                        serverLocal.addLocalEvent(new ServerLocalCheckUserEvent@Server(sMessage));
                     }}}
                     else {
                         if (event.getType() == ClientEventType@Client.JOIN) {{
                             ch_AB.<ClientEventType>select(ClientEventType@Client.JOIN);
 
                             ClientJoinEvent@Client e = event.asClientJoinEvent();
-                            List@Client<String> channels = e.getChannels();
-
-                            JoinMessage@Server m = ch_AB.<JoinMessage>com(
-                                new JoinMessage@Client(channels));
+                            JoinMessage@Server m = ch_AB.<JoinMessage>com(e.getMessage());
 
                             serverLocal.addLocalEvent(new ServerLocalJoinEvent@Server(m));
                         }}
@@ -134,10 +120,7 @@ public class Irc@(Client, Server) {
                                 ch_AB.<ClientEventType>select(ClientEventType@Client.PART);
 
                                 ClientPartEvent@Client e = event.asClientPartEvent();
-                                List@Client<String> channels = e.getChannels();
-
-                                PartMessage@Server m = ch_AB.<PartMessage>com(
-                                    new PartMessage@Client(channels));
+                                PartMessage@Server m = ch_AB.<PartMessage>com(e.getMessage());
 
                                 serverLocal.addLocalEvent(new ServerLocalPartEvent@Server(m));
                             }
@@ -168,10 +151,7 @@ public class Irc@(Client, Server) {
             ch_AB.<ServerEventType>select(ServerEventType@Server.PING);
 
             ServerPingEvent@Server e = event.asServerPingEvent();
-            String@Server sToken = e.getToken();
-
-            PingMessage@Client m = ch_AB.<PingMessage>com(
-                new PingMessage@Server(sToken));
+            PingMessage@Client m = ch_AB.<PingMessage>com(e.getMessage());
 
             clientLocal.addLocalEvent(new ClientLocalPongEvent@Client(m));
         }}}}}}}}
@@ -205,7 +185,6 @@ public class Irc@(Client, Server) {
                         JoinMessage@Client m = ch_AB.<JoinMessage>com(e.getMessage());
 
                         clientState.getOut().println(m.toString());
-
                         clientLocal.addLocalEvent(new ClientLocalJoinEvent@Client(m));
                     }}}}}
                     else {
@@ -216,7 +195,6 @@ public class Irc@(Client, Server) {
                             PartMessage@Client m = ch_AB.<PartMessage>com(e.getMessage());
 
                             clientState.getOut().println(m.toString());
-
                             clientLocal.addLocalEvent(new ClientLocalPartEvent@Client(m));
                         }}}}
                         else {

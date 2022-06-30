@@ -1,23 +1,14 @@
 package choral.examples.irc;
 
 public class ClientUserEvent extends ClientEvent {
-    private String realname, username;
+    private UserMessage message;
 
-    private ClientUserEvent() {
+    public ClientUserEvent(UserMessage message) {
         super(ClientEventType.USER);
+        this.message = message;
     }
 
-    public ClientUserEvent(String username, String realname) {
-        this();
-        this.username = username;
-        this.realname = realname;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getRealname() {
-        return realname;
+    public UserMessage getMessage() {
+        return message;
     }
 }

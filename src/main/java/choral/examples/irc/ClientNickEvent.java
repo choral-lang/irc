@@ -1,18 +1,14 @@
 package choral.examples.irc;
 
 public class ClientNickEvent extends ClientEvent {
-    private String nickname;
+    private NickMessage message;
 
-    private ClientNickEvent() {
+    public ClientNickEvent(NickMessage message) {
         super(ClientEventType.NICK);
+        this.message = message;
     }
 
-    public ClientNickEvent(String nickname) {
-        this();
-        this.nickname = nickname;
-    }
-
-    public String getNickname() {
-        return nickname;
+    public NickMessage getMessage() {
+        return message;
     }
 }
