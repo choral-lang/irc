@@ -1,9 +1,0 @@
-package choral.examples.irc;
-
-public class ServerUserErrorEvent@R extends ServerEvent@R {
-    public ServerUserErrorEvent(UserMessage@R origin, Message@R reply) {}
-
-    public UserMessage@R getOrigin() {}
-
-    public Message@R getReply() {}
-}

@@ -1,9 +1,0 @@
-package choral.examples.irc;
-
-public class ServerNickErrorEvent@R extends ServerEvent@R {
-    public ServerNickErrorEvent(NickMessage@R origin, Message@R reply) {}
-
-    public NickMessage@R getOrigin() {}
-
-    public Message@R getReply() {}
-}

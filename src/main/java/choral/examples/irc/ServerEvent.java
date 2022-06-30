@@ -26,16 +26,6 @@ public abstract class ServerEvent {
         return (ServerNickEvent) this;
     }
 
-    public ServerNickErrorEvent asServerNickErrorEvent() {
-        assert eventType == ServerEventType.NICK_ERROR;
-        return (ServerNickErrorEvent) this;
-    }
-
-    public ServerUserErrorEvent asServerUserErrorEvent() {
-        assert eventType == ServerEventType.USER_ERROR;
-        return (ServerUserErrorEvent) this;
-    }
-
     public ServerForwardMessageEvent asServerForwardMessageEvent() {
         assert eventType == ServerEventType.FORWARD_MESSAGE;
         return (ServerForwardMessageEvent) this;

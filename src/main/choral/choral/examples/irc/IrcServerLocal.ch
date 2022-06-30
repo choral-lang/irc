@@ -71,7 +71,7 @@ public class IrcServerLocal@R {
             if (!m.hasEnoughParams()) {
                 Message@R r = new ErrNoNicknameGivenMessage@R(
                     state.getNickname(clientId), "No nickname given"@R);
-                state.addEvent(clientId, new ServerNickErrorEvent@R(m, r));
+                state.addEvent(clientId, new ServerForwardMessageEvent@R(r));
             }
             else {
                 String@R nickname = m.getNickname();
@@ -79,13 +79,13 @@ public class IrcServerLocal@R {
                 if (!Util@R.validNickname(nickname)) {
                     Message@R r = new ErrErroneousNicknameMessage@R(
                         state.getNickname(clientId), "Nickname is invalid"@R);
-                    state.addEvent(clientId, new ServerNickErrorEvent@R(m, r));
+                    state.addEvent(clientId, new ServerForwardMessageEvent@R(r));
                 }
                 else {
                     if (state.nicknameExists(nickname)) {
                         Message@R r = new ErrNicknameInUseMessage@R(
                             state.getNickname(clientId), "Nickname is in use"@R);
-                        state.addEvent(clientId, new ServerNickErrorEvent@R(m, r));
+                        state.addEvent(clientId, new ServerForwardMessageEvent@R(r));
                     }
                     else {
                         state.setNickname(clientId, nickname);
@@ -110,7 +110,7 @@ public class IrcServerLocal@R {
                 if (!m.hasEnoughParams()) {
                     Message@R r = new ErrNeedMoreParamsMessage@R(
                         state.getNickname(clientId), "Need at least 4 parameters!"@R);
-                    state.addEvent(clientId, new ServerUserErrorEvent@R(m, r));
+                    state.addEvent(clientId, new ServerForwardMessageEvent@R(r));
                 }
                 else {
                     String@R username = m.getUsername();
@@ -119,7 +119,7 @@ public class IrcServerLocal@R {
                     if (state.isRegistered(clientId)) {
                         Message@R r = new ErrAlreadyRegisteredMessage@R(
                             state.getNickname(clientId), "You cannot register again"@R);
-                        state.addEvent(clientId, new ServerUserErrorEvent@R(m, r));
+                        state.addEvent(clientId, new ServerForwardMessageEvent@R(r));
                     }
                     else {
                         if (Util@R.validUsername(username)) {

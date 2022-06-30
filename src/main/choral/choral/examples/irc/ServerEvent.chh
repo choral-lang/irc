@@ -11,10 +11,6 @@ public abstract class ServerEvent@R {
 
     public ServerNickEvent@R asServerNickEvent() {}
 
-    public ServerNickErrorEvent@R asServerNickErrorEvent() {}
-
-    public ServerUserErrorEvent@R asServerUserErrorEvent() {}
-
     public ServerForwardMessageEvent@R asServerForwardMessageEvent() {}
 
     public ServerJoinEvent@R asServerJoinEvent() {}
