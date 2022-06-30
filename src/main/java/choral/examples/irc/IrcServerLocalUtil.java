@@ -112,12 +112,12 @@ public class IrcServerLocalUtil {
                                    JoinMessage message) {
         if (!state.isRegistered(clientId)) {
             Message m = new ErrNotRegisteredMessage(
-                "*", "You must register first!");
+                "*", "You must register first");
             state.addEvent(clientId, new ServerForwardMessageEvent(m));
         }
         else if (!message.hasEnoughParams()) {
             Message m = new ErrNeedMoreParamsMessage(
-                state.getNickname(clientId), "Need at least 1 parameter!");
+                state.getNickname(clientId), "Need more parameters");
             state.addEvent(clientId, new ServerForwardMessageEvent(m));
         }
         else {
@@ -176,12 +176,12 @@ public class IrcServerLocalUtil {
                                    PartMessage message) {
         if (!state.isRegistered(clientId)) {
             Message m = new ErrNotRegisteredMessage(
-                "*", "You must register first!");
+                "*", "You must register first");
             state.addEvent(clientId, new ServerForwardMessageEvent(m));
         }
         else if (!message.hasEnoughParams()) {
             Message m = new ErrNeedMoreParamsMessage(
-                state.getNickname(clientId), "Need at least 1 parameter!");
+                state.getNickname(clientId), "Need more parameters");
             state.addEvent(clientId, new ServerForwardMessageEvent(m));
         }
         else {
@@ -229,7 +229,7 @@ public class IrcServerLocalUtil {
                                       PrivmsgMessage message) {
         if (!state.isRegistered(clientId)) {
             Message m = new ErrNotRegisteredMessage(
-                "*", "You must register first!");
+                "*", "You must register first");
             state.addEvent(clientId, new ServerForwardMessageEvent(m));
         }
         else if (!message.hasTargets()) {

@@ -54,14 +54,14 @@ public class Irc@(Client, Server) {
             if (!serverState.isRegistered(clientId)) {{
                 addServerEvent(new ServerForwardMessageEvent@Server(
                     new ErrNotRegisteredMessage@Server(
-                        "*"@Server, "You must register first!"@Server)));
+                        "*"@Server, "You must register first"@Server)));
             }}
             else {
                 if (!m.hasEnoughParams()) {
                     addServerEvent(new ServerForwardMessageEvent@Server(
                         new ErrNotRegisteredMessage@Server(
                             serverState.getNickname(clientId),
-                            "Need at least 1 parameter!"@Server)));
+                            "Need more parameters"@Server)));
                 }
                 else {
                     addServerEvent(new ServerPongEvent@Server(
@@ -104,7 +104,7 @@ public class Irc@(Client, Server) {
                         if (!sMessage.hasEnoughParams()) {{{{
                             Message@Server m = new ErrNeedMoreParamsMessage@Server(
                                 serverState.getNickname(clientId),
-                                "Need at least 4 parameters!"@Server);
+                                "Need more parameters"@Server);
                             serverState.addEvent(clientId, new ServerForwardMessageEvent@Server(m));
                         }}}}
                         else {
