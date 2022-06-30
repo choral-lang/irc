@@ -11,8 +11,6 @@ public abstract class ServerEvent@R {
 
     public ServerNickEvent@R asServerNickEvent() {}
 
-    public ServerForwardMessageEvent@R asServerForwardMessageEvent() {}
-
     public ServerJoinEvent@R asServerJoinEvent() {}
 
     public ServerPartEvent@R asServerPartEvent() {}
@@ -22,4 +20,6 @@ public abstract class ServerEvent@R {
     public ServerRplWelcomeEvent@R asServerRplWelcomeEvent() {}
 
     public ServerRplNamReplyEvent@R asServerRplNamReplyEvent() {}
+
+    public ServerForwardMessageEvent@R asServerForwardMessageEvent() {}
 }

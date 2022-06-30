@@ -26,11 +26,6 @@ public abstract class ServerEvent {
         return (ServerNickEvent) this;
     }
 
-    public ServerForwardMessageEvent asServerForwardMessageEvent() {
-        assert eventType == ServerEventType.FORWARD_MESSAGE;
-        return (ServerForwardMessageEvent) this;
-    }
-
     public ServerJoinEvent asServerJoinEvent() {
         assert eventType == ServerEventType.JOIN;
         return (ServerJoinEvent)this;
@@ -54,5 +49,10 @@ public abstract class ServerEvent {
     public ServerRplNamReplyEvent asServerRplNamReplyEvent() {
         assert eventType == ServerEventType.RPL_NAMREPLY;
         return (ServerRplNamReplyEvent) this;
+    }
+
+    public ServerForwardMessageEvent asServerForwardMessageEvent() {
+        assert eventType == ServerEventType.FORWARD_MESSAGE;
+        return (ServerForwardMessageEvent) this;
     }
 }
