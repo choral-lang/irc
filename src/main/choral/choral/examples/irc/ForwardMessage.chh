@@ -1,0 +1,5 @@
+package choral.examples.irc;
+
+public class ForwardMessage@R extends Message@R {
+    public ForwardMessage(Message@R message) {}
+}

@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ServerForwardMessageEvent@R extends ServerEvent@R {
-    public ServerForwardMessageEvent(Message@R message) {}
-
-    public Message@R getMessage() {}
-}
