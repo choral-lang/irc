@@ -93,6 +93,7 @@ public class IrcServerLocalUtil {
                     Set<Long> others = state.getChannels(clientId).stream()
                         .flatMap(c -> state.getMembers(c).stream())
                         .collect(Collectors.toSet());
+                    others.remove(clientId);
 
                     for (long otherId : others) {
                         state.addEvent(otherId, new ServerNickEvent(m));
