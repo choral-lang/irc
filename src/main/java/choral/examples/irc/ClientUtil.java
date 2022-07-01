@@ -2,7 +2,7 @@ package choral.examples.irc;
 
 import java.util.List;
 
-public class IrcClientLocalUtil {
+public class ClientUtil {
     public static void processNick(ClientState state, NickMessage message) {
         Source source = message.getSource();
 

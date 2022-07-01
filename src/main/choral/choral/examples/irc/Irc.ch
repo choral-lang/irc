@@ -211,7 +211,7 @@ public class Irc@(Client, Server) {
                     clientState.getOut().println(m.toString());
 
                     if (m.hasEnoughParams()) {
-                        IrcClientLocalUtil@Client.processNick(clientState, m);
+                        ClientUtil@Client.processNick(clientState, m);
                     }
                 }}}}}}
                 else {
@@ -309,7 +309,7 @@ public class Irc@(Client, Server) {
                                         String@Client channel = m.getChannel();
 
                                         if (m.hasEnoughParams() && clientState.inChannel(channel)) {
-                                            IrcClientLocalUtil@Client.addMembers(
+                                            ClientUtil@Client.addMembers(
                                                 clientState, channel, m.getNicknames());
                                         }
                                     }
