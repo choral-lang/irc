@@ -84,24 +84,22 @@ public class IrcServerLocalUtil {
             else {
                 state.setNickname(clientId, nickname);
 
-                if (state.canRegister(clientId)) {
-                    if (!state.isRegistered(clientId)) {
-                        processWelcome(state, clientId);
+                if (state.isRegistered(clientId)) {
+                    NickMessage m = IrcServerLocalUtil.withSource(
+                        message, new Source(current));
+
+                    state.addEvent(clientId, new ServerNickEvent(m));
+
+                    Set<Long> others = state.getChannels(clientId).stream()
+                        .flatMap(c -> state.getMembers(c).stream())
+                        .collect(Collectors.toSet());
+
+                    for (long otherId : others) {
+                        state.addEvent(otherId, new ServerNickEvent(m));
                     }
-                    else {
-                        NickMessage m = IrcServerLocalUtil.withSource(
-                            message, new Source(current));
-
-                        state.addEvent(clientId, new ServerNickEvent(m));
-
-                        Set<Long> others = state.getChannels(clientId).stream()
-                            .flatMap(c -> state.getMembers(c).stream())
-                            .collect(Collectors.toSet());
-
-                        for (long otherId : others) {
-                            state.addEvent(otherId, new ServerNickEvent(m));
-                        }
-                    }
+                }
+                else if (state.canRegister(clientId)) {
+                    processWelcome(state, clientId);
                 }
             }
         }
