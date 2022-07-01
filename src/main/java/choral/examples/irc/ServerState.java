@@ -33,30 +33,37 @@ public class ServerState {
     }
 
     public long getClientId(String nickname) {
+        assert nicknames.containsKey(nickname);
         return nicknames.get(nickname).clientId;
     }
 
     public String getUsername(long clientId) {
+        assert clients.containsKey(clientId);
         return clients.get(clientId).username;
     }
 
     public void setUsername(long clientId, String username) {
+        assert clients.containsKey(clientId);
         clients.get(clientId).username = username;
     }
 
     public String getRealname(long clientId) {
+        assert clients.containsKey(clientId);
         return clients.get(clientId).realname;
     }
 
     public void setRealname(long clientId, String realname) {
+        assert clients.containsKey(clientId);
         clients.get(clientId).realname = realname;
     }
 
     public String getNickname(long clientId) {
+        assert clients.containsKey(clientId);
         return clients.get(clientId).nickname;
     }
 
     public void setNickname(long clientId, String nickname) {
+        assert clients.containsKey(clientId);
         ServerClientState client = clients.get(clientId);
 
         nicknames.remove(client.nickname);
@@ -101,17 +108,22 @@ public class ServerState {
     }
 
     public boolean inChannel(long clientId, String channel) {
+        assert clients.containsKey(clientId);
         return clients.get(clientId).channels.contains(channel);
     }
 
     public void joinChannel(long clientId, String channel) {
+        assert clients.containsKey(clientId);
         ServerClientState client = clients.get(clientId);
+
         client.channels.add(channel);
         channels.computeIfAbsent(channel, k -> new HashSet<>()).add(client);
     }
 
     public void partChannel(long clientId, String channel) {
+        assert clients.containsKey(clientId);
         ServerClientState client = clients.get(clientId);
+
         client.channels.remove(channel);
 
         Set<ServerClientState> members = channels.get(channel);

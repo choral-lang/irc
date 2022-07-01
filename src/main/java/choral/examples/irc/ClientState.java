@@ -70,6 +70,7 @@ public class ClientState {
 
     public void renameMember(String from, String to) {
         for (Set<String> members : channels.values()) {
+            assert members.contains(from) && !members.contains(to);
             members.remove(from);
             members.add(to);
         }
