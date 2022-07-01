@@ -5,6 +5,7 @@ public class ServerNickEvent extends ServerEvent {
 
     public ServerNickEvent(NickMessage message) {
         super(ServerEventType.NICK);
+        this.message = message;
     }
 
     public NickMessage getMessage() {

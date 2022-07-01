@@ -8,7 +8,7 @@ public class ServerClientState {
     public long clientId;
     public LinkedBlockingQueue<ServerEvent> queue;
     public String username, realname, nickname;
-    public boolean welcomeDone;
+    public boolean registered;
     public Set<String> channels;
 
     ServerClientState(long clientId, LinkedBlockingQueue<ServerEvent> queue) {
@@ -17,7 +17,7 @@ public class ServerClientState {
         this.username = null;
         this.realname = null;
         this.nickname = null;
-        this.welcomeDone = false;
+        this.registered = false;
         this.channels = new HashSet<>();
     }
 }

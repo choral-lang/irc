@@ -53,7 +53,7 @@ public class IrcServerLocalUtil {
         add.accept(Command.RPL_MOTD, "...or having a choco break in the lunchroom!");
         add.accept(Command.RPL_ENDOFMOTD, "End of /MOTD command");
 
-        state.setWelcomeDone(clientId, true);
+        state.setRegistered(clientId);
     }
 
     /**
@@ -84,8 +84,8 @@ public class IrcServerLocalUtil {
             else {
                 state.setNickname(clientId, nickname);
 
-                if (state.isRegistered(clientId)) {
-                    if (!state.isWelcomeDone(clientId)) {
+                if (state.canRegister(clientId)) {
+                    if (!state.isRegistered(clientId)) {
                         processWelcome(state, clientId);
                     }
                     else {
