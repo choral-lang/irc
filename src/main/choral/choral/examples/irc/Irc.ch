@@ -52,13 +52,13 @@ public class Irc@(Client, Server) {
             serverState.getOut().println(m.toString());
 
             if (!serverState.isRegistered(clientId)) {{
-                addServerEvent(IrcServerLocalUtil@Server.makeNumeric(
+                addServerEvent(IrcServerLocalUtil@Server.forwardNumeric(
                     Command@Server.ERR_NOTREGISTERED, "*"@Server,
                     "You must register first"@Server));
             }}
             else {
                 if (!m.hasEnoughParams()) {
-                    addServerEvent(IrcServerLocalUtil@Server.makeNumeric(
+                    addServerEvent(IrcServerLocalUtil@Server.forwardNumeric(
                         Command@Server.ERR_NEEDMOREPARAMS,
                         serverState.getNickname(clientId),
                         "Need more parameters"@Server));
@@ -108,7 +108,7 @@ public class Irc@(Client, Server) {
 
                         if (!sMessage.hasEnoughParams()) {{{{
                             serverState.addEvent(clientId,
-                                IrcServerLocalUtil@Server.makeNumeric(
+                                IrcServerLocalUtil@Server.forwardNumeric(
                                     Command@Server.ERR_NEEDMOREPARAMS,
                                     serverState.getNickname(clientId),
                                     "Need more parameters"@Server));
@@ -119,7 +119,7 @@ public class Irc@(Client, Server) {
 
                             if (serverState.isRegistered(clientId)) {{{
                                 serverState.addEvent(clientId,
-                                    IrcServerLocalUtil@Server.makeNumeric(
+                                    IrcServerLocalUtil@Server.forwardNumeric(
                                         Command@Server.ERR_ALREADYREGISTERED,
                                         serverState.getNickname(clientId),
                                         "You cannot register again"@Server));

@@ -23,7 +23,7 @@ public class IrcServerLocalUtil {
      */
     public static void processWelcome(ServerState state, long clientId) {
         BiConsumer<Command, String> add = (command, text) -> {
-            state.addEvent(clientId, makeNumeric(
+            state.addEvent(clientId, forwardNumeric(
                 command, state.getNickname(clientId), text));
         };
 
@@ -66,19 +66,19 @@ public class IrcServerLocalUtil {
         String current = state.getNickname(clientId);
 
         if (!message.hasEnoughParams()) {
-            state.addEvent(clientId, makeNumeric(
+            state.addEvent(clientId, forwardNumeric(
                 Command.ERR_NONICKNAMEGIVEN, current, "No nickname given"));
             }
         else {
             String nickname = message.getNickname();
 
             if (!Util.validNickname(nickname)) {
-                state.addEvent(clientId, makeNumeric(
+                state.addEvent(clientId, forwardNumeric(
                     Command.ERR_ERRONEOUSNICKNAME, current,
                     "Nickname is invalid"));
             }
             else if (state.nicknameExists(nickname)) {
-                state.addEvent(clientId, makeNumeric(
+                state.addEvent(clientId, forwardNumeric(
                     Command.ERR_NICKNAMEINUSE, current, "Nickname is in use"));
             }
             else {
@@ -114,11 +114,11 @@ public class IrcServerLocalUtil {
     public static void processJoin(ServerState state, long clientId,
                                    JoinMessage message) {
         if (!state.isRegistered(clientId)) {
-            state.addEvent(clientId, makeNumeric(
+            state.addEvent(clientId, forwardNumeric(
                 Command.ERR_NOTREGISTERED, "*", "You must register first"));
         }
         else if (!message.hasEnoughParams()) {
-            state.addEvent(clientId, makeNumeric(
+            state.addEvent(clientId, forwardNumeric(
                 Command.ERR_NEEDMOREPARAMS, state.getNickname(clientId),
                 "Need more parameters"));
         }
@@ -134,33 +134,38 @@ public class IrcServerLocalUtil {
 
                 for (String channel : new HashSet<>(channels)) {
                     if (!Util.validChannelname(channel)) {
-                        state.addEvent(clientId, makeNumeric(
+                        state.addEvent(clientId, forwardNumeric(
                             Command.ERR_NOSUCHCHANNEL, nickname,
                             "Invalid channel name"));
                     }
                     else if (!state.inChannel(clientId, channel)) {
-                        JoinMessage m1 = IrcServerLocalUtil.withSource(
+                        JoinMessage m = IrcServerLocalUtil.withSource(
                             new JoinMessage(channel),
                             new Source(nickname));
 
                         Set<Long> members = state.getMembers(channel);
 
                         state.joinChannel(clientId, channel);
-                        state.addEvent(clientId, new ServerJoinEvent(m1));
+                        state.addEvent(clientId, new ServerJoinEvent(m));
+
                         state.addEvent(clientId, new ServerRplNamReplyEvent(
-                            new RplNamReplyMessage(nickname, "=", channel,
-                                                List.of(nickname))));
+                            IrcServerLocalUtil.withSource(
+                                new RplNamReplyMessage(
+                                    nickname, "=", channel, List.of(nickname)),
+                                new Source(HOSTNAME))));
 
                         for (Long otherId : members) {
-                            state.addEvent(otherId, new ServerJoinEvent(m1));
+                            state.addEvent(otherId, new ServerJoinEvent(m));
 
-                            RplNamReplyMessage m2 = new RplNamReplyMessage(
-                                nickname, "=", channel,
-                                List.of(state.getNickname(otherId)));
-                            state.addEvent(clientId, new ServerRplNamReplyEvent(m2));
+                            state.addEvent(clientId, new ServerRplNamReplyEvent(
+                                IrcServerLocalUtil.withSource(
+                                    new RplNamReplyMessage(
+                                        nickname, "=", channel,
+                                        List.of(state.getNickname(otherId))),
+                                    new Source(HOSTNAME))));
                         }
 
-                        state.addEvent(clientId, makeNumeric(
+                        state.addEvent(clientId, forwardNumeric(
                             Command.RPL_ENDOFNAMES, nickname, channel,
                             "End of names list"));
                     }
@@ -177,11 +182,11 @@ public class IrcServerLocalUtil {
     public static void processPart(ServerState state, long clientId,
                                    PartMessage message) {
         if (!state.isRegistered(clientId)) {
-            state.addEvent(clientId, makeNumeric(
+            state.addEvent(clientId, forwardNumeric(
                 Command.ERR_NOTREGISTERED, "*", "You must register first"));
         }
         else if (!message.hasEnoughParams()) {
-            state.addEvent(clientId, makeNumeric(
+            state.addEvent(clientId, forwardNumeric(
                 Command.ERR_NEEDMOREPARAMS, state.getNickname(clientId),
                 "Need more parameters"));
         }
@@ -191,12 +196,12 @@ public class IrcServerLocalUtil {
 
             for (String channel : new HashSet<>(channels)) {
                 if (!Util.validChannelname(channel)) {
-                    state.addEvent(clientId, makeNumeric(
+                    state.addEvent(clientId, forwardNumeric(
                         Command.ERR_NOSUCHCHANNEL, nickname,
                         "Invalid channel name"));
                 }
                 else if (!state.inChannel(clientId, channel)) {
-                    state.addEvent(clientId, makeNumeric(
+                    state.addEvent(clientId, forwardNumeric(
                         Command.ERR_NOTONCHANNEL, nickname,
                         "You are not in that channel"));
                 }
@@ -234,16 +239,16 @@ public class IrcServerLocalUtil {
     public static void processPrivmsg(ServerState state, long clientId,
                                       PrivmsgMessage message) {
         if (!state.isRegistered(clientId)) {
-            state.addEvent(clientId, makeNumeric(
+            state.addEvent(clientId, forwardNumeric(
                 Command.ERR_NOTREGISTERED, "*", "You must register first"));
         }
         else if (!message.hasTargets()) {
-            state.addEvent(clientId, makeNumeric(
+            state.addEvent(clientId, forwardNumeric(
                 Command.ERR_NORECIPIENT, state.getNickname(clientId),
                 "No recipient"));
         }
         else if (!message.hasText()) {
-            state.addEvent(clientId, makeNumeric(
+            state.addEvent(clientId, forwardNumeric(
                 Command.ERR_NOTEXTTOSEND, state.getNickname(clientId),
                 "No text to send"));
         }
@@ -254,12 +259,12 @@ public class IrcServerLocalUtil {
             for (String target : message.getTargets()) {
                 if (Util.validChannelname(target)) {
                     if (!state.channelExists(target)) {
-                        state.addEvent(clientId, makeNumeric(
+                        state.addEvent(clientId, forwardNumeric(
                             Command.ERR_NOSUCHNICK, nickname,
                             "No such channel"));
                     }
                     else if (!state.inChannel(clientId, target)) {
-                        state.addEvent(clientId, makeNumeric(
+                        state.addEvent(clientId, forwardNumeric(
                             Command.ERR_CANNOTSENDTOCHAN, nickname,
                             "You are not in that channel"));
                     }
@@ -278,7 +283,7 @@ public class IrcServerLocalUtil {
                 }
                 else {
                     if (!state.nicknameExists(target)) {
-                        state.addEvent(clientId, makeNumeric(
+                        state.addEvent(clientId, forwardNumeric(
                             Command.ERR_NOSUCHNICK, nickname,
                             "No such nickname"));
                     }
@@ -287,7 +292,8 @@ public class IrcServerLocalUtil {
                             new PrivmsgMessage(target, text),
                             new Source(nickname));
 
-                        state.addEvent(state.getClientId(target), new ServerPrivmsgEvent(m));
+                        state.addEvent(state.getClientId(target),
+                                       new ServerPrivmsgEvent(m));
                     }
                 }
             }
@@ -318,25 +324,31 @@ public class IrcServerLocalUtil {
         return m;
     }
 
-    public static ServerForwardEvent makeNumeric(Command command,
-                                                 String nickname,
-                                                 String... params) {
+    public static Message makeNumeric(Command command,
+                                      String nickname,
+                                      String... params) {
         List<String> ps = new ArrayList<>();
         ps.add(nickname);
         ps.addAll(Arrays.asList(params));
 
-        return new ServerForwardEvent(new ForwardMessage(
-            MessageBuilder
-                .build()
-                .source(new Source(HOSTNAME))
-                .command(command.code())
-                .params(ps)
-                .message()));
+        return MessageBuilder
+            .build()
+            .source(new Source(HOSTNAME))
+            .command(command.code())
+            .params(ps)
+            .message();
     }
 
-    public static ServerForwardEvent makeNumeric(Command command,
-                                                 String nickname,
-                                                 String param1) {
-        return makeNumeric(command, nickname, new String[] {param1});
+    public static ServerForwardEvent forwardNumeric(Command command,
+                                                    String nickname,
+                                                    String... params) {
+        Message m = makeNumeric(command, nickname, params);
+        return new ServerForwardEvent(new ForwardMessage(m));
+    }
+
+    public static ServerForwardEvent forwardNumeric(Command command,
+                                                    String nickname,
+                                                    String param1) {
+        return forwardNumeric(command, nickname, new String[] {param1});
     }
 }
