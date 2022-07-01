@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * the IrcServerLocal choreography. We put here anything that would be too
  * inconvenient, cumbersome or impossible to write directly in Choral.
  */
-public class IrcServerLocalUtil {
+public class ServerUtil {
     public static final String HOSTNAME = "irc.choral.net";
 
     /**
@@ -28,7 +28,7 @@ public class IrcServerLocalUtil {
         };
 
         state.addEvent(clientId, new ServerRplWelcomeEvent(
-            IrcServerLocalUtil.withSource(
+            ServerUtil.withSource(
                 new RplWelcomeMessage(state.getNickname(clientId),
                                       "Welcome to ChoralNet!"),
                 new Source(HOSTNAME))));
@@ -85,7 +85,7 @@ public class IrcServerLocalUtil {
                 state.setNickname(clientId, nickname);
 
                 if (state.isRegistered(clientId)) {
-                    NickMessage m = IrcServerLocalUtil.withSource(
+                    NickMessage m = ServerUtil.withSource(
                         message, new Source(current));
 
                     state.addEvent(clientId, new ServerNickEvent(m));
@@ -139,7 +139,7 @@ public class IrcServerLocalUtil {
                             "Invalid channel name"));
                     }
                     else if (!state.inChannel(clientId, channel)) {
-                        JoinMessage m = IrcServerLocalUtil.withSource(
+                        JoinMessage m = ServerUtil.withSource(
                             new JoinMessage(channel),
                             new Source(nickname));
 
@@ -149,7 +149,7 @@ public class IrcServerLocalUtil {
                         state.addEvent(clientId, new ServerJoinEvent(m));
 
                         state.addEvent(clientId, new ServerRplNamReplyEvent(
-                            IrcServerLocalUtil.withSource(
+                            ServerUtil.withSource(
                                 new RplNamReplyMessage(
                                     nickname, "=", channel, List.of(nickname)),
                                 new Source(HOSTNAME))));
@@ -158,7 +158,7 @@ public class IrcServerLocalUtil {
                             state.addEvent(otherId, new ServerJoinEvent(m));
 
                             state.addEvent(clientId, new ServerRplNamReplyEvent(
-                                IrcServerLocalUtil.withSource(
+                                ServerUtil.withSource(
                                     new RplNamReplyMessage(
                                         nickname, "=", channel,
                                         List.of(state.getNickname(otherId))),
@@ -216,7 +216,7 @@ public class IrcServerLocalUtil {
                         mb.param(message.getReason());
                     }
 
-                    PartMessage m = IrcServerLocalUtil.withSource(
+                    PartMessage m = ServerUtil.withSource(
                         new PartMessage(mb.message()),
                         new Source(nickname));
 
@@ -269,7 +269,7 @@ public class IrcServerLocalUtil {
                             "You are not in that channel"));
                     }
                     else {
-                        PrivmsgMessage m = IrcServerLocalUtil.withSource(
+                        PrivmsgMessage m = ServerUtil.withSource(
                             new PrivmsgMessage(target, text),
                             new Source(nickname));
 
@@ -288,7 +288,7 @@ public class IrcServerLocalUtil {
                             "No such nickname"));
                     }
                     else {
-                        PrivmsgMessage m = IrcServerLocalUtil.withSource(
+                        PrivmsgMessage m = ServerUtil.withSource(
                             new PrivmsgMessage(target, text),
                             new Source(nickname));
 

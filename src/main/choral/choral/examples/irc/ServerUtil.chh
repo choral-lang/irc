@@ -3,7 +3,7 @@ package choral.examples.irc;
 import java.util.List;
 import java.util.Set;
 
-public class IrcServerLocalUtil@R {
+public class ServerUtil@R {
     public static String@R HOSTNAME;
 
     public static void processWelcome(ServerState@R state, long@R clientId) {}
