@@ -52,13 +52,13 @@ public class Irc@(Client, Server) {
             serverState.getOut().println(m.toString());
 
             if (!serverState.isRegistered(clientId)) {{
-                addServerEvent(IrcServerLocalUtil@Server.forwardNumeric(
+                addServerEvent(ServerUtil@Server.forwardNumeric(
                     Command@Server.ERR_NOTREGISTERED, "*"@Server,
                     "You must register first"@Server));
             }}
             else {
                 if (!m.hasEnoughParams()) {
-                    addServerEvent(IrcServerLocalUtil@Server.forwardNumeric(
+                    addServerEvent(ServerUtil@Server.forwardNumeric(
                         Command@Server.ERR_NEEDMOREPARAMS,
                         serverState.getNickname(clientId),
                         "Need more parameters"@Server));
@@ -66,7 +66,7 @@ public class Irc@(Client, Server) {
                 else {
                     addServerEvent(new ServerPongEvent@Server(
                         new PongMessage@Server(
-                            IrcServerLocalUtil@Server.HOSTNAME, m.getToken())));
+                            ServerUtil@Server.HOSTNAME, m.getToken())));
                 }
             }
         }}}}}}
@@ -91,7 +91,7 @@ public class Irc@(Client, Server) {
                         clientState.setNickname(cMessage.getNickname());
                     }
 
-                    IrcServerLocalUtil@Server.processNick(serverState, clientId, sMessage);
+                    ServerUtil@Server.processNick(serverState, clientId, sMessage);
                 }}}}
                 else {
                     if (event.getType() == ClientEventType@Client.USER) {{{
@@ -108,7 +108,7 @@ public class Irc@(Client, Server) {
 
                         if (!sMessage.hasEnoughParams()) {{{{
                             serverState.addEvent(clientId,
-                                IrcServerLocalUtil@Server.forwardNumeric(
+                                ServerUtil@Server.forwardNumeric(
                                     Command@Server.ERR_NEEDMOREPARAMS,
                                     serverState.getNickname(clientId),
                                     "Need more parameters"@Server));
@@ -119,7 +119,7 @@ public class Irc@(Client, Server) {
 
                             if (serverState.isRegistered(clientId)) {{{
                                 serverState.addEvent(clientId,
-                                    IrcServerLocalUtil@Server.forwardNumeric(
+                                    ServerUtil@Server.forwardNumeric(
                                         Command@Server.ERR_ALREADYREGISTERED,
                                         serverState.getNickname(clientId),
                                         "You cannot register again"@Server));
@@ -131,7 +131,7 @@ public class Irc@(Client, Server) {
 
                                     if (serverState.canRegister(clientId) &&
                                         !serverState.isRegistered(clientId)) {
-                                        IrcServerLocalUtil@Server.processWelcome(serverState, clientId);
+                                        ServerUtil@Server.processWelcome(serverState, clientId);
                                     }
                                 }
                                 else {{}}
@@ -145,7 +145,7 @@ public class Irc@(Client, Server) {
                             ClientJoinEvent@Client e = event.asClientJoinEvent();
                             JoinMessage@Server m = ch_AB.<JoinMessage>com(e.getMessage());
 
-                            IrcServerLocalUtil@Server.processJoin(serverState, clientId, m);
+                            ServerUtil@Server.processJoin(serverState, clientId, m);
                         }}
                         else {
                             if (event.getType() == ClientEventType@Client.PART) {
@@ -154,7 +154,7 @@ public class Irc@(Client, Server) {
                                 ClientPartEvent@Client e = event.asClientPartEvent();
                                 PartMessage@Server m = ch_AB.<PartMessage>com(e.getMessage());
 
-                                IrcServerLocalUtil@Server.processPart(serverState, clientId, m);
+                                ServerUtil@Server.processPart(serverState, clientId, m);
                             }
                             else {
                                 ch_AB.<ClientEventType>select(ClientEventType@Client.PRIVMSG);
@@ -162,7 +162,7 @@ public class Irc@(Client, Server) {
                                 ClientPrivmsgEvent@Client e = event.asClientPrivmsgEvent();
                                 PrivmsgMessage@Server m = ch_AB.<PrivmsgMessage>com(e.getMessage());
 
-                                IrcServerLocalUtil@Server.processPrivmsg(serverState, clientId, m);
+                                ServerUtil@Server.processPrivmsg(serverState, clientId, m);
                             }
                         }
                     }
