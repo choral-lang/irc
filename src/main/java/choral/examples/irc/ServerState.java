@@ -67,23 +67,27 @@ public class ServerState {
         client.nickname = nickname;
     }
 
-    public boolean isWelcomeDone(long clientId) {
-        return clients.get(clientId).welcomeDone;
+    public boolean canRegister(long clientId) {
+        assert clients.containsKey(clientId);
+        ServerClientState client = clients.get(clientId);
+
+        return client.username != null &&
+            client.realname != null &&
+            client.nickname != null;
     }
 
-    public void setWelcomeDone(long clientId, boolean welcomeDone) {
-        clients.get(clientId).welcomeDone = welcomeDone;
+    public boolean isRegistered(long clientId) {
+        assert clients.containsKey(clientId);
+        return clients.get(clientId).registered;
+    }
+
+    public void setRegistered(long clientId) {
+        assert clients.containsKey(clientId);
+        clients.get(clientId).registered = true;
     }
 
     public boolean nicknameExists(String nickname) {
         return nicknames.containsKey(nickname);
-    }
-
-    public boolean isRegistered(long clientId) {
-        ServerClientState client = clients.get(clientId);
-        return client.username != null &&
-               client.realname != null &&
-               client.nickname != null;
     }
 
     public Set<String> getChannels(long clientId) {

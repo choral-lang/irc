@@ -25,13 +25,13 @@ public class ServerState@R {
 
     public void setNickname(long@R clientId, String@R nickname) {}
 
-    public boolean@R isWelcomeDone(long@R clientId) {}
-
-    public void setWelcomeDone(long@R clientId, boolean@R welcomeDone) {}
-
-    public boolean@R nicknameExists(String@R nickname) {}
+    public boolean@R canRegister(long@R clientId) {}
 
     public boolean@R isRegistered(long@R clientId) {}
+
+    public void setRegistered(long@R clientId) {}
+
+    public boolean@R nicknameExists(String@R nickname) {}
 
     public Set@R<String> getChannels(long@R clientId) {}
 
