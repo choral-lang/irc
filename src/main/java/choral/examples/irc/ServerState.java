@@ -59,12 +59,9 @@ public class ServerState {
     public void setNickname(long clientId, String nickname) {
         ServerClientState client = clients.get(clientId);
 
-        if (client.nickname != null) {
-            nicknames.remove(nickname);
-        }
-
-        nicknames.put(nickname, client);
+        nicknames.remove(client.nickname);
         client.nickname = nickname;
+        nicknames.put(nickname, client);
     }
 
     public boolean canRegister(long clientId) {
