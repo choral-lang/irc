@@ -5,13 +5,15 @@ import java.util.List;
 public class IrcClientLocalUtil {
     public static void processNick(ClientState state, NickMessage message) {
         Source source = message.getSource();
-        String from = source.getNickname();
-        String to = message.getNickname();
 
         if (source == null)
             return;
 
-        if (state.getNickname().equals(from)) {
+        String current = state.getNickname();
+        String from = source.getNickname();
+        String to = message.getNickname();
+
+        if (current != null && current.equals(from)) {
             state.setNickname(to);
         }
         else {
