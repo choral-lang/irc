@@ -8,12 +8,14 @@ import java.util.Set;
 
 public class ClientState {
     private String username, realname, nickname;
+    private boolean registered;
     private Map<String, Set<String>> channels;
 
     public ClientState(String username, String realname, String nickname) {
         this.username = username;
         this.realname = realname;
         this.nickname = nickname;
+        registered = false;
         channels = new HashMap<>();
     }
 
@@ -43,6 +45,14 @@ public class ClientState {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered() {
+        registered = true;
     }
 
     public Set<String> getChannels() {
