@@ -87,7 +87,10 @@ public class Irc@(Client, Server) {
                     NickMessage@Client cMessage = e.getMessage();
                     NickMessage@Server sMessage = ch_AB.<NickMessage>com(cMessage);
 
-                    clientState.setNickname(cMessage.getNickname());
+                    if (!clientState.isRegistered()) {
+                        clientState.setNickname(cMessage.getNickname());
+                    }
+
                     IrcServerLocalUtil@Server.processNick(serverState, clientId, sMessage);
                 }}}}
                 else {
@@ -98,8 +101,10 @@ public class Irc@(Client, Server) {
                         UserMessage@Client cMessage = e.getMessage();
                         UserMessage@Server sMessage = ch_AB.<UserMessage>com(cMessage);
 
-                        clientState.setUsername(cMessage.getUsername());
-                        clientState.setRealname(cMessage.getRealname());
+                        if (!clientState.isRegistered()) {
+                            clientState.setUsername(cMessage.getUsername());
+                            clientState.setRealname(cMessage.getRealname());
+                        }
 
                         if (!sMessage.hasEnoughParams()) {{{{
                             serverState.addEvent(clientId,
@@ -289,6 +294,7 @@ public class Irc@(Client, Server) {
 
                                     if (m.hasEnoughParams()) {
                                         clientState.setNickname(m.getNickname());
+                                        clientState.setRegistered();
                                     }
                                 }}
                                 else {
