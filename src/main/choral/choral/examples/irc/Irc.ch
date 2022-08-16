@@ -44,120 +44,119 @@ public class Irc@(Client, Server) {
         Message@Client msg = Util@Client.<Message>take(clientQueue);
         Command@Client cmd = Util@Client.fromCode(msg.getCommand());
 
-        if (cmd == Command@Client.PING) {{{{{{
-            ch_AB.<Command>select(Command@Client.PING);
-            PingMessage@Server ping = ch_AB.<PingMessage>com(
-                Util@Client.<PingMessage>as(msg));
+        // NOTE: We assume cmd != null
+        switch (cmd) {
+            case PING -> {
+                ch_AB.<Command>select(Command@Client.PING);
+                PingMessage@Server ping = ch_AB.<PingMessage>com(
+                    Util@Client.<PingMessage>as(msg));
 
-            serverState.getOut().println(ping.toString());
+                serverState.getOut().println(ping.toString());
 
-            if (!serverState.isRegistered(clientId)) {{
-                addServerMessage(ServerUtil@Server.forwardNumeric(
-                    Command@Server.ERR_NOTREGISTERED, "*"@Server,
-                    "You must register first"@Server));
-            }}
-            else {
-                if (!ping.hasEnoughParams()) {
+                if (!serverState.isRegistered(clientId)) {{
                     addServerMessage(ServerUtil@Server.forwardNumeric(
-                        Command@Server.ERR_NEEDMOREPARAMS,
-                        serverState.getNickname(clientId),
-                        "Need more parameters"@Server));
-                }
+                        Command@Server.ERR_NOTREGISTERED, "*"@Server,
+                        "You must register first"@Server));
+                }}
                 else {
-                    addServerMessage(new PongMessage@Server(
-                        ServerUtil@Server.HOSTNAME, ping.getToken()));
+                    if (!ping.hasEnoughParams()) {
+                        addServerMessage(ServerUtil@Server.forwardNumeric(
+                            Command@Server.ERR_NEEDMOREPARAMS,
+                            serverState.getNickname(clientId),
+                            "Need more parameters"@Server));
+                    }
+                    else {
+                        addServerMessage(new PongMessage@Server(
+                            ServerUtil@Server.HOSTNAME, ping.getToken()));
+                    }
                 }
             }
-        }}}}}}
-        else {
-            if (cmd == Command@Client.PONG) {{{{{
+
+            case PONG -> {
                 ch_AB.<Command>select(Command@Client.PONG);
                 PongMessage@Server pong = ch_AB.<PongMessage>com(
                     Util@Client.<PongMessage>as(msg));
 
                 serverState.getOut().println(pong.toString());
-            }}}}}
-            else {
-                if (cmd == Command@Client.NICK) {{{{
-                    ch_AB.<Command>select(Command@Client.NICK);
-                    NickMessage@Client cNick = Util@Client.<NickMessage>as(msg);
-                    NickMessage@Server sNick = ch_AB.<NickMessage>com(cNick);
+            }
 
-                    if (!clientState.isRegistered()) {
-                        clientState.setNickname(cNick.getNickname());
-                    }
+            case NICK -> {
+                ch_AB.<Command>select(Command@Client.NICK);
+                NickMessage@Client cNick = Util@Client.<NickMessage>as(msg);
+                NickMessage@Server sNick = ch_AB.<NickMessage>com(cNick);
 
-                    ServerUtil@Server.processNick(serverState, clientId, sNick);
+                if (!clientState.isRegistered()) {
+                    clientState.setNickname(cNick.getNickname());
+                }
+
+                ServerUtil@Server.processNick(serverState, clientId, sNick);
+            }
+
+            case USER -> {
+                ch_AB.<Command>select(Command@Client.USER);
+                UserMessage@Client cUser = Util@Client.<UserMessage>as(msg);
+                UserMessage@Server sUser = ch_AB.<UserMessage>com(cUser);
+
+                if (!clientState.isRegistered()) {
+                    clientState.setUsername(cUser.getUsername());
+                    clientState.setRealname(cUser.getRealname());
+                }
+
+                if (!sUser.hasEnoughParams()) {{{{
+                    serverState.addMessage(clientId,
+                        ServerUtil@Server.forwardNumeric(
+                            Command@Server.ERR_NEEDMOREPARAMS,
+                            serverState.getNickname(clientId),
+                            "Need more parameters"@Server));
                 }}}}
                 else {
-                    if (cmd == Command@Client.USER) {{{
-                        ch_AB.<Command>select(Command@Client.USER);
-                        UserMessage@Client cUser = Util@Client.<UserMessage>as(msg);
-                        UserMessage@Server sUser = ch_AB.<UserMessage>com(cUser);
+                    String@Server username = sUser.getUsername();
+                    String@Server realname = sUser.getRealname();
 
-                        if (!clientState.isRegistered()) {
-                            clientState.setUsername(cUser.getUsername());
-                            clientState.setRealname(cUser.getRealname());
-                        }
-
-                        if (!sUser.hasEnoughParams()) {{{{
-                            serverState.addMessage(clientId,
-                                ServerUtil@Server.forwardNumeric(
-                                    Command@Server.ERR_NEEDMOREPARAMS,
-                                    serverState.getNickname(clientId),
-                                    "Need more parameters"@Server));
-                        }}}}
-                        else {
-                            String@Server username = sUser.getUsername();
-                            String@Server realname = sUser.getRealname();
-
-                            if (serverState.isRegistered(clientId)) {{{
-                                serverState.addMessage(clientId,
-                                    ServerUtil@Server.forwardNumeric(
-                                        Command@Server.ERR_ALREADYREGISTERED,
-                                        serverState.getNickname(clientId),
-                                        "You cannot register again"@Server));
-                            }}}
-                            else {
-                                if (Util@Server.validUsername(username)) {
-                                    serverState.setUsername(clientId, username);
-                                    serverState.setRealname(clientId, realname);
-
-                                    if (serverState.canRegister(clientId) &&
-                                        !serverState.isRegistered(clientId)) {
-                                        ServerUtil@Server.processWelcome(serverState, clientId);
-                                    }
-                                }
-                                else {{}}
-                            }
-                        }
+                    if (serverState.isRegistered(clientId)) {{{
+                        serverState.addMessage(clientId,
+                            ServerUtil@Server.forwardNumeric(
+                                Command@Server.ERR_ALREADYREGISTERED,
+                                serverState.getNickname(clientId),
+                                "You cannot register again"@Server));
                     }}}
                     else {
-                        if (cmd == Command@Client.JOIN) {{
-                            ch_AB.<Command>select(Command@Client.JOIN);
-                            JoinMessage@Server join = ch_AB.<JoinMessage>com(
-                                Util@Client.<JoinMessage>as(msg));
+                        if (Util@Server.validUsername(username)) {
+                            serverState.setUsername(clientId, username);
+                            serverState.setRealname(clientId, realname);
 
-                            ServerUtil@Server.processJoin(serverState, clientId, join);
-                        }}
-                        else {
-                            if (cmd == Command@Client.PART) {
-                                ch_AB.<Command>select(Command@Client.PART);
-                                PartMessage@Server part = ch_AB.<PartMessage>com(
-                                    Util@Client.<PartMessage>as(msg));
-
-                                ServerUtil@Server.processPart(serverState, clientId, part);
-                            }
-                            else {
-                                ch_AB.<Command>select(Command@Client.PRIVMSG);
-                                PrivmsgMessage@Server privmsg = ch_AB.<PrivmsgMessage>com(
-                                    Util@Client.<PrivmsgMessage>as(msg));
-
-                                ServerUtil@Server.processPrivmsg(serverState, clientId, privmsg);
+                            if (serverState.canRegister(clientId) &&
+                                !serverState.isRegistered(clientId)) {
+                                ServerUtil@Server.processWelcome(serverState, clientId);
                             }
                         }
+                        else {{}}
                     }
                 }
+            }
+
+            case JOIN -> {
+                ch_AB.<Command>select(Command@Client.JOIN);
+                JoinMessage@Server join = ch_AB.<JoinMessage>com(
+                    Util@Client.<JoinMessage>as(msg));
+
+                ServerUtil@Server.processJoin(serverState, clientId, join);
+            }
+
+            case PART -> {
+                ch_AB.<Command>select(Command@Client.PART);
+                PartMessage@Server part = ch_AB.<PartMessage>com(
+                    Util@Client.<PartMessage>as(msg));
+
+                ServerUtil@Server.processPart(serverState, clientId, part);
+            }
+
+            case PRIVMSG -> {
+                ch_AB.<Command>select(Command@Client.PRIVMSG);
+                PrivmsgMessage@Server privmsg = ch_AB.<PrivmsgMessage>com(
+                    Util@Client.<PrivmsgMessage>as(msg));
+
+                ServerUtil@Server.processPrivmsg(serverState, clientId, privmsg);
             }
         }
 
@@ -171,146 +170,143 @@ public class Irc@(Client, Server) {
         Message@Server msg = Util@Server.<Message>take(serverQueue);
         Command@Server cmd = Util@Server.fromCode(msg.getCommand());
 
-        if (cmd == Command@Server.PING) {{{{{{{{
-            ch_AB.<Command>select(Command@Server.PING);
-            PingMessage@Client ping = ch_AB.<PingMessage>com(
-                Util@Server.<PingMessage>as(msg));
+        // NOTE: We assume cmd != null
+        switch (cmd) {
+            case PING -> {
+                ch_AB.<Command>select(Command@Server.PING);
+                PingMessage@Client ping = ch_AB.<PingMessage>com(
+                    Util@Server.<PingMessage>as(msg));
 
-            clientState.getOut().println(ping.toString());
+                clientState.getOut().println(ping.toString());
 
-            if (ping.hasEnoughParams()) {
-                Util@Client.<Message>put(clientQueue,
-                    new PongMessage@Client(ping.getToken()));
+                if (ping.hasEnoughParams()) {
+                    Util@Client.<Message>put(clientQueue,
+                        new PongMessage@Client(ping.getToken()));
+                }
             }
-        }}}}}}}}
-        else {
-            if (cmd == Command@Server.PONG) {{{{{{{
+
+            case PONG -> {
                 ch_AB.<Command>select(Command@Server.PONG);
                 PongMessage@Client pong = ch_AB.<PongMessage>com(
                     Util@Server.<PongMessage>as(msg));
 
                 clientState.getOut().println(pong.toString());
-            }}}}}}}
-            else {
-                if (cmd == Command@Server.NICK) {{{{{{
-                    ch_AB.<Command>select(Command@Server.NICK);
-                    NickMessage@Client nick = ch_AB.<NickMessage>com(
-                        Util@Server.<NickMessage>as(msg));
+            }
 
-                    clientState.getOut().println(nick.toString());
+            case NICK -> {
+                ch_AB.<Command>select(Command@Server.NICK);
+                NickMessage@Client nick = ch_AB.<NickMessage>com(
+                    Util@Server.<NickMessage>as(msg));
 
-                    if (nick.hasEnoughParams()) {
-                        ClientUtil@Client.processNick(clientState, nick);
-                    }
-                }}}}}}
-                else {
-                    if (cmd == Command@Server.JOIN) {{{{{
-                        ch_AB.<Command>select(Command@Server.JOIN);
-                        JoinMessage@Client join = ch_AB.<JoinMessage>com(
-                            Util@Server.<JoinMessage>as(msg));
+                clientState.getOut().println(nick.toString());
 
-                        clientState.getOut().println(join.toString());
+                if (nick.hasEnoughParams()) {
+                    ClientUtil@Client.processNick(clientState, nick);
+                }
+            }
 
-                        Source@Client source = join.getSource();
+            case JOIN -> {
+                ch_AB.<Command>select(Command@Server.JOIN);
+                JoinMessage@Client join = ch_AB.<JoinMessage>com(
+                    Util@Server.<JoinMessage>as(msg));
 
-                        if (source != null@Client && join.hasEnoughParams()) {
-                            List@Client<String> channels = join.getChannels();
-                            String@Client nickname = source.getNickname();
-                            // We expect just a single channel, so ignore the others, if any
-                            String@Client channel = channels.get(0@Client);
+                clientState.getOut().println(join.toString());
 
-                            if (nickname.equals(clientState.getNickname())) {
-                                if (!clientState.inChannel(channel)) {
-                                    clientState.joinChannel(channel);
-                                }
-                            }
-                            else {
-                                if (clientState.inChannel(channel)) {
-                                    clientState.addMember(channel, nickname);
-                                }
-                            }
+                Source@Client source = join.getSource();
+
+                if (source != null@Client && join.hasEnoughParams()) {
+                    List@Client<String> channels = join.getChannels();
+                    String@Client nickname = source.getNickname();
+                    // We expect just a single channel, so ignore the others, if any
+                    String@Client channel = channels.get(0@Client);
+
+                    if (nickname.equals(clientState.getNickname())) {
+                        if (!clientState.inChannel(channel)) {
+                            clientState.joinChannel(channel);
                         }
-                        else {{{}}}
-                    }}}}}
+                    }
                     else {
-                        if (cmd == Command@Server.PART) {{{{
-                            ch_AB.<Command>select(Command@Server.PART);
-                            PartMessage@Client part = ch_AB.<PartMessage>com(
-                                Util@Server.<PartMessage>as(msg));
-
-                            clientState.getOut().println(part.toString());
-
-                            Source@Client source = part.getSource();
-
-                            if (source != null@Client && part.hasEnoughParams()) {
-                                List@Client<String> channels = part.getChannels();
-                                String@Client nickname = source.getNickname();
-                                // NOTE: We expect just a single channel, so ignore the others, if any
-                                String@Client channel = channels.get(0@Client);
-
-                                if (nickname.equals(clientState.getNickname())) {
-                                    if (clientState.inChannel(channel)) {
-                                        clientState.partChannel(channel);
-                                    }
-                                }
-                                else {
-                                    if (clientState.inChannel(channel)) {
-                                        clientState.removeMember(channel, nickname);
-                                    }
-                                }
-                            }
-                            else {{{}}}
-                        }}}}
-                        else {
-                            if (cmd == Command@Server.PRIVMSG) {{{
-                                ch_AB.<Command>select(Command@Server.PRIVMSG);
-                                PrivmsgMessage@Client privmsg = ch_AB.<PrivmsgMessage>com(
-                                    Util@Server.<PrivmsgMessage>as(msg));
-
-                                clientState.getOut().println(privmsg.toString());
-                            }}}
-                            else {
-                                if (cmd == Command@Server.RPL_WELCOME) {{
-                                    ch_AB.<Command>select(Command@Server.RPL_WELCOME);
-                                    RplWelcomeMessage@Client welcome = ch_AB.<RplWelcomeMessage>com(
-                                        Util@Server.<RplWelcomeMessage>as(msg));
-
-                                    clientState.getOut().println(welcome.toString());
-
-                                    if (welcome.hasEnoughParams()) {
-                                        clientState.setNickname(welcome.getNickname());
-                                        clientState.setRegistered();
-                                    }
-                                }}
-                                else {
-                                    if (cmd == Command@Server.RPL_NAMREPLY) {
-                                        ch_AB.<Command>select(Command@Server.RPL_NAMREPLY);
-                                        RplNamReplyMessage@Client namReply = ch_AB.<RplNamReplyMessage>com(
-                                            Util@Server.<RplNamReplyMessage>as(msg));
-
-                                        clientState.getOut().println(namReply.toString());
-
-                                        String@Client channel = namReply.getChannel();
-
-                                        if (namReply.hasEnoughParams() && clientState.inChannel(channel)) {
-                                            ClientUtil@Client.addMembers(
-                                                clientState, channel, namReply.getNicknames());
-                                        }
-                                    }
-                                    else {
-                                        // Any message that falls under ForwardMessage can be
-                                        // used for the selection.
-                                        ch_AB.<Command>select(Command@Server.ERR_NEEDMOREPARAMS);
-                                        ForwardMessage@Client forward = ch_AB.<ForwardMessage>com(
-                                            Util@Server.<ForwardMessage>as(msg));
-
-                                        clientState.getOut().println(forward.toString());
-                                    }
-                                }
-                            }
+                        if (clientState.inChannel(channel)) {
+                            clientState.addMember(channel, nickname);
                         }
                     }
                 }
+                else {{{}}}
+            }
+
+            case PART -> {
+                ch_AB.<Command>select(Command@Server.PART);
+                PartMessage@Client part = ch_AB.<PartMessage>com(
+                    Util@Server.<PartMessage>as(msg));
+
+                clientState.getOut().println(part.toString());
+
+                Source@Client source = part.getSource();
+
+                if (source != null@Client && part.hasEnoughParams()) {
+                    List@Client<String> channels = part.getChannels();
+                    String@Client nickname = source.getNickname();
+                    // NOTE: We expect just a single channel, so ignore the others, if any
+                    String@Client channel = channels.get(0@Client);
+
+                    if (nickname.equals(clientState.getNickname())) {
+                        if (clientState.inChannel(channel)) {
+                            clientState.partChannel(channel);
+                        }
+                    }
+                    else {
+                        if (clientState.inChannel(channel)) {
+                            clientState.removeMember(channel, nickname);
+                        }
+                    }
+                }
+                else {{{}}}
+            }
+
+            case PRIVMSG -> {
+                ch_AB.<Command>select(Command@Server.PRIVMSG);
+                PrivmsgMessage@Client privmsg = ch_AB.<PrivmsgMessage>com(
+                    Util@Server.<PrivmsgMessage>as(msg));
+
+                clientState.getOut().println(privmsg.toString());
+            }
+
+            case RPL_WELCOME -> {
+                ch_AB.<Command>select(Command@Server.RPL_WELCOME);
+                RplWelcomeMessage@Client welcome = ch_AB.<RplWelcomeMessage>com(
+                    Util@Server.<RplWelcomeMessage>as(msg));
+
+                clientState.getOut().println(welcome.toString());
+
+                if (welcome.hasEnoughParams()) {
+                    clientState.setNickname(welcome.getNickname());
+                    clientState.setRegistered();
+                }
+            }
+
+            case RPL_NAMREPLY -> {
+                ch_AB.<Command>select(Command@Server.RPL_NAMREPLY);
+                RplNamReplyMessage@Client namReply = ch_AB.<RplNamReplyMessage>com(
+                    Util@Server.<RplNamReplyMessage>as(msg));
+
+                clientState.getOut().println(namReply.toString());
+
+                String@Client channel = namReply.getChannel();
+
+                if (namReply.hasEnoughParams() && clientState.inChannel(channel)) {
+                    ClientUtil@Client.addMembers(
+                        clientState, channel, namReply.getNicknames());
+                }
+            }
+
+            default -> {
+                // Any message that falls under ForwardMessage can be
+                // used for the selection.
+                ch_AB.<Command>select(Command@Server.ERR_NEEDMOREPARAMS);
+                ForwardMessage@Client forward = ch_AB.<ForwardMessage>com(
+                    Util@Server.<ForwardMessage>as(msg));
+
+                clientState.getOut().println(forward.toString());
             }
         }
 
