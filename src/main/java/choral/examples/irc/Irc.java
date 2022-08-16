@@ -19,29 +19,31 @@ public class Irc {
         }
     }
 
-    private static void clientSendLoop(Irc_Client client) {
-        Irc.defaultLoop(() -> client.clientProcessOne());
+    private static void clientSendLoop(Irc_Client client, IrcChannel_A ch) {
+        Irc.defaultLoop(() -> client.clientProcessOne(ch));
     }
 
-    private static void clientRecvLoop(Irc_Client client) {
-        Irc.defaultLoop(() -> client.serverProcessOne());
+    private static void clientRecvLoop(Irc_Client client, IrcChannel_A ch) {
+        Irc.defaultLoop(() -> client.serverProcessOne(ch));
     }
 
-    private static void serverSendLoop(Irc_Server server) {
-        Irc.defaultLoop(() -> server.serverProcessOne());
+    private static void serverSendLoop(Irc_Server server, IrcChannel_B ch) {
+        Irc.defaultLoop(() -> server.serverProcessOne(ch));
     }
 
-    private static void serverRecvLoop(Irc_Server server) {
-        Irc.defaultLoop(() -> server.clientProcessOne());
+    private static void serverRecvLoop(Irc_Server server, IrcChannel_B ch) {
+        Irc.defaultLoop(() -> server.clientProcessOne(ch));
     }
 
-    public static void runClient(Irc_Client client, ExecutorService executor) {
-        executor.execute(() -> Irc.clientSendLoop(client));
-        executor.execute(() -> Irc.clientRecvLoop(client));
+    public static void runClient(Irc_Client client, IrcChannel_A ch,
+                                 ExecutorService executor) {
+        executor.execute(() -> Irc.clientSendLoop(client, ch));
+        executor.execute(() -> Irc.clientRecvLoop(client, ch));
     }
 
-    public static void runServer(Irc_Server server, ExecutorService executor) {
-        executor.execute(() -> Irc.serverSendLoop(server));
-        executor.execute(() -> Irc.serverRecvLoop(server));
+    public static void runServer(Irc_Server server, IrcChannel_B ch,
+                                 ExecutorService executor) {
+        executor.execute(() -> Irc.serverSendLoop(server, ch));
+        executor.execute(() -> Irc.serverRecvLoop(server, ch));
     }
 }

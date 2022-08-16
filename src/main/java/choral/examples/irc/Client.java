@@ -75,8 +75,8 @@ public class Client {
                     System.out.println("Connected to " + host + " at " + port);
 
                     IrcChannel_A ch = new IrcChannel_A(sc);
-                    irc = new Irc_Client(ch, state, Unit.id);
-                    Irc.runClient(irc, executor);
+                    irc = new Irc_Client(state, Unit.id);
+                    Irc.runClient(irc, ch, executor);
                 }
                 else if (cmd.equalsIgnoreCase("/nick")) {
                     if (parts.length - 1 < 1) {

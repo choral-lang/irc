@@ -1,14 +1,12 @@
 package choral.examples.irc;
 
-import choral.channels.SymChannel;
+import choral.channels.DiChannel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Irc@(Client, Server) {
-    private SymChannel@(Client, Server)<Message> ch_AB;
-
     private ClientState@Client clientState;
     private LinkedBlockingQueue@Client<Message> clientQueue;
 
@@ -16,11 +14,8 @@ public class Irc@(Client, Server) {
     private LinkedBlockingQueue@Server<Message> serverQueue;
     private long@Server clientId;
 
-    public Irc(SymChannel@(Client, Server)<Message> ch_AB,
-               ClientState@Client clientState,
+    public Irc(ClientState@Client clientState,
                ServerState@Server serverState) {
-        this.ch_AB = ch_AB;
-
         this.clientState = clientState;
         this.clientQueue = new LinkedBlockingQueue@Client<Message>();
 
@@ -41,15 +36,15 @@ public class Irc@(Client, Server) {
      * One step of the loop driven by the client's message queue. Only the
      * client initiates requests.
      */
-    public void clientProcessOne() {
+    public void clientProcessOne(DiChannel@(Client, Server)<Message> ch) {
         Message@Client msg = Util@Client.<Message>take(clientQueue);
         Command@Client cmd = Util@Client.commandFromString(msg.getCommand());
 
         // NOTE: We assume cmd != null
         switch (cmd) {
             case PING -> {
-                ch_AB.<Command>select(Command@Client.PING);
-                PingMessage@Server ping = ch_AB.<PingMessage>com(
+                ch.<Command>select(Command@Client.PING);
+                PingMessage@Server ping = ch.<PingMessage>com(
                     Util@Client.<PingMessage>as(msg));
 
                 serverState.getOut().println(ping.toString());
@@ -74,17 +69,17 @@ public class Irc@(Client, Server) {
             }
 
             case PONG -> {
-                ch_AB.<Command>select(Command@Client.PONG);
-                PongMessage@Server pong = ch_AB.<PongMessage>com(
+                ch.<Command>select(Command@Client.PONG);
+                PongMessage@Server pong = ch.<PongMessage>com(
                     Util@Client.<PongMessage>as(msg));
 
                 serverState.getOut().println(pong.toString());
             }
 
             case NICK -> {
-                ch_AB.<Command>select(Command@Client.NICK);
+                ch.<Command>select(Command@Client.NICK);
                 NickMessage@Client cNick = Util@Client.<NickMessage>as(msg);
-                NickMessage@Server sNick = ch_AB.<NickMessage>com(cNick);
+                NickMessage@Server sNick = ch.<NickMessage>com(cNick);
 
                 if (!clientState.isRegistered()) {
                     clientState.setNickname(cNick.getNickname());
@@ -94,9 +89,9 @@ public class Irc@(Client, Server) {
             }
 
             case USER -> {
-                ch_AB.<Command>select(Command@Client.USER);
+                ch.<Command>select(Command@Client.USER);
                 UserMessage@Client cUser = Util@Client.<UserMessage>as(msg);
-                UserMessage@Server sUser = ch_AB.<UserMessage>com(cUser);
+                UserMessage@Server sUser = ch.<UserMessage>com(cUser);
 
                 if (!clientState.isRegistered()) {
                     clientState.setUsername(cUser.getUsername());
@@ -137,24 +132,24 @@ public class Irc@(Client, Server) {
             }
 
             case JOIN -> {
-                ch_AB.<Command>select(Command@Client.JOIN);
-                JoinMessage@Server join = ch_AB.<JoinMessage>com(
+                ch.<Command>select(Command@Client.JOIN);
+                JoinMessage@Server join = ch.<JoinMessage>com(
                     Util@Client.<JoinMessage>as(msg));
 
                 ServerUtil@Server.processJoin(serverState, clientId, join);
             }
 
             case PART -> {
-                ch_AB.<Command>select(Command@Client.PART);
-                PartMessage@Server part = ch_AB.<PartMessage>com(
+                ch.<Command>select(Command@Client.PART);
+                PartMessage@Server part = ch.<PartMessage>com(
                     Util@Client.<PartMessage>as(msg));
 
                 ServerUtil@Server.processPart(serverState, clientId, part);
             }
 
             case PRIVMSG -> {
-                ch_AB.<Command>select(Command@Client.PRIVMSG);
-                PrivmsgMessage@Server privmsg = ch_AB.<PrivmsgMessage>com(
+                ch.<Command>select(Command@Client.PRIVMSG);
+                PrivmsgMessage@Server privmsg = ch.<PrivmsgMessage>com(
                     Util@Client.<PrivmsgMessage>as(msg));
 
                 ServerUtil@Server.processPrivmsg(serverState, clientId, privmsg);
@@ -166,15 +161,15 @@ public class Irc@(Client, Server) {
      * One step of the loop driven by the server's message queue. Only the
      * server initiates requests.
      */
-    public void serverProcessOne() {
+    public void serverProcessOne(DiChannel@(Server, Client)<Message> ch) {
         Message@Server msg = Util@Server.<Message>take(serverQueue);
         Command@Server cmd = Util@Server.commandFromString(msg.getCommand());
 
         // NOTE: We assume cmd != null
         switch (cmd) {
             case PING -> {
-                ch_AB.<Command>select(Command@Server.PING);
-                PingMessage@Client ping = ch_AB.<PingMessage>com(
+                ch.<Command>select(Command@Server.PING);
+                PingMessage@Client ping = ch.<PingMessage>com(
                     Util@Server.<PingMessage>as(msg));
 
                 clientState.getOut().println(ping.toString());
@@ -186,16 +181,16 @@ public class Irc@(Client, Server) {
             }
 
             case PONG -> {
-                ch_AB.<Command>select(Command@Server.PONG);
-                PongMessage@Client pong = ch_AB.<PongMessage>com(
+                ch.<Command>select(Command@Server.PONG);
+                PongMessage@Client pong = ch.<PongMessage>com(
                     Util@Server.<PongMessage>as(msg));
 
                 clientState.getOut().println(pong.toString());
             }
 
             case NICK -> {
-                ch_AB.<Command>select(Command@Server.NICK);
-                NickMessage@Client nick = ch_AB.<NickMessage>com(
+                ch.<Command>select(Command@Server.NICK);
+                NickMessage@Client nick = ch.<NickMessage>com(
                     Util@Server.<NickMessage>as(msg));
 
                 clientState.getOut().println(nick.toString());
@@ -206,8 +201,8 @@ public class Irc@(Client, Server) {
             }
 
             case JOIN -> {
-                ch_AB.<Command>select(Command@Server.JOIN);
-                JoinMessage@Client join = ch_AB.<JoinMessage>com(
+                ch.<Command>select(Command@Server.JOIN);
+                JoinMessage@Client join = ch.<JoinMessage>com(
                     Util@Server.<JoinMessage>as(msg));
 
                 clientState.getOut().println(join.toString());
@@ -235,8 +230,8 @@ public class Irc@(Client, Server) {
             }
 
             case PART -> {
-                ch_AB.<Command>select(Command@Server.PART);
-                PartMessage@Client part = ch_AB.<PartMessage>com(
+                ch.<Command>select(Command@Server.PART);
+                PartMessage@Client part = ch.<PartMessage>com(
                     Util@Server.<PartMessage>as(msg));
 
                 clientState.getOut().println(part.toString());
@@ -264,16 +259,16 @@ public class Irc@(Client, Server) {
             }
 
             case PRIVMSG -> {
-                ch_AB.<Command>select(Command@Server.PRIVMSG);
-                PrivmsgMessage@Client privmsg = ch_AB.<PrivmsgMessage>com(
+                ch.<Command>select(Command@Server.PRIVMSG);
+                PrivmsgMessage@Client privmsg = ch.<PrivmsgMessage>com(
                     Util@Server.<PrivmsgMessage>as(msg));
 
                 clientState.getOut().println(privmsg.toString());
             }
 
             case RPL_WELCOME -> {
-                ch_AB.<Command>select(Command@Server.RPL_WELCOME);
-                RplWelcomeMessage@Client welcome = ch_AB.<RplWelcomeMessage>com(
+                ch.<Command>select(Command@Server.RPL_WELCOME);
+                RplWelcomeMessage@Client welcome = ch.<RplWelcomeMessage>com(
                     Util@Server.<RplWelcomeMessage>as(msg));
 
                 clientState.getOut().println(welcome.toString());
@@ -285,8 +280,8 @@ public class Irc@(Client, Server) {
             }
 
             case RPL_NAMREPLY -> {
-                ch_AB.<Command>select(Command@Server.RPL_NAMREPLY);
-                RplNamReplyMessage@Client namReply = ch_AB.<RplNamReplyMessage>com(
+                ch.<Command>select(Command@Server.RPL_NAMREPLY);
+                RplNamReplyMessage@Client namReply = ch.<RplNamReplyMessage>com(
                     Util@Server.<RplNamReplyMessage>as(msg));
 
                 clientState.getOut().println(namReply.toString());
@@ -302,8 +297,8 @@ public class Irc@(Client, Server) {
             default -> {
                 // Any message that falls under ForwardMessage can be
                 // used for the selection.
-                ch_AB.<Command>select(Command@Server.ERR_NEEDMOREPARAMS);
-                ForwardMessage@Client forward = ch_AB.<ForwardMessage>com(
+                ch.<Command>select(Command@Server.ERR_NEEDMOREPARAMS);
+                ForwardMessage@Client forward = ch.<ForwardMessage>com(
                     Util@Server.<ForwardMessage>as(msg));
 
                 clientState.getOut().println(forward.toString());
