@@ -38,9 +38,10 @@ public class Irc@(Client, Server) {
     }
 
     /**
-     * A loop driven by the client's message queue. The client initiates requests.
+     * One step of the loop driven by the client's message queue. Only the
+     * client initiates requests.
      */
-    public void clientDrivenLoop() {
+    public void clientProcessOne() {
         Message@Client msg = Util@Client.<Message>take(clientQueue);
         Command@Client cmd = Util@Client.commandFromString(msg.getCommand());
 
@@ -159,14 +160,13 @@ public class Irc@(Client, Server) {
                 ServerUtil@Server.processPrivmsg(serverState, clientId, privmsg);
             }
         }
-
-        clientDrivenLoop();
     }
 
     /**
-     * A loop driven by the server's message queue. The server initiates requests.
+     * One step of the loop driven by the server's message queue. Only the
+     * server initiates requests.
      */
-    public void serverDrivenLoop() {
+    public void serverProcessOne() {
         Message@Server msg = Util@Server.<Message>take(serverQueue);
         Command@Server cmd = Util@Server.commandFromString(msg.getCommand());
 
@@ -309,7 +309,5 @@ public class Irc@(Client, Server) {
                 clientState.getOut().println(forward.toString());
             }
         }
-
-        serverDrivenLoop();
     }
 }
