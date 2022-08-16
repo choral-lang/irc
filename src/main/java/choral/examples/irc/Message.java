@@ -89,7 +89,7 @@ public class Message {
     }
 
     public List<String> getParams() {
-        return params;
+        return new ArrayList<>(params);
     }
 
     public String getParam(int n) {

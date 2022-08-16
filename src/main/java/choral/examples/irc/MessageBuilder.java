@@ -21,7 +21,7 @@ public class MessageBuilder {
     public MessageBuilder fromMessage(Message m) {
         this.source = m.getSource();
         this.command = m.getCommand();
-        this.params = new ArrayList<>(m.getParams());
+        this.params = m.getParams();
         return this;
     }
 
