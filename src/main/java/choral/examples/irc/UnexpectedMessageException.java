@@ -4,7 +4,7 @@ public class UnexpectedMessageException extends RuntimeException {
     private Message message;
 
     UnexpectedMessageException(Message message) {
-        super("Unrecognized message: '" + message.toString() + "'");
+        super("Unexpected message: '" + message.toString() + "'");
         this.message = message;
     }
 

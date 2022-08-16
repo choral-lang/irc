@@ -1,14 +1,14 @@
 package choral.examples.irc;
 
 public class UnrecognizedMessageException extends RuntimeException {
-    private String message;
+    private Message message;
 
-    UnrecognizedMessageException(String message) {
-        super("Unrecognized message: '" + message + "'");
+    UnrecognizedMessageException(Message message) {
+        super("Unrecognized message: '" + message.toString() + "'");
         this.message = message;
     }
 
-    public String getIrcMessage() {
+    public Message getIrcMessage() {
         return message;
     }
 }
