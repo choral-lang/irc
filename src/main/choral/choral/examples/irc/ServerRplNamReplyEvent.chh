@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ServerRplNamReplyEvent@R extends ServerEvent@R {
-    public ServerRplNamReplyEvent(RplNamReplyMessage@R message) {}
-
-    public RplNamReplyMessage@R getMessage() {}
-}

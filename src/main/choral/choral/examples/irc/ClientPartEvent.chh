@@ -1,9 +1,0 @@
-package choral.examples.irc;
-
-import java.util.List;
-
-public class ClientPartEvent@R extends ClientEvent@R {
-    public ClientPartEvent(PartMessage@R message) {}
-
-    public PartMessage@R getMessage() {}
-}

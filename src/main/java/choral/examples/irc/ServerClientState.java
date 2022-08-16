@@ -6,12 +6,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ServerClientState {
     public long clientId;
-    public LinkedBlockingQueue<ServerEvent> queue;
+    public LinkedBlockingQueue<Message> queue;
     public String username, realname, nickname;
     public boolean registered;
     public Set<String> channels;
 
-    ServerClientState(long clientId, LinkedBlockingQueue<ServerEvent> queue) {
+    ServerClientState(long clientId, LinkedBlockingQueue<Message> queue) {
         this.clientId = clientId;
         this.queue = queue;
         this.username = null;

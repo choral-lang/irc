@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ServerPartEvent@R extends ServerEvent@R {
-    public ServerPartEvent(PartMessage@R message) {}
-
-    public PartMessage@R getMessage() {}
-}

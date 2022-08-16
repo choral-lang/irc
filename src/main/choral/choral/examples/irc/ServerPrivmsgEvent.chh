@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ServerPrivmsgEvent@R extends ServerEvent@R {
-    public ServerPrivmsgEvent(PrivmsgMessage@R message) {}
-
-    public PrivmsgMessage@R getMessage() {}
-}

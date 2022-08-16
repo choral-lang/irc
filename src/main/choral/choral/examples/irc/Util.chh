@@ -8,6 +8,10 @@ public class Util@R {
 
     public static <T@R> void put(LinkedBlockingQueue@R<T> queue, T@R item) {}
 
+    public static <T@R> T@R as(Message@R message) {}
+
+    public static Command@R fromCode(String@R code) {}
+
     public static boolean@R validNickname(String@R nickname) {}
 
     public static boolean@R validUsername(String@R username) {}

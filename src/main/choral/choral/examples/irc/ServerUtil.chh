@@ -18,5 +18,5 @@ public class ServerUtil@R {
 
     public static <T@R extends Message@R> T@R withSource(T@R message, Source@R source) {}
 
-    public static ServerForwardEvent@R forwardNumeric(Command@R command, String@R nickname, String@R param1) {}
+    public static ForwardMessage@R forwardNumeric(Command@R command, String@R nickname, String@R param1) {}
 }

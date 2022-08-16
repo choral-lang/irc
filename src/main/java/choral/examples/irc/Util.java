@@ -24,6 +24,16 @@ public class Util {
         }
     }
 
+    public static <T> T as(Message message) {
+        @SuppressWarnings("unchecked")
+        T res = (T) message;
+        return res;
+    }
+
+    public static Command fromCode(String code) {
+        return Command.fromCode(code);
+    }
+
     /**
      * Check whether a command is valid.
      *

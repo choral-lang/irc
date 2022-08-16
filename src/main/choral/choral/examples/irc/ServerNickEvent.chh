@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ServerNickEvent@R extends ServerEvent@R {
-    public ServerNickEvent(NickMessage@R message) {}
-
-    public NickMessage@R getMessage() {}
-}

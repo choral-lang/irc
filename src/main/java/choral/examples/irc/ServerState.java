@@ -21,15 +21,15 @@ public class ServerState {
         channels = new HashMap<>();
     }
 
-    public long newClient(LinkedBlockingQueue<ServerEvent> queue) {
+    public long newClient(LinkedBlockingQueue<Message> queue) {
         long clientId = ++lastClientId;
         ServerClientState client = new ServerClientState(clientId, queue);
         clients.put(clientId, client);
         return clientId;
     }
 
-    public void addEvent(long clientId, ServerEvent event) {
-        Util.<ServerEvent>put(clients.get(clientId).queue, event);
+    public void addMessage(long clientId, Message message) {
+        Util.<Message>put(clients.get(clientId).queue, message);
     }
 
     public long getClientId(String nickname) {

@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ServerPongEvent@R extends ServerEvent@R {
-    public ServerPongEvent(PongMessage@R message) {}
-
-    public PongMessage@R getMessage() {}
-}

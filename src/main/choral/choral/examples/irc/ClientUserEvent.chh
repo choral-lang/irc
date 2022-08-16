@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-public class ClientUserEvent@R extends ClientEvent@R {
-    public ClientUserEvent(UserMessage@R message) {}
-
-    public UserMessage@R getMessage() {}
-}

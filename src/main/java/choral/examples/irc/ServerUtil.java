@@ -23,15 +23,14 @@ public class ServerUtil {
      */
     public static void processWelcome(ServerState state, long clientId) {
         BiConsumer<Command, String> add = (command, text) -> {
-            state.addEvent(clientId, forwardNumeric(
+            state.addMessage(clientId, forwardNumeric(
                 command, state.getNickname(clientId), text));
         };
 
-        state.addEvent(clientId, new ServerRplWelcomeEvent(
-            ServerUtil.withSource(
-                new RplWelcomeMessage(state.getNickname(clientId),
-                                      "Welcome to ChoralNet!"),
-                new Source(HOSTNAME))));
+        state.addMessage(clientId, ServerUtil.withSource(
+            new RplWelcomeMessage(state.getNickname(clientId),
+                                  "Welcome to ChoralNet!"),
+            new Source(HOSTNAME)));
 
         add.accept(Command.RPL_YOURHOST, "Your host is " + HOSTNAME + "!");
         add.accept(Command.RPL_CREATED, "The server was created at IMADA!");
@@ -66,19 +65,19 @@ public class ServerUtil {
         String current = state.getNickname(clientId);
 
         if (!message.hasEnoughParams()) {
-            state.addEvent(clientId, forwardNumeric(
+            state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NONICKNAMEGIVEN, current, "No nickname given"));
             }
         else {
             String nickname = message.getNickname();
 
             if (!Util.validNickname(nickname)) {
-                state.addEvent(clientId, forwardNumeric(
+                state.addMessage(clientId, forwardNumeric(
                     Command.ERR_ERRONEOUSNICKNAME, current,
                     "Nickname is invalid"));
             }
             else if (state.nicknameExists(nickname)) {
-                state.addEvent(clientId, forwardNumeric(
+                state.addMessage(clientId, forwardNumeric(
                     Command.ERR_NICKNAMEINUSE, current, "Nickname is in use"));
             }
             else {
@@ -88,7 +87,7 @@ public class ServerUtil {
                     NickMessage m = ServerUtil.withSource(
                         message, new Source(current));
 
-                    state.addEvent(clientId, new ServerNickEvent(m));
+                    state.addMessage(clientId, m);
 
                     Set<Long> others = state.getChannels(clientId).stream()
                         .flatMap(c -> state.getMembers(c).stream())
@@ -96,7 +95,7 @@ public class ServerUtil {
                     others.remove(clientId);
 
                     for (long otherId : others) {
-                        state.addEvent(otherId, new ServerNickEvent(m));
+                        state.addMessage(otherId, m);
                     }
                 }
                 else if (state.canRegister(clientId)) {
@@ -114,11 +113,11 @@ public class ServerUtil {
     public static void processJoin(ServerState state, long clientId,
                                    JoinMessage message) {
         if (!state.isRegistered(clientId)) {
-            state.addEvent(clientId, forwardNumeric(
+            state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NOTREGISTERED, "*", "You must register first"));
         }
         else if (!message.hasEnoughParams()) {
-            state.addEvent(clientId, forwardNumeric(
+            state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NEEDMOREPARAMS, state.getNickname(clientId),
                 "Need more parameters"));
         }
@@ -134,7 +133,7 @@ public class ServerUtil {
 
                 for (String channel : new HashSet<>(channels)) {
                     if (!Util.validChannelname(channel)) {
-                        state.addEvent(clientId, forwardNumeric(
+                        state.addMessage(clientId, forwardNumeric(
                             Command.ERR_NOSUCHCHANNEL, nickname,
                             "Invalid channel name"));
                     }
@@ -146,26 +145,24 @@ public class ServerUtil {
                         Set<Long> members = state.getMembers(channel);
 
                         state.joinChannel(clientId, channel);
-                        state.addEvent(clientId, new ServerJoinEvent(m));
+                        state.addMessage(clientId, m);
 
-                        state.addEvent(clientId, new ServerRplNamReplyEvent(
-                            ServerUtil.withSource(
-                                new RplNamReplyMessage(
-                                    nickname, "=", channel, List.of(nickname)),
-                                new Source(HOSTNAME))));
+                        state.addMessage(clientId, ServerUtil.withSource(
+                            new RplNamReplyMessage(
+                                nickname, "=", channel, List.of(nickname)),
+                            new Source(HOSTNAME)));
 
                         for (Long otherId : members) {
-                            state.addEvent(otherId, new ServerJoinEvent(m));
+                            state.addMessage(otherId, m);
 
-                            state.addEvent(clientId, new ServerRplNamReplyEvent(
-                                ServerUtil.withSource(
-                                    new RplNamReplyMessage(
-                                        nickname, "=", channel,
-                                        List.of(state.getNickname(otherId))),
-                                    new Source(HOSTNAME))));
+                            state.addMessage(clientId, ServerUtil.withSource(
+                                new RplNamReplyMessage(
+                                    nickname, "=", channel,
+                                    List.of(state.getNickname(otherId))),
+                                new Source(HOSTNAME)));
                         }
 
-                        state.addEvent(clientId, forwardNumeric(
+                        state.addMessage(clientId, forwardNumeric(
                             Command.RPL_ENDOFNAMES, nickname, channel,
                             "End of names list"));
                     }
@@ -182,11 +179,11 @@ public class ServerUtil {
     public static void processPart(ServerState state, long clientId,
                                    PartMessage message) {
         if (!state.isRegistered(clientId)) {
-            state.addEvent(clientId, forwardNumeric(
+            state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NOTREGISTERED, "*", "You must register first"));
         }
         else if (!message.hasEnoughParams()) {
-            state.addEvent(clientId, forwardNumeric(
+            state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NEEDMOREPARAMS, state.getNickname(clientId),
                 "Need more parameters"));
         }
@@ -196,12 +193,12 @@ public class ServerUtil {
 
             for (String channel : new HashSet<>(channels)) {
                 if (!Util.validChannelname(channel)) {
-                    state.addEvent(clientId, forwardNumeric(
+                    state.addMessage(clientId, forwardNumeric(
                         Command.ERR_NOSUCHCHANNEL, nickname,
                         "Invalid channel name"));
                 }
                 else if (!state.inChannel(clientId, channel)) {
-                    state.addEvent(clientId, forwardNumeric(
+                    state.addMessage(clientId, forwardNumeric(
                         Command.ERR_NOTONCHANNEL, nickname,
                         "You are not in that channel"));
                 }
@@ -221,10 +218,10 @@ public class ServerUtil {
                         new Source(nickname));
 
                     state.partChannel(clientId, channel);
-                    state.addEvent(clientId, new ServerPartEvent(m));
+                    state.addMessage(clientId, m);
 
                     for (Long otherId : state.getMembers(channel)) {
-                        state.addEvent(otherId, new ServerPartEvent(m));
+                        state.addMessage(otherId, m);
                     }
                 }
             }
@@ -239,16 +236,16 @@ public class ServerUtil {
     public static void processPrivmsg(ServerState state, long clientId,
                                       PrivmsgMessage message) {
         if (!state.isRegistered(clientId)) {
-            state.addEvent(clientId, forwardNumeric(
+            state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NOTREGISTERED, "*", "You must register first"));
         }
         else if (!message.hasTargets()) {
-            state.addEvent(clientId, forwardNumeric(
+            state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NORECIPIENT, state.getNickname(clientId),
                 "No recipient"));
         }
         else if (!message.hasText()) {
-            state.addEvent(clientId, forwardNumeric(
+            state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NOTEXTTOSEND, state.getNickname(clientId),
                 "No text to send"));
         }
@@ -259,12 +256,12 @@ public class ServerUtil {
             for (String target : message.getTargets()) {
                 if (Util.validChannelname(target)) {
                     if (!state.channelExists(target)) {
-                        state.addEvent(clientId, forwardNumeric(
+                        state.addMessage(clientId, forwardNumeric(
                             Command.ERR_NOSUCHNICK, nickname,
                             "No such channel"));
                     }
                     else if (!state.inChannel(clientId, target)) {
-                        state.addEvent(clientId, forwardNumeric(
+                        state.addMessage(clientId, forwardNumeric(
                             Command.ERR_CANNOTSENDTOCHAN, nickname,
                             "You are not in that channel"));
                     }
@@ -277,13 +274,13 @@ public class ServerUtil {
                         others.remove(clientId);
 
                         for (long otherId : others) {
-                            state.addEvent(otherId, new ServerPrivmsgEvent(m));
+                            state.addMessage(otherId, m);
                         }
                     }
                 }
                 else {
                     if (!state.nicknameExists(target)) {
-                        state.addEvent(clientId, forwardNumeric(
+                        state.addMessage(clientId, forwardNumeric(
                             Command.ERR_NOSUCHNICK, nickname,
                             "No such nickname"));
                     }
@@ -292,8 +289,7 @@ public class ServerUtil {
                             new PrivmsgMessage(target, text),
                             new Source(nickname));
 
-                        state.addEvent(state.getClientId(target),
-                                       new ServerPrivmsgEvent(m));
+                        state.addMessage(state.getClientId(target), m);
                     }
                 }
             }
@@ -324,31 +320,25 @@ public class ServerUtil {
         return m;
     }
 
-    public static Message makeNumeric(Command command,
-                                      String nickname,
-                                      String... params) {
+    public static ForwardMessage forwardNumeric(Command command,
+                                                String nickname,
+                                                String... params) {
         List<String> ps = new ArrayList<>();
         ps.add(nickname);
         ps.addAll(Arrays.asList(params));
 
-        return MessageBuilder
-            .build()
-            .source(new Source(HOSTNAME))
-            .command(command.code())
-            .params(ps)
-            .message();
+        return new ForwardMessage(
+            MessageBuilder
+                .build()
+                .source(new Source(HOSTNAME))
+                .command(command.code())
+                .params(ps)
+                .message());
     }
 
-    public static ServerForwardEvent forwardNumeric(Command command,
-                                                    String nickname,
-                                                    String... params) {
-        Message m = makeNumeric(command, nickname, params);
-        return new ServerForwardEvent(new ForwardMessage(m));
-    }
-
-    public static ServerForwardEvent forwardNumeric(Command command,
-                                                    String nickname,
-                                                    String param1) {
+    public static ForwardMessage forwardNumeric(Command command,
+                                                String nickname,
+                                                String param1) {
         return forwardNumeric(command, nickname, new String[] {param1});
     }
 }

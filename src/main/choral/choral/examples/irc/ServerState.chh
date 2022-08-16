@@ -7,9 +7,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ServerState@R {
     public ServerState() {}
 
-    public long@R newClient(LinkedBlockingQueue@R<ServerEvent> queue) {}
+    public long@R newClient(LinkedBlockingQueue@R<Message> queue) {}
 
-    public void addEvent(long@R clientId, ServerEvent@R event) {}
+    public void addMessage(long@R clientId, Message@R message) {}
 
     public long@R getClientId(String@R nickname) {}
 
