@@ -4,12 +4,12 @@ import java.util.List;
 
 public class UserMessage extends Message {
     public UserMessage(String username, String realname) {
-        super(null, Command.USER.code(), List.of(username, "0", "*", realname));
+        super(null, Command.USER.string(), List.of(username, "0", "*", realname));
     }
 
     public UserMessage(Message message) {
         super(message);
-        assert command == Command.USER.code();
+        assert command == Command.USER.string();
     }
 
     public boolean hasEnoughParams() {

@@ -4,16 +4,16 @@ import java.util.List;
 
 public class PongMessage extends Message {
     public PongMessage(String token) {
-        super(null, Command.PONG.code(), List.of(token));
+        super(null, Command.PONG.string(), List.of(token));
     }
 
     public PongMessage(String host, String token) {
-        super(null, Command.PONG.code(), List.of(host, token));
+        super(null, Command.PONG.string(), List.of(host, token));
     }
 
     public PongMessage(Message message) {
         super(message);
-        assert command == Command.PONG.code();
+        assert command == Command.PONG.string();
     }
 
     public boolean hasEnoughParams() {

@@ -44,23 +44,23 @@ public enum Command {
     ERR_NEEDMOREPARAMS("461"),
     ERR_ALREADYREGISTERED("462");
 
-    private final String code;
+    private final String string;
 
-    private static final Map<String, Command> lookup = new HashMap<String, Command>() {{
+    private static final Map<String, Command> strings = new HashMap<String, Command>() {{
         for (Command c : Command.values()) {
-            put(c.code(), c);
+            put(c.string(), c);
         }
     }};
 
-    Command(String code) {
-        this.code = code;
+    Command(String command) {
+        this.string = command;
     }
 
-    String code() {
-        return code;
+    String string() {
+        return string;
     }
 
-    public static Command fromCode(String code) {
-        return lookup.get(code);
+    public static Command fromString(String command) {
+        return strings.get(command);
     }
 }

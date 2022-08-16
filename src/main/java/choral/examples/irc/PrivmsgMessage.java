@@ -5,7 +5,7 @@ import java.util.List;
 
 public class PrivmsgMessage extends Message {
     public PrivmsgMessage(List<String> targets, String text) {
-        super(null, Command.PRIVMSG.code(),
+        super(null, Command.PRIVMSG.string(),
               List.of(String.join(",", targets), text));
     }
 
@@ -15,7 +15,7 @@ public class PrivmsgMessage extends Message {
 
     public PrivmsgMessage(Message message) {
         super(message);
-        assert command == Command.PRIVMSG.code();
+        assert command == Command.PRIVMSG.string();
     }
 
     public boolean hasEnoughParams() {

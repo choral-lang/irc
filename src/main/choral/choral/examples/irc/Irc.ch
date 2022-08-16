@@ -42,7 +42,7 @@ public class Irc@(Client, Server) {
      */
     public void clientDrivenLoop() {
         Message@Client msg = Util@Client.<Message>take(clientQueue);
-        Command@Client cmd = Util@Client.fromCode(msg.getCommand());
+        Command@Client cmd = Util@Client.commandFromString(msg.getCommand());
 
         // NOTE: We assume cmd != null
         switch (cmd) {
@@ -168,7 +168,7 @@ public class Irc@(Client, Server) {
      */
     public void serverDrivenLoop() {
         Message@Server msg = Util@Server.<Message>take(serverQueue);
-        Command@Server cmd = Util@Server.fromCode(msg.getCommand());
+        Command@Server cmd = Util@Server.commandFromString(msg.getCommand());
 
         // NOTE: We assume cmd != null
         switch (cmd) {

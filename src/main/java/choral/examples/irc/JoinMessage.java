@@ -5,7 +5,7 @@ import java.util.List;
 
 public class JoinMessage extends Message {
     public JoinMessage(List<String> channels) {
-        super(null, Command.JOIN.code(), List.of(String.join(",", channels)));
+        super(null, Command.JOIN.string(), List.of(String.join(",", channels)));
     }
 
     public JoinMessage(String channel) {
@@ -14,7 +14,7 @@ public class JoinMessage extends Message {
 
     public JoinMessage(Message message) {
         super(message);
-        assert command == Command.JOIN.code();
+        assert command == Command.JOIN.string();
     }
 
     public boolean hasEnoughParams() {

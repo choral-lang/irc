@@ -205,7 +205,7 @@ public class ServerUtil {
                 else {
                     MessageBuilder mb = MessageBuilder
                         .build()
-                        .command(Command.PART.code())
+                        .command(Command.PART.string())
                         .source(new Source(nickname))
                         .param(channel);
 
@@ -331,7 +331,7 @@ public class ServerUtil {
             MessageBuilder
                 .build()
                 .source(new Source(HOSTNAME))
-                .command(command.code())
+                .command(command.string())
                 .params(ps)
                 .message());
     }

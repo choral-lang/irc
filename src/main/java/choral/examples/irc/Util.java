@@ -30,8 +30,8 @@ public class Util {
         return res;
     }
 
-    public static Command fromCode(String code) {
-        return Command.fromCode(code);
+    public static Command commandFromString(String command) {
+        return Command.fromString(command);
     }
 
     /**

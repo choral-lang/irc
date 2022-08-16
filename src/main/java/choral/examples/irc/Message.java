@@ -123,8 +123,7 @@ public class Message {
      * <code>Message</code> subclass.
      */
     public static Message construct(Message message) {
-        String code = message.getCommand();
-        Command command = Command.fromCode(code);
+        Command command = Command.fromString(message.getCommand());
 
         if (command == null)
             return null;

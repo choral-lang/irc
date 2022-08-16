@@ -6,13 +6,13 @@ import java.util.List;
 public class RplNamReplyMessage extends Message {
     public RplNamReplyMessage(String nickname, String status, String channel,
                               List<String> nicknames) {
-        super(null, Command.RPL_NAMREPLY.code(),
+        super(null, Command.RPL_NAMREPLY.string(),
               List.of(nickname, status, channel, String.join(" ", nicknames)));
     }
 
     public RplNamReplyMessage(Message message) {
         super(message);
-        assert command == Command.RPL_NAMREPLY.code();
+        assert command == Command.RPL_NAMREPLY.string();
     }
 
     public boolean hasEnoughParams() {

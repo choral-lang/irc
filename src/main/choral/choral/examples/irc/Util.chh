@@ -10,7 +10,7 @@ public class Util@R {
 
     public static <T@R> T@R as(Message@R message) {}
 
-    public static Command@R fromCode(String@R code) {}
+    public static Command@R commandFromString(String@R command) {}
 
     public static boolean@R validNickname(String@R nickname) {}
 
