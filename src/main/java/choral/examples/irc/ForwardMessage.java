@@ -38,6 +38,8 @@ public class ForwardMessage extends Message {
 
     public ForwardMessage(Message message) {
         super(message);
-        assert COMMANDS.contains(message.getCommand());
+        assert COMMANDS.stream()
+            .map(Command::code)
+            .anyMatch(c -> message.getCommand() == c);
     }
 }
