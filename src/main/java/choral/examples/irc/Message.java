@@ -70,6 +70,14 @@ public class Message {
                 "There should be at most 15 parameters");
         }
 
+        int len = params.size();
+
+        if (len > 1 &&
+            params.stream().limit(len - 1).anyMatch(p -> p.contains(" "))) {
+            throw new IllegalArgumentException(
+                "Message parameters except for the last cannot contain spaces");
+        }
+
         this.source = source;
         this.command = command;
         this.params = params;
