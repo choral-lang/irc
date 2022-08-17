@@ -4,7 +4,9 @@ import choral.channels.SymChannelImpl;
 import choral.lang.Unit;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.channels.ByteChannel;
+import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -15,25 +17,39 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
 
     private ByteChannel channel;
     private ByteBuffer buffer;
+    private ByteBuffer outBuffer;
     private int current;
 
     IrcChannelImpl(ByteChannel channel) {
         this.channel = channel;
         this.buffer = ByteBuffer.allocate(MAX_SIZE);
+        this.outBuffer = ByteBuffer.allocate(MAX_SIZE);
         this.current = -1;
     }
 
     @Override
     public <M extends Message> Unit com(M m) {
         try {
-            String s = m.toString() + "\r\n";
-            byte[] b = s.getBytes(StandardCharsets.UTF_8);
+            // Clear the buffer
+            outBuffer.clear();
 
-            if (b.length > 512)
-                throw new RuntimeException(
-                    "Message exceeds the maximum length of 512 bytes");
+            // Write the message (will stop on overflow)
+            CharsetEncoder encoder = StandardCharsets.UTF_8.newEncoder();
+            encoder.encode(CharBuffer.wrap(m.toString()), outBuffer, true);
 
-            channel.write(ByteBuffer.wrap(b));
+            if (outBuffer.remaining() < 2)
+                throw new RuntimeException(String.format(
+                    "Message exceeds the maximum length of %d bytes",
+                    MAX_SIZE));
+
+            // Write the marker
+            outBuffer.put(MARKER);
+
+            // Put the buffer into "read mode"
+            outBuffer.flip();
+
+            // Write it out
+            channel.write(outBuffer);
         }
         catch (IOException e) {
             throw new RuntimeException(e.getMessage());
