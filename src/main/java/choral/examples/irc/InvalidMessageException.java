@@ -1,14 +1,14 @@
 package choral.examples.irc;
 
 public class InvalidMessageException extends RuntimeException {
-    private String message;
+    private String string;
 
-    InvalidMessageException(String message) {
-        super("Invalid message: '" + message + "'");
-        this.message = message;
+    InvalidMessageException(String string) {
+        super("Invalid message: '" + string + "'");
+        this.string = string;
     }
 
-    public String getIrcMessage() {
-        return message;
+    public String getString() {
+        return string;
     }
 }
