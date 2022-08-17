@@ -3,6 +3,7 @@ package choral.examples.irc;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,9 +74,19 @@ public class ClientState {
         channels.remove(channel);
     }
 
-    public void addMember(String channel, String nickname) {
+    public void addMembers(String channel, List<String> nicknames) {
         assert channels.containsKey(channel);
-        channels.get(channel).add(nickname);
+        Set<String> members = channels.get(channel);
+
+        for (String nickname : nicknames) {
+            if (!nickname.equals(this.nickname)) {
+                members.add(nickname);
+            }
+        }
+    }
+
+    public void addMember(String channel, String nickname) {
+        addMembers(channel, List.of(nickname));
     }
 
     public void renameMember(String from, String to) {

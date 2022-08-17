@@ -309,8 +309,7 @@ public class Irc@(Client, Server) {
                 String@Client channel = namReply.getChannel();
 
                 if (namReply.hasEnoughParams() && clientState.inChannel(channel)) {
-                    ClientUtil@Client.addMembers(
-                        clientState, channel, namReply.getNicknames());
+                    clientState.addMembers(channel, namReply.getNicknames());
                 }
             }
 

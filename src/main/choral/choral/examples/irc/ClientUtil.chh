@@ -1,7 +1,0 @@
-package choral.examples.irc;
-
-import java.util.List;
-
-public class ClientUtil@R {
-    public static void addMembers(ClientState@R state, String@R channel, List@R<String> members) {}
-}
