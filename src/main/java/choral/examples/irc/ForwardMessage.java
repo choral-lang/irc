@@ -27,6 +27,7 @@ public class ForwardMessage extends Message {
         Command.ERR_CANNOTSENDTOCHAN,
         Command.ERR_NORECIPIENT,
         Command.ERR_NOTEXTTOSEND,
+        Command.ERR_UNKNOWNCOMMAND,
         Command.ERR_NONICKNAMEGIVEN,
         Command.ERR_ERRONEOUSNICKNAME,
         Command.ERR_NICKNAMEINUSE,

@@ -32,7 +32,32 @@ public class Irc {
     }
 
     private static void serverRecvLoop(Irc_Server server) {
-        Irc.defaultLoop(() -> server.clientProcessOne());
+        while (true) {
+            try {
+                server.clientProcessOne();
+            }
+            catch (InvalidMessageException | UnexpectedMessageException e) {
+                e.printStackTrace();
+            }
+            catch (UnrecognizedMessageException e) {
+                long clientId = server.getClientId();
+                ServerState state = server.getServerState();
+
+                if (state.isRegistered(clientId)) {
+                    server.addServerMessage(ServerUtil.forwardNumeric(
+                        Command.ERR_UNKNOWNCOMMAND,
+                        state.getNickname(clientId),
+                        e.getIrcMessage().getCommand(),
+                        "Unknown command"));
+                }
+
+                e.printStackTrace();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                break;
+            }
+        }
     }
 
     public static void runClient(Irc_Client client, ExecutorService executor) {

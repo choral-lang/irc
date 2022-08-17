@@ -29,6 +29,18 @@ public class Irc@(Client, Server) {
         this.clientId = serverState.newClient(serverQueue);
     }
 
+    public ClientState@Client getClientState() {
+        return clientState;
+    }
+
+    public ServerState@Server getServerState() {
+        return serverState;
+    }
+
+    public long@Server getClientId() {
+        return clientId;
+    }
+
     public void addClientMessage(Message@Client message) {
         Util@Client.<Message>put(clientQueue, message);
     }

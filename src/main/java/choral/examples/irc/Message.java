@@ -43,6 +43,7 @@ public class Message {
             put(Command.ERR_CANNOTSENDTOCHAN, ForwardMessage.class);
             put(Command.ERR_NORECIPIENT, ForwardMessage.class);
             put(Command.ERR_NOTEXTTOSEND, ForwardMessage.class);
+            put(Command.ERR_UNKNOWNCOMMAND, ForwardMessage.class);
             put(Command.ERR_NONICKNAMEGIVEN, ForwardMessage.class);
             put(Command.ERR_ERRONEOUSNICKNAME, ForwardMessage.class);
             put(Command.ERR_NICKNAMEINUSE, ForwardMessage.class);
