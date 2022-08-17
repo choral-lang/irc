@@ -124,11 +124,14 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         // Construct the appropriate subclass of Message. SELECT messages are
         // completely internal to the channel implementation and are therefore
         // not modeled as a separate subclass of Message.
-        if (!m.getCommand().equals(SELECT))
-            m = Message.construct(m);
+        if (!m.getCommand().equals(SELECT)) {
+            Message m2 = Message.construct(m);
 
-        if (m == null)
-            throw new UnrecognizedMessageException(m);
+            if (m2 == null)
+                throw new UnrecognizedMessageException(m);
+
+            m = m2;
+        }
 
         try {
             @SuppressWarnings("unchecked")
