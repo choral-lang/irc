@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ForwardMessage extends Message {
-    private static final Set<Command> COMMANDS = new HashSet<>(Arrays.asList(
+    public static final Set<Command> COMMANDS = new HashSet<>(Arrays.asList(
         Command.RPL_YOURHOST,
         Command.RPL_CREATED,
         Command.RPL_MYINFO,

@@ -45,7 +45,9 @@ public class Irc@(Client, Server) {
         Message@Client msg = Util@Client.<Message>take(clientQueue);
         Command@Client cmd = Util@Client.commandFromString(msg.getCommand());
 
-        // NOTE: We assume cmd != null
+        Util@Client.check(cmd != null@Client,
+                          "Expected a known message in the queue"@Client);
+
         switch (cmd) {
             case PING -> {
                 ch_AB.<Command>select(Command@Client.PING);
@@ -170,7 +172,9 @@ public class Irc@(Client, Server) {
         Message@Server msg = Util@Server.<Message>take(serverQueue);
         Command@Server cmd = Util@Server.commandFromString(msg.getCommand());
 
-        // NOTE: We assume cmd != null
+        Util@Server.check(cmd != null@Server,
+                          "Expected a known message in the queue"@Server);
+
         switch (cmd) {
             case PING -> {
                 ch_AB.<Command>select(Command@Server.PING);
@@ -313,10 +317,14 @@ public class Irc@(Client, Server) {
                 }
             }
 
+            // NOTE: Any message that falls under ForwardMessage
             default -> {
-                // Any message that falls under ForwardMessage can be
-                // used for the selection.
+                // We can use whichever ForwardMessage for the selection
                 ch_AB.<Command>select(Command@Server.ERR_NEEDMOREPARAMS);
+
+                Util@Server.check(ForwardMessage@Server.COMMANDS.contains(cmd),
+                                  "Expected a ForwardMessage"@Server);
+
                 ForwardMessage@Client forward = ch_AB.<ForwardMessage>com(
                     Util@Server.<ForwardMessage>as(msg));
 

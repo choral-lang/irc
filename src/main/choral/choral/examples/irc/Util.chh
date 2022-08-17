@@ -10,6 +10,8 @@ public class Util@R {
 
     public static <T@R> T@R as(Message@R message) {}
 
+    public static void check(boolean@R cond, String@R message) {}
+
     public static Command@R commandFromString(String@R command) {}
 
     public static boolean@R validNickname(String@R nickname) {}

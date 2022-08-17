@@ -30,6 +30,12 @@ public class Util {
         return res;
     }
 
+    public static void check(boolean cond, String message) {
+        if (!cond) {
+            throw new RuntimeException(message);
+        }
+    }
+
     public static Command commandFromString(String command) {
         return Command.fromString(command);
     }

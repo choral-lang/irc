@@ -1,5 +1,9 @@
 package choral.examples.irc;
 
+import java.util.Set;
+
 public class ForwardMessage@R extends Message@R {
+    public static final Set@R<Command> COMMANDS;
+
     public ForwardMessage(Message@R message) {}
 }
