@@ -201,8 +201,23 @@ public class Irc@(Client, Server) {
                 clientState.getOut().println(nick.toString());
 
                 if (nick.hasEnoughParams()) {
-                    ClientUtil@Client.processNick(clientState, nick);
+                    Source@Client source = nick.getSource();
+
+                    if (source != null@Client) {
+                        String@Client current = clientState.getNickname();
+                        String@Client from = source.getNickname();
+                        String@Client to = nick.getNickname();
+
+                        if (current != null@Client && current.equals(from)) {
+                            clientState.setNickname(to);
+                        }
+                        else {
+                            clientState.renameMember(from, to);
+                        }
+                    }
+                    else {{}}
                 }
+                else {{{}}}
             }
 
             case JOIN -> {
