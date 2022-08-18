@@ -16,13 +16,13 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     private static final String SELECT = "SELECT";
 
     private ByteChannel channel;
-    private ByteBuffer buffer;
+    private ByteBuffer inBuffer;
     private ByteBuffer outBuffer;
     private int current;
 
     IrcChannelImpl(ByteChannel channel) {
         this.channel = channel;
-        this.buffer = ByteBuffer.allocate(MAX_SIZE);
+        this.inBuffer = ByteBuffer.allocate(MAX_SIZE);
         this.outBuffer = ByteBuffer.allocate(MAX_SIZE);
         this.current = -1;
     }
@@ -81,11 +81,11 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         // Read until we have at least one complete message
         while (current == -1) {
             // If the buffer filled up and no marker was seen yet, throw away
-            if (buffer.remaining() == 0)
-                buffer.clear();
+            if (inBuffer.remaining() == 0)
+                inBuffer.clear();
 
             try {
-                if (channel.read(buffer) == -1)
+                if (channel.read(inBuffer) == -1)
                     throw new ChannelException("Channel closed while reading");
             }
             catch (IOException e) {
@@ -93,27 +93,27 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             }
 
             // Put the buffer into "read mode" to try to find the marker
-            buffer.flip();
-            current = findMarker(buffer, MARKER);
+            inBuffer.flip();
+            current = findMarker(inBuffer, MARKER);
 
             // Put the buffer back into "write mode" if no marker was found
             if (current == -1) {
-                buffer.position(buffer.limit());
-                buffer.limit(buffer.capacity());
+                inBuffer.position(inBuffer.limit());
+                inBuffer.limit(inBuffer.capacity());
             }
         }
 
         // Extract the current message
-        ByteBuffer b = buffer.duplicate().limit(current);
+        ByteBuffer b = inBuffer.duplicate().limit(current);
         String s = StandardCharsets.UTF_8.decode(b).toString();
 
         // Advance the position and attempt to find another complete message
-        buffer.position(current + MARKER.length);
-        current = findMarker(buffer, MARKER);
+        inBuffer.position(current + MARKER.length);
+        current = findMarker(inBuffer, MARKER);
 
         // Rotate the buffer if this was the last complete message
         if (current == -1)
-            buffer.compact();
+            inBuffer.compact();
 
         // Parse the message
         Message m = Message.parse(s);
