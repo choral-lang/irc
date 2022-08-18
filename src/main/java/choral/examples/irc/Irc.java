@@ -8,13 +8,12 @@ public class Irc {
             try {
                 body.run();
             }
-            catch (InvalidMessageException | UnexpectedMessageException |
-                   UnrecognizedMessageException e) {
+            catch (ChannelException e) {
                 e.printStackTrace();
+                break;
             }
             catch (Exception e) {
                 e.printStackTrace();
-                break;
             }
         }
     }
@@ -36,9 +35,6 @@ public class Irc {
             try {
                 server.clientProcessOne();
             }
-            catch (InvalidMessageException | UnexpectedMessageException e) {
-                e.printStackTrace();
-            }
             catch (UnrecognizedMessageException e) {
                 long clientId = server.getClientId();
                 ServerState state = server.getServerState();
@@ -53,9 +49,12 @@ public class Irc {
 
                 e.printStackTrace();
             }
-            catch (Exception e) {
+            catch (ChannelException e) {
                 e.printStackTrace();
                 break;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

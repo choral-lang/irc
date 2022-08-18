@@ -52,7 +52,7 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             channel.write(outBuffer);
         }
         catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new ChannelException(e);
         }
 
         return Unit.id;
@@ -86,10 +86,10 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
 
             try {
                 if (channel.read(buffer) == -1)
-                    throw new RuntimeException("Channel closed while reading");
+                    throw new ChannelException("Channel closed while reading");
             }
             catch (IOException e) {
-                throw new RuntimeException(e.getMessage());
+                throw new ChannelException(e);
             }
 
             // Put the buffer into "read mode" to try to find the marker
