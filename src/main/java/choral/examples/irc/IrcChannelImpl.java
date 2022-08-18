@@ -133,14 +133,9 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             m = m2;
         }
 
-        try {
-            @SuppressWarnings("unchecked")
-            M res = (M) m;
-            return res;
-        }
-        catch (ClassCastException e) {
-            throw new UnexpectedMessageException(m);
-        }
+        @SuppressWarnings("unchecked")
+        M res = (M) m;
+        return res;
     }
 
     @Override
