@@ -64,6 +64,10 @@ public class ServerUtil {
                                    NickMessage message) {
         String current = state.getNickname(clientId);
 
+        if (current == null) {
+            current = "*";
+        }
+
         if (!message.hasEnoughParams()) {
             state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NONICKNAMEGIVEN, current, "No nickname given"));
