@@ -7,11 +7,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ServerState@R {
     public ServerState() {}
 
-    public long@R newClient(LinkedBlockingQueue@R<Message> queue) {}
+    public long@R newClient() {}
+
+    public LinkedBlockingQueue@R<Message> getQueue(long@R clientId) {}
 
     public void addMessage(long@R clientId, Message@R message) {}
-
-    public long@R getClientId(String@R nickname) {}
 
     public String@R getUsername(long@R clientId) {}
 
@@ -44,6 +44,10 @@ public class ServerState@R {
     public void joinChannel(long@R clientId, String@R channel) {}
 
     public void partChannel(long@R clientId, String@R channel) {}
+
+    public void setExit(long@R clientId) {}
+
+    public boolean@R getExit(long@R clientId) {}
 
     public PrintStream@R getOut() {}
 }

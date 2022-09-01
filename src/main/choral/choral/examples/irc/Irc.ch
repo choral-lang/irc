@@ -1,32 +1,30 @@
 package choral.examples.irc;
 
-import choral.channels.SymChannel;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Irc@(Client, Server) {
-    private SymChannel@(Client, Server)<Message> ch_AB;
+    private IrcChannel@(Client, Server) ch_AB;
 
     private ClientState@Client clientState;
     private LinkedBlockingQueue@Client<Message> clientQueue;
 
     private ServerState@Server serverState;
-    private LinkedBlockingQueue@Server<Message> serverQueue;
     private long@Server clientId;
+    private LinkedBlockingQueue@Server<Message> serverQueue;
 
-    public Irc(SymChannel@(Client, Server)<Message> ch_AB,
+    public Irc(IrcChannel@(Client, Server) ch_AB,
                ClientState@Client clientState,
                ServerState@Server serverState) {
         this.ch_AB = ch_AB;
 
         this.clientState = clientState;
-        this.clientQueue = new LinkedBlockingQueue@Client<Message>();
+        clientQueue = clientState.getQueue();
 
         this.serverState = serverState;
-        this.serverQueue = new LinkedBlockingQueue@Server<Message>();
-        this.clientId = serverState.newClient(serverQueue);
+        clientId = serverState.newClient();
+        serverQueue = serverState.getQueue(clientId);
     }
 
     public ClientState@Client getClientState() {
@@ -53,12 +51,11 @@ public class Irc@(Client, Server) {
      * One step of the loop driven by the client's message queue. Only the
      * client initiates requests.
      */
-    public void clientProcessOne() {
-        Message@Client msg = Util@Client.<Message>take(clientQueue);
+    public void clientProcessOne(Message@Client msg) {
         Command@Client cmd = Util@Client.commandFromString(msg.getCommand());
 
         Util@Client.check(cmd != null@Client,
-                          "Expected a known message in the queue"@Client);
+                          "Expected a known message"@Client);
 
         switch (cmd) {
             case PING -> {
@@ -172,6 +169,14 @@ public class Irc@(Client, Server) {
 
                 ServerUtil@Server.processPrivmsg(serverState, clientId, privmsg);
             }
+
+            case QUIT -> {
+                ch_AB.<Command>select(Command@Client.QUIT);
+                QuitMessage@Server quit = ch_AB.<QuitMessage>com(
+                    Util@Client.<QuitMessage>as(msg));
+
+                ServerUtil@Server.processQuit(serverState, clientId, quit);
+            }
         }
     }
 
@@ -179,12 +184,11 @@ public class Irc@(Client, Server) {
      * One step of the loop driven by the server's message queue. Only the
      * server initiates requests.
      */
-    public void serverProcessOne() {
-        Message@Server msg = Util@Server.<Message>take(serverQueue);
+    public void serverProcessOne(Message@Server msg) {
         Command@Server cmd = Util@Server.commandFromString(msg.getCommand());
 
         Util@Server.check(cmd != null@Server,
-                          "Expected a known message in the queue"@Server);
+                          "Expected a known message"@Server);
 
         switch (cmd) {
             case PING -> {
@@ -326,6 +330,52 @@ public class Irc@(Client, Server) {
                 if (namReply.hasEnoughParams() && clientState.inChannel(channel)) {
                     clientState.addMembers(channel, namReply.getNicknames());
                 }
+            }
+
+            case QUIT -> {
+                ch_AB.<Command>select(Command@Server.QUIT);
+                QuitMessage@Client quit = ch_AB.<QuitMessage>com(
+                    Util@Server.<QuitMessage>as(msg));
+
+                Source@Client source = quit.getSource();
+
+                if (source != null@Client) {
+                    String@Client nickname = source.getNickname();
+
+                    if (nickname != clientState.getNickname()) {
+                        String@Client info = "Client '"@Client + nickname
+                            + "' quit"@Client;
+
+                        if (quit.hasEnoughParams()) {
+                            info = info + " ("@Client + quit.getReason() +
+                                ")"@Client;
+                        }
+
+                        clientState.getOut().println(info);
+                        clientState.quit(nickname);
+                    }
+                    else {{}}
+                }
+                else {{{}}}
+            }
+
+            case ERROR -> {
+                ch_AB.<Command>select(Command@Server.ERROR);
+                ErrorMessage@Client error = ch_AB.<ErrorMessage>com(
+                    Util@Server.<ErrorMessage>as(msg));
+
+                String@Client info = "Disconnected"@Client;
+
+                if (error.hasEnoughParams()) {
+                    info = info + " ("@Client + error.getReason() + ")"@Client;
+                }
+
+                clientState.getOut().println(info);
+
+                // Set the exit flags to communicate a graceful close.
+                serverState.setExit(clientId);
+                clientState.setExit();
+                ch_AB.close();
             }
 
             // NOTE: Any message that falls under ForwardMessage

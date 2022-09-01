@@ -21,11 +21,16 @@ public class ServerState {
         channels = new HashMap<>();
     }
 
-    public long newClient(LinkedBlockingQueue<Message> queue) {
+    public long newClient() {
         long clientId = ++lastClientId;
-        ServerClientState client = new ServerClientState(clientId, queue);
+        ServerClientState client = new ServerClientState(clientId);
         clients.put(clientId, client);
         return clientId;
+    }
+
+    public LinkedBlockingQueue<Message> getQueue(long clientId) {
+        assert clients.containsKey(clientId);
+        return clients.get(clientId).queue;
     }
 
     public void addMessage(long clientId, Message message) {
@@ -132,6 +137,31 @@ public class ServerState {
         if (members.isEmpty()) {
             channels.remove(channel);
         }
+    }
+
+    public void quit(long clientId) {
+        assert clients.containsKey(clientId);
+        ServerClientState client = clients.remove(clientId);
+        nicknames.remove(client.nickname);
+
+        for (String channel : client.channels) {
+            Set<ServerClientState> members = channels.get(channel);
+            members.remove(client);
+
+            if (members.isEmpty()) {
+                channels.remove(channel);
+            }
+        }
+    }
+
+    public void setExit(long clientId) {
+        assert clients.containsKey(clientId);
+        clients.get(clientId).exit = true;
+    }
+
+    public boolean getExit(long clientId) {
+        assert clients.containsKey(clientId);
+        return clients.get(clientId).exit;
     }
 
     public PrintStream getOut() {

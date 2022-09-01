@@ -11,6 +11,8 @@ public enum Command {
     JOIN("JOIN"),
     PART("PART"),
     PRIVMSG("PRIVMSG"),
+    QUIT("QUIT"),
+    ERROR("ERROR"),
 
     RPL_WELCOME("001"),
     RPL_YOURHOST("002"),

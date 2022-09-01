@@ -82,7 +82,6 @@ public class Server {
         }
 
         System.out.println("Quitting");
-        // TODO: Disconnect properly.
 
         s.close();
         listener.close();

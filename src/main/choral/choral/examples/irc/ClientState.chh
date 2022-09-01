@@ -3,11 +3,18 @@ package choral.examples.irc;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientState@R {
     public ClientState(String@R username, String@R realname, String@R nickname) {}
 
     public ClientState(String@R nickname) {}
+
+    public LinkedBlockingQueue@R<Message> getQueue() {}
+
+    public boolean@R getExit() {}
+
+    public void setExit() {}
 
     public String@R getUsername() {}
 
@@ -40,6 +47,8 @@ public class ClientState@R {
     public void renameMember(String@R from, String@R to) {}
 
     public void removeMember(String@R channel, String@R nickname) {}
+
+    public void quit(String@R nickname) {}
 
     public PrintStream@R getOut() {}
 }

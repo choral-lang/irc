@@ -18,6 +18,8 @@ public class Message {
             put(Command.JOIN, JoinMessage.class);
             put(Command.PART, PartMessage.class);
             put(Command.PRIVMSG, PrivmsgMessage.class);
+            put(Command.QUIT, QuitMessage.class);
+            put(Command.ERROR, ErrorMessage.class);
 
             put(Command.RPL_WELCOME, RplWelcomeMessage.class);
             put(Command.RPL_YOURHOST, ForwardMessage.class);

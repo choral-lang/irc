@@ -2,4 +2,6 @@ package choral.examples.irc;
 
 import choral.channels.SymChannel;
 
-public interface IrcChannel@(A, B) extends SymChannel@(A, B)<Message> {}
+public interface IrcChannel@(A, B) extends SymChannel@(A, B)<Message> {
+    public void close();
+}

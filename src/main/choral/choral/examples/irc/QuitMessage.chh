@@ -1,0 +1,13 @@
+package choral.examples.irc;
+
+public class QuitMessage@R extends Message@R {
+    public QuitMessage() {}
+
+    public QuitMessage(String@R reason) {}
+
+    public QuitMessage(Message@R message) {}
+
+    public boolean@R hasEnoughParams() {}
+
+    public String@R getReason() {}
+}

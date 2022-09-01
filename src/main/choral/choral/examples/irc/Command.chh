@@ -8,6 +8,8 @@ public enum Command@R {
     JOIN,
     PART,
     PRIVMSG,
+    QUIT,
+    ERROR,
 
     RPL_WELCOME,
     RPL_YOURHOST,

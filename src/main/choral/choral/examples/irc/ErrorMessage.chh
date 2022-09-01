@@ -1,0 +1,13 @@
+package choral.examples.irc;
+
+public class ErrorMessage@R extends Message@R {
+    public ErrorMessage() {}
+
+    public ErrorMessage(String@R reason) {}
+
+    public ErrorMessage(Message@R message) {}
+
+    public boolean@R hasEnoughParams() {}
+
+    public String@R getReason() {}
+}

@@ -6,13 +6,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientState {
+    private LinkedBlockingQueue<Message> queue;
+    private boolean exit;
     private String username, realname, nickname;
     private boolean registered;
     private Map<String, Set<String>> channels;
 
     public ClientState(String username, String realname, String nickname) {
+        queue = new LinkedBlockingQueue<Message>();
+        this.exit = false;
         this.username = username;
         this.realname = realname;
         this.nickname = nickname;
@@ -22,6 +27,18 @@ public class ClientState {
 
     public ClientState(String nickname) {
         this(nickname, nickname, nickname);
+    }
+
+    public LinkedBlockingQueue<Message> getQueue() {
+        return queue;
+    }
+
+    public boolean getExit() {
+        return exit;
+    }
+
+    public void setExit() {
+        exit = true;
     }
 
     public String getUsername() {
@@ -100,6 +117,12 @@ public class ClientState {
     public void removeMember(String channel, String nickname) {
         assert channels.containsKey(channel);
         channels.get(channel).remove(nickname);
+    }
+
+    public void quit(String nickname) {
+        for (Set<String> members : channels.values()) {
+            members.remove(nickname);
+        }
     }
 
     public PrintStream getOut() {

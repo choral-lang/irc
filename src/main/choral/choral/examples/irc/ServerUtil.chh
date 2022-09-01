@@ -16,6 +16,8 @@ public class ServerUtil@R {
 
     public static void processPrivmsg(ServerState@R state, long@R clientId, PrivmsgMessage@R message) {}
 
+    public static void processQuit(ServerState@R state, long@R clientId, QuitMessage@R message) {}
+
     public static <T@R extends Message@R> T@R withSource(T@R message, Source@R source) {}
 
     public static ForwardMessage@R forwardNumeric(Command@R command, String@R nickname, String@R param1) {}

@@ -178,4 +178,13 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
                 "Selection failed -- couldn't find enum '" + enumName + "'");
         }
     }
+
+    public void close() {
+        try {
+            channel.close();
+        }
+        catch (IOException e) {
+            throw new ChannelException(e);
+        }
+    }
 }

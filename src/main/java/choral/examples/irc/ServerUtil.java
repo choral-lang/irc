@@ -300,6 +300,39 @@ public class ServerUtil {
         }
     }
 
+    public static void sendQuits(ServerState state, long clientId,
+                                 QuitMessage message) {
+        String reason = message.hasEnoughParams() ? message.getReason() : "";
+        reason = "Quit: " + reason;
+
+        if (state.isRegistered(clientId)) {
+            Set<Long> others = state.getChannels(clientId).stream()
+                .flatMap(c -> state.getMembers(c).stream())
+                .collect(Collectors.toSet());
+            others.remove(clientId);
+
+            for (long otherId : others) {
+                state.addMessage(otherId, ServerUtil.withSource(
+                    new QuitMessage(reason),
+                    new Source(state.getNickname(clientId))));
+            }
+        }
+    }
+
+    /**
+     * Process a client's QUIT message.
+     *
+     * NOTE: Choral doesn't support loops.
+     */
+    public static void processQuit(ServerState state, long clientId,
+                                   QuitMessage message) {
+        state.addMessage(clientId, ServerUtil.withSource(
+            new ErrorMessage("Client quit"),
+            new Source(HOSTNAME)));
+
+        ServerUtil.sendQuits(state, clientId, message);
+    }
+
     /**
      * Return a new instance of <code>Message</code> (or one of its subclasses)
      * that has the same information as <code>message</code>, but with the

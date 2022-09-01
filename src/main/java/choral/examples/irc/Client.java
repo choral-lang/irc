@@ -162,6 +162,14 @@ public class Client {
                     System.out.println(gson.toJson(state));
                 }
                 else if (cmd.equalsIgnoreCase("/quit")) {
+                    if (irc == null) {
+                        System.out.println("Connect first!");
+                        continue;
+                    }
+
+                    String reason = parts.length - 1 < 1 ? "Bye" : parts[1];
+
+                    irc.addClientMessage(new QuitMessage(reason));
                     break;
                 }
                 else {
@@ -174,7 +182,6 @@ public class Client {
         }
 
         System.out.println("Quitting");
-        // TODO: Disconnect properly.
 
         s.close();
         executor.shutdown();
