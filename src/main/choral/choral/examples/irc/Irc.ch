@@ -117,25 +117,24 @@ public class Irc@(Client, Server) {
                     clientState.setRealname(cUser.getRealname());
                 }
 
-                if (!sUser.hasEnoughParams()) {{{{
+                if (serverState.isRegistered(clientId)) {{{{
                     serverState.addMessage(clientId,
                         ServerUtil@Server.forwardNumeric(
-                            Command@Server.ERR_NEEDMOREPARAMS,
+                            Command@Server.ERR_ALREADYREGISTERED,
                             serverState.getNickname(clientId),
-                            "Need more parameters"@Server));
+                            "You cannot register again"@Server));
                 }}}}
                 else {
-                    String@Server username = sUser.getUsername();
-                    String@Server realname = sUser.getRealname();
-
-                    if (serverState.isRegistered(clientId)) {{{
+                    if (!sUser.hasEnoughParams()) {{{
                         serverState.addMessage(clientId,
                             ServerUtil@Server.forwardNumeric(
-                                Command@Server.ERR_ALREADYREGISTERED,
-                                serverState.getNickname(clientId),
-                                "You cannot register again"@Server));
+                                Command@Server.ERR_NEEDMOREPARAMS,
+                                "*"@Server, "Need more parameters"@Server));
                     }}}
                     else {
+                        String@Server username = sUser.getUsername();
+                        String@Server realname = sUser.getRealname();
+
                         if (Util@Server.validUsername(username)) {
                             serverState.setUsername(clientId, username);
                             serverState.setRealname(clientId, realname);
