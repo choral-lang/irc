@@ -113,12 +113,22 @@ public class Client {
                         continue;
                     }
 
+                    if (irc == null) {
+                        System.out.println("Connect first");
+                        continue;
+                    }
+
                     irc.addClientMessage(new JoinMessage(
                         Arrays.asList(parts[1].split(","))));
                 }
                 else if (cmd.equalsIgnoreCase("/part")) {
                     if (parts.length - 1 < 1) {
                         System.out.println("Usage: /part <channel>[,<channel>]... [<reason>]");
+                        continue;
+                    }
+
+                    if (irc == null) {
+                        System.out.println("Connect first");
                         continue;
                     }
 
@@ -137,6 +147,11 @@ public class Client {
                 else if (cmd.equalsIgnoreCase("/privmsg")) {
                     if (parts.length - 1 < 2) {
                         System.out.println("Usage: /part <target>[,<target>]... <text>");
+                        continue;
+                    }
+
+                    if (irc == null) {
+                        System.out.println("Connect first");
                         continue;
                     }
 
