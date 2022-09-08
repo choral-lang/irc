@@ -348,13 +348,11 @@ public class ServerUtil {
      * that can be cast to the provided type parameter T.
      */
     public static <T extends Message> T withSource(T message, Source source) {
-        @SuppressWarnings("unchecked")
-        T m = (T) Message.construct(MessageBuilder
+        return Message.<T>construct(MessageBuilder
             .build()
             .fromMessage(message)
             .source(source)
             .message());
-        return m;
     }
 
     public static ForwardMessage forwardNumeric(Command command,

@@ -128,26 +128,53 @@ public class Message {
      * by switching on the value of the command.
      *
      * Return null if the command of the message is not one of the known
-     * standard commands (@see <code>Command</code>). Return the given message
-     * if its command does not have a specific <code>Message</code> subclass.
-     * Otherwise, return the newly constructed instance of the appropriate
-     * <code>Message</code> subclass.
+     * standard commands (@see <code>Command</code>), or the command does not
+     * have a registered <code>Message</code> subclass. Otherwise, return the
+     * newly constructed instance of the appropriate <code>Message</code>
+     * subclass.
      */
-    public static Message construct(Message message) {
+    public static <M> M construct(Message message, Class<M>) {
         Command command = Command.fromString(message.getCommand());
 
-        if (command == null)
-            return null;
+        if (command == null) {
+            throw new UnrecognizedMessageException(message);
+        }
 
         Class<? extends Message> cls = MESSAGES.get(command);
+        Class<M> cls2 = null;
 
-        if (cls == null)
-            return message;
+        Class<M> whatever = cls.asSubclass(Class<M>);
+
+        if (cls == null) {
+            // TODO: Better name.
+            throw new RuntimeException("Missing registration for M");
+        }
+
+        // try {
+        //     // Class<? extends M> cls3 = cls.asSubclass(cls2);
+        //     // cls2 = cls3;
+
+        //     // Class<M> cls3 = (Class<M>) cls;
+        //     // cls2 = cls3;
+        // }
+        // catch (ClassCastException e) {
+        //     // TODO: Better name.
+        //     throw new RuntimeException("Unexpected registration for M");
+        // }
 
         try {
             Constructor<? extends Message> ctor =
                 cls.getConstructor(Message.class);
-            return ctor.newInstance(message);
+            Message obj1 = ctor.newInstance(message);
+
+            try {
+                @SuppressWarnings("unchecked")
+                M obj2 = (M) cls.cast(obj1);
+                return obj2;
+            }
+            catch (ClassCastException e) {
+                throw new RuntimeException("Unexpected registration for M");
+            }
         }
         catch (NoSuchMethodException | InstantiationException |
                IllegalAccessException | InvocationTargetException e) {
