@@ -158,8 +158,15 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     public <T extends Enum<T>> T select() {
         Message m = com();
 
-        assert m.getCommand().equals(SELECT);
-        assert m.getParams().size() == 2;
+        if (!m.getCommand().equals(SELECT)) {
+            throw new RuntimeException(
+                "Selection failed -- expected a SELECT message");
+        }
+
+        if (m.getParams().size() != 2) {
+            throw new RuntimeException(
+                "Selection failed -- not enough parameters");
+        }
 
         String className = m.getParam(0);
         String enumName = m.getParam(1);
