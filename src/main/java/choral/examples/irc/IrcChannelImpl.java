@@ -37,10 +37,11 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             CharsetEncoder encoder = StandardCharsets.UTF_8.newEncoder();
             encoder.encode(CharBuffer.wrap(m.toString()), outBuffer, true);
 
-            if (outBuffer.remaining() < 2)
+            if (outBuffer.remaining() < 2) {
                 throw new RuntimeException(String.format(
                     "Message exceeds the maximum length of %d bytes",
                     MAX_SIZE));
+            }
 
             // Write the marker
             outBuffer.put(MARKER);
@@ -81,12 +82,14 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         // Read until we have at least one complete message
         while (current == -1) {
             // If the buffer filled up and no marker was seen yet, throw away
-            if (inBuffer.remaining() == 0)
+            if (inBuffer.remaining() == 0) {
                 inBuffer.clear();
+            }
 
             try {
-                if (channel.read(inBuffer) == -1)
+                if (channel.read(inBuffer) == -1) {
                     throw new ChannelException("Channel closed while reading");
+                }
             }
             catch (IOException e) {
                 throw new ChannelException(e);
@@ -112,14 +115,16 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         current = findMarker(inBuffer, MARKER);
 
         // Rotate the buffer if this was the last complete message
-        if (current == -1)
+        if (current == -1) {
             inBuffer.compact();
+        }
 
         // Parse the message
         Message m = Message.parse(s);
 
-        if (m == null)
+        if (m == null) {
             throw new InvalidMessageException(s);
+        }
 
         // Construct the appropriate subclass of Message. SELECT messages are
         // completely internal to the channel implementation and are therefore

@@ -34,13 +34,15 @@ public class Source {
     public static Source parse(String str) {
         String[] hostParts = str.split("@", 2);
 
-        if (hostParts.length == 1)
+        if (hostParts.length == 1) {
             return new Source(str);
+        }
 
         String[] userParts = hostParts[0].split("!", 2);
 
-        if (userParts.length == 1)
+        if (userParts.length == 1) {
             return new Source(hostParts[0], hostParts[1]);
+        }
 
         return new Source(userParts[0], userParts[1], hostParts[1]);
     }

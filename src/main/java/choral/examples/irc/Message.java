@@ -177,8 +177,9 @@ public class Message {
             i = skipWhitespace(str, i);
             int j = -1;
 
-            if (i == len)
+            if (i == len) {
                 break;
+            }
 
             char c = str.charAt(i);
 
@@ -208,8 +209,9 @@ public class Message {
                     return null;
                 }
 
-                if (source == null)
+                if (source == null) {
                     hasSource = true;
+                }
             }
             // Parse a non-trailing parameter
             else {
@@ -220,8 +222,9 @@ public class Message {
             i = j;
         }
 
-        if (command == null)
+        if (command == null) {
             return null;
+        }
 
         return new Message(source, command, params);
     }
@@ -248,8 +251,9 @@ public class Message {
         for (int i = 0; i < params.size(); ++i) {
             sb.append(" ");
 
-            if (i == params.size() - 1)
+            if (i == params.size() - 1) {
                 sb.append(":");
+            }
 
             sb.append(params.get(i));
         }
