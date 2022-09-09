@@ -9,7 +9,7 @@ public class NickMessage extends Message {
 
     public NickMessage(Message message) {
         super(message);
-        assert command == Command.NICK.string();
+        assert command.equals(Command.NICK.string());
     }
 
     public boolean hasEnoughParams() {

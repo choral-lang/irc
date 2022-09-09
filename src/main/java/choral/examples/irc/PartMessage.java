@@ -23,7 +23,7 @@ public class PartMessage extends Message {
 
     public PartMessage(Message message) {
         super(message);
-        assert command == Command.PART.string();
+        assert command.equals(Command.PART.string());
     }
 
     public boolean hasEnoughParams() {

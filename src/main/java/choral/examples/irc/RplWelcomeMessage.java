@@ -9,7 +9,7 @@ public class RplWelcomeMessage extends Message {
 
     public RplWelcomeMessage(Message message) {
         super(message);
-        assert command == Command.RPL_WELCOME.string();
+        assert command.equals(Command.RPL_WELCOME.string());
     }
 
     public boolean hasEnoughParams() {

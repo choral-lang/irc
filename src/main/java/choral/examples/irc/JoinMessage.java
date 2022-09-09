@@ -14,7 +14,7 @@ public class JoinMessage extends Message {
 
     public JoinMessage(Message message) {
         super(message);
-        assert command == Command.JOIN.string();
+        assert command.equals(Command.JOIN.string());
     }
 
     public boolean hasEnoughParams() {

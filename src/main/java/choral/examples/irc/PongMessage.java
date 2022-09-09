@@ -13,7 +13,7 @@ public class PongMessage extends Message {
 
     public PongMessage(Message message) {
         super(message);
-        assert command == Command.PONG.string();
+        assert command.equals(Command.PONG.string());
     }
 
     public boolean hasEnoughParams() {

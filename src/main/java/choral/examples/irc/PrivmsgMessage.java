@@ -15,7 +15,7 @@ public class PrivmsgMessage extends Message {
 
     public PrivmsgMessage(Message message) {
         super(message);
-        assert command == Command.PRIVMSG.string();
+        assert command.equals(Command.PRIVMSG.string());
     }
 
     public boolean hasEnoughParams() {

@@ -9,7 +9,7 @@ public class PingMessage extends Message {
 
     public PingMessage(Message message) {
         super(message);
-        assert command == Command.PING.string();
+        assert command.equals(Command.PING.string());
     }
 
     public boolean hasEnoughParams() {

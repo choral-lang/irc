@@ -13,7 +13,7 @@ public class QuitMessage extends Message {
 
     public QuitMessage(Message message) {
         super(message);
-        assert command == Command.QUIT.string();
+        assert command.equals(Command.QUIT.string());
     }
 
     public boolean hasEnoughParams() {

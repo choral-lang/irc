@@ -12,7 +12,7 @@ public class RplNamReplyMessage extends Message {
 
     public RplNamReplyMessage(Message message) {
         super(message);
-        assert command == Command.RPL_NAMREPLY.string();
+        assert command.equals(Command.RPL_NAMREPLY.string());
     }
 
     public boolean hasEnoughParams() {

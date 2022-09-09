@@ -9,7 +9,7 @@ public class ErrorMessage extends Message {
 
     public ErrorMessage(Message message) {
         super(message);
-        assert command == Command.ERROR.string();
+        assert command.equals(Command.ERROR.string());
     }
 
     public boolean hasEnoughParams() {
