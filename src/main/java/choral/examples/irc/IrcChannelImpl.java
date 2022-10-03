@@ -28,14 +28,15 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     }
 
     @Override
-    public <M extends Message> Unit com(M m) {
+    public <M extends Message> Unit com(M message) {
         try {
             // Clear the buffer
             outBuffer.clear();
 
             // Write the message (will stop on overflow)
             CharsetEncoder encoder = StandardCharsets.UTF_8.newEncoder();
-            encoder.encode(CharBuffer.wrap(m.toString()), outBuffer, true);
+            encoder.encode(CharBuffer.wrap(message.toString()),
+                           outBuffer, true);
 
             if (outBuffer.remaining() < 2) {
                 throw new RuntimeException(String.format(
@@ -144,13 +145,13 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     }
 
     @Override
-    public <T extends Enum<T>> Unit select(T l) {
-        return com(new Message(null, SELECT,
-                               List.of(l.getClass().getName(), l.name())));
+    public <T extends Enum<T>> Unit select(T label) {
+        return com(new Message(
+            null, SELECT, List.of(label.getClass().getName(), label.name())));
     }
 
     @Override
-    public <T extends Enum<T>> T select(Unit l) {
+    public <T extends Enum<T>> T select(Unit u) {
         return select();
     }
 
