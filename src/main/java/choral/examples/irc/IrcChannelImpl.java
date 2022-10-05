@@ -192,6 +192,18 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         }
     }
 
+    public <M extends Message> Unit sselect(M message) {
+        return com(message);
+    }
+
+    public <M extends Message> M sselect(Unit u) {
+        return sselect();
+    }
+
+    public <M extends Message> M sselect() {
+        return com();
+    }
+
     public void close() {
         try {
             channel.close();

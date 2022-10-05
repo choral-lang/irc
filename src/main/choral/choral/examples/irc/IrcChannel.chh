@@ -3,5 +3,11 @@ package choral.examples.irc;
 import choral.channels.SymChannel;
 
 public interface IrcChannel@(A, B) extends SymChannel@(A, B)<Message> {
+    @SuperSelectionMethod
+    <S@Y extends Message@Y> S@B sselect(S@A m);
+
+    @SuperSelectionMethod
+    <S@Y extends Message@Y> S@A sselect(S@B m);
+
     public void close();
 }
