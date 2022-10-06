@@ -15,7 +15,7 @@ public class Irc {
                 Message msg = Util.take(queue);
 
                 // NOTE: Process the "poison pill".
-                if (msg instanceof ExitMessage) {
+                if (msg instanceof PoisonPill) {
                     break;
                 }
 
@@ -44,7 +44,7 @@ public class Irc {
             }
             catch (ChannelException e) {
                 // NOTE: Add the "poison pill".
-                Util.put(queue, new ExitMessage());
+                Util.put(queue, new PoisonPill());
 
                 if (!state.getExit()) {
                     e.printStackTrace();
@@ -68,7 +68,7 @@ public class Irc {
                 Message msg = Util.take(queue);
 
                 // NOTE: Process the "poison pill".
-                if (msg instanceof ExitMessage) {
+                if (msg instanceof PoisonPill) {
                     break;
                 }
 
@@ -109,7 +109,7 @@ public class Irc {
             }
             catch (ChannelException e) {
                 // NOTE: Add the "poison pill".
-                Util.put(queue, new ExitMessage());
+                Util.put(queue, new PoisonPill());
 
                 if (!state.getExit(clientId)) {
                     ServerUtil.sendQuits(state, clientId, ServerUtil.withSource(
