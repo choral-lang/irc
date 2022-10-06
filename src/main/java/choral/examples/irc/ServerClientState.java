@@ -7,7 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ServerClientState {
     public long clientId;
     public LinkedBlockingQueue<Message> queue;
-    public boolean exit;
+    public boolean gracefulQuit;
     public String username, realname, nickname;
     public boolean registered;
     public Set<String> channels;
@@ -15,7 +15,7 @@ public class ServerClientState {
     ServerClientState(long clientId) {
         this.clientId = clientId;
         this.queue = new LinkedBlockingQueue<Message>();
-        this.exit = false;
+        this.gracefulQuit = false;
         this.username = null;
         this.realname = null;
         this.nickname = null;

@@ -22,7 +22,7 @@ public class Irc {
                 client.clientProcessOne(msg);
             }
             catch (ChannelException e) {
-                if (!state.getExit()) {
+                if (!state.isGracefulQuit()) {
                     e.printStackTrace();
                 }
 
@@ -46,7 +46,7 @@ public class Irc {
                 // NOTE: Add the "poison pill".
                 Util.put(queue, new PoisonPill());
 
-                if (!state.getExit()) {
+                if (!state.isGracefulQuit()) {
                     e.printStackTrace();
                 }
 
@@ -75,7 +75,7 @@ public class Irc {
                 server.serverProcessOne(msg);
             }
             catch (ChannelException e) {
-                if (!state.getExit(clientId)) {
+                if (!state.isGracefulQuit(clientId)) {
                     e.printStackTrace();
                 }
 
@@ -111,7 +111,7 @@ public class Irc {
                 // NOTE: Add the "poison pill".
                 Util.put(queue, new PoisonPill());
 
-                if (!state.getExit(clientId)) {
+                if (!state.isGracefulQuit(clientId)) {
                     ServerUtil.sendQuits(state, clientId, ServerUtil.withSource(
                         new QuitMessage("Client disconnected"),
                         new Source(ServerUtil.HOSTNAME)));

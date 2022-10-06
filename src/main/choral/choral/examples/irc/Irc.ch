@@ -354,9 +354,9 @@ public class Irc@(Client, Server) {
 
                 clientState.getOut().println(info);
 
-                // Set the exit flags to communicate a graceful close.
-                serverState.setExit(clientId);
-                clientState.setExit();
+                // Set the gracefulQuit flags to communicate a graceful close.
+                serverState.setGracefulQuit(clientId);
+                clientState.setGracefulQuit();
                 ch_AB.close();
             }
 

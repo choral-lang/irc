@@ -45,9 +45,9 @@ public class ServerState@R {
 
     public void partChannel(long@R clientId, String@R channel) {}
 
-    public void setExit(long@R clientId) {}
+    public void setGracefulQuit(long@R clientId) {}
 
-    public boolean@R getExit(long@R clientId) {}
+    public boolean@R isGracefulQuit(long@R clientId) {}
 
     public PrintStream@R getOut() {}
 }

@@ -154,14 +154,14 @@ public class ServerState {
         }
     }
 
-    public void setExit(long clientId) {
+    public void setGracefulQuit(long clientId) {
         assert clients.containsKey(clientId);
-        clients.get(clientId).exit = true;
+        clients.get(clientId).gracefulQuit = true;
     }
 
-    public boolean getExit(long clientId) {
+    public boolean isGracefulQuit(long clientId) {
         assert clients.containsKey(clientId);
-        return clients.get(clientId).exit;
+        return clients.get(clientId).gracefulQuit;
     }
 
     public PrintStream getOut() {

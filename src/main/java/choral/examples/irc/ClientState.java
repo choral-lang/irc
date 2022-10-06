@@ -10,14 +10,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientState {
     private LinkedBlockingQueue<Message> queue;
-    private boolean exit;
+    private boolean gracefulQuit;
     private String username, realname, nickname;
     private boolean registered;
     private Map<String, Set<String>> channels;
 
     public ClientState(String username, String realname, String nickname) {
         queue = new LinkedBlockingQueue<Message>();
-        this.exit = false;
+        this.gracefulQuit = false;
         this.username = username;
         this.realname = realname;
         this.nickname = nickname;
@@ -33,12 +33,12 @@ public class ClientState {
         return queue;
     }
 
-    public boolean getExit() {
-        return exit;
+    public boolean isGracefulQuit() {
+        return gracefulQuit;
     }
 
-    public void setExit() {
-        exit = true;
+    public void setGracefulQuit() {
+        gracefulQuit = true;
     }
 
     public String getUsername() {

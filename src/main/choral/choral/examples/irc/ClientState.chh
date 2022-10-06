@@ -12,9 +12,9 @@ public class ClientState@R {
 
     public LinkedBlockingQueue@R<Message> getQueue() {}
 
-    public boolean@R getExit() {}
+    public boolean@R isGracefulQuit() {}
 
-    public void setExit() {}
+    public void setGracefulQuit() {}
 
     public String@R getUsername() {}
 
