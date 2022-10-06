@@ -46,8 +46,8 @@ of Choral. To build the project:
 4. Run the server and the client program:
 
    #+BEGIN_EXAMPLE
-     mvn exec:java -Dexec.mainClass="choral.examples.irc.Server"
-     mvn exec:java -Dexec.mainClass="choral.examples.irc.Client"
+     ./server
+     ./client
    #+END_EXAMPLE
 
    Note that executing the Java code also requires the =--enable-preview=
