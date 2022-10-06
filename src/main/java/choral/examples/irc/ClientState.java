@@ -119,7 +119,7 @@ public class ClientState {
         channels.get(channel).remove(nickname);
     }
 
-    public void quit(String nickname) {
+    public void removeMember(String nickname) {
         for (Set<String> members : channels.values()) {
             members.remove(nickname);
         }

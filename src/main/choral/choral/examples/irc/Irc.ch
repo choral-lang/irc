@@ -335,7 +335,7 @@ public class Irc@(Client, Server) {
                         }
 
                         clientState.getOut().println(info);
-                        clientState.quit(nickname);
+                        clientState.removeMember(nickname);
                     }
                     else {{}}
                 }

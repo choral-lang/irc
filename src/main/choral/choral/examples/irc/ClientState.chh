@@ -48,7 +48,7 @@ public class ClientState@R {
 
     public void removeMember(String@R channel, String@R nickname) {}
 
-    public void quit(String@R nickname) {}
+    public void removeMember(String@R nickname) {}
 
     public PrintStream@R getOut() {}
 }
