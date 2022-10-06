@@ -77,8 +77,13 @@ public class Irc@(Client, Server) {
                             "Need more parameters"@Server));
                     }
                     else {
-                        addServerMessage(new PongMessage@Server(
-                            ServerUtil@Server.HOSTNAME, ping.getToken()));
+                        addServerMessage(
+                            ServerUtil@Server.<PongMessage>withSource(
+                                new PongMessage@Server(
+                                    ServerUtil@Server.HOSTNAME,
+                                    ping.getToken()),
+                                Source@Server.parse(
+                                    ServerUtil@Server.HOSTNAME)));
                     }
                 }
             }
