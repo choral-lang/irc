@@ -7,24 +7,41 @@ Modeling the IRC protocol using Choral.
 It should always be possible to build the project with the most recent version
 of Choral. To build the project:
 
-1. Make sure you have the Choral runtime libraries installed
-   (=org.choral-lang:choral= and =org.choral-lang:runtime=).
+1. Make sure you have the Choral libraries installed (=org.choral-lang:choral=
+   and =org.choral-lang:runtime=).
 
-   An easy way to do this is to clone the [[https://github.com/choral-lang/choral][Choral repository]] and install the JARs:
+   Choral does not yet publish its libraries to any Maven repository, so for now
+   they have to be built from source. Choral IRC tracks Choral's master branch
+   so it should always compile with the latest Choral version.
+
+   Clone the [[https://github.com/choral-lang/choral][Choral repository]] and build and install the libraries:
 
    #+BEGIN_EXAMPLE
      mvn install
    #+END_EXAMPLE
 
-2. Make sure you've installed the Choral compiler so that the =choral= binary is
-   on your =PATH=. The version of the compiler should match the version of the
-   runtime you've installed.
+2. Make sure you have the =choral= compiler script on your =PATH= and that
+   you've set =CHORAL_PATH=.
+
+   The script is just a wrapper that looks for the Choral standalone JAR under
+   =CHORAL_HOME= and invokes it. The version of the JAR should match the version
+   of the runtime you've installed.
+
+   When building Choral from source, You can find the JAR under Choral's
+   =dist/target=, which you can use as your =CHORAL_PATH=.
 
 3. Build the project:
 
    #+BEGIN_EXAMPLE
      mvn compile
    #+END_EXAMPLE
+
+   Choral IRC expects that the Java compiler version listed in its =pom.xml=
+   matches the one you have installed (which should be at least Java 17), since
+   only then is the =--enable-preview= option, which we require, valid.
+
+   We try and track the latest Java compiler version available. In case yours is
+   older, either update your Java compiler or modify =pom.xml=.
 
 4. Run the server and the client program:
 
@@ -33,6 +50,10 @@ of Choral. To build the project:
      mvn exec:java -Dexec.mainClass="choral.examples.irc.Client"
    #+END_EXAMPLE
 
+   Note that executing the Java code also requires the =--enable-preview=
+   option, which we provide to Maven through =.mvn/jvm.config=. If you want to
+   run the code in a different way, don't forget to pass the option.
+
    Use the client's textual interface to connect to the server and run some
    commands:
 
@@ -40,4 +61,8 @@ of Choral. To build the project:
      /connect localhost 8667
      /nick choralbot
      /user choralbot
+     /join #choral
+     /privmsg #choral Hello!
+     /part #choral Bye!
+     /quit
    #+END_EXAMPLE
