@@ -12,18 +12,21 @@ import java.util.List;
 
 public class IrcChannelImpl implements SymChannelImpl<Message> {
     private static final int MAX_SIZE = 512;
-    private static final byte[] MARKER = new byte[] {0x0D, 0x0A};
+    private static final byte[] CRLF = new byte[] {0x0D, 0x0A};
+    private static final byte[] LF = new byte[] {0x0A};
     private static final String SELECT = "SELECT";
 
     private ByteChannel channel;
     private ByteBuffer inBuffer;
     private ByteBuffer outBuffer;
+    private byte[] marker;
     private int current;
 
     IrcChannelImpl(ByteChannel channel) {
         this.channel = channel;
         this.inBuffer = ByteBuffer.allocate(MAX_SIZE);
         this.outBuffer = ByteBuffer.allocate(MAX_SIZE);
+        this.marker = null;
         this.current = -1;
     }
 
@@ -45,7 +48,7 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             }
 
             // Write the marker
-            outBuffer.put(MARKER);
+            outBuffer.put(CRLF);
 
             // Put the buffer into "read mode"
             outBuffer.flip();
@@ -78,6 +81,16 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         return m == marker.length ? (i - marker.length) : -1;
     }
 
+    private void findNext() {
+        marker = CRLF;
+        current = findMarker(inBuffer, marker);
+
+        if (current == -1) {
+            marker = LF;
+            current = findMarker(inBuffer, marker = LF);
+        }
+    }
+
     @Override
     public <M extends Message> M com() {
         // Read until we have at least one complete message
@@ -98,7 +111,7 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
 
             // Put the buffer into "read mode" to try to find the marker
             inBuffer.flip();
-            current = findMarker(inBuffer, MARKER);
+            findNext();
 
             // Put the buffer back into "write mode" if no marker was found
             if (current == -1) {
@@ -112,8 +125,8 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         String s = StandardCharsets.UTF_8.decode(b).toString();
 
         // Advance the position and attempt to find another complete message
-        inBuffer.position(current + MARKER.length);
-        current = findMarker(inBuffer, MARKER);
+        inBuffer.position(current + marker.length);
+        findNext();
 
         // Rotate the buffer if this was the last complete message
         if (current == -1) {
