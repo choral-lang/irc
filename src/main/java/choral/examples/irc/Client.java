@@ -146,7 +146,7 @@ public class Client {
                 }
                 else if (cmd.equalsIgnoreCase("/privmsg")) {
                     if (parts.length - 1 < 2) {
-                        System.out.println("Usage: /part <target>[,<target>]... <text>");
+                        System.out.println("Usage: /privmsg <target>[,<target>]... <text>");
                         continue;
                     }
 
