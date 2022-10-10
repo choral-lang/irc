@@ -30,7 +30,7 @@ public class ServerUtil {
         state.addMessage(clientId, ServerUtil.withSource(
             new RplWelcomeMessage(state.getNickname(clientId),
                                   "Welcome to ChoralNet!"),
-            new Source(HOSTNAME)));
+            Source.fromHostname(HOSTNAME)));
 
         add.accept(Command.RPL_YOURHOST, "Your host is " + HOSTNAME + "!");
         add.accept(Command.RPL_CREATED, "The server was created at IMADA!");
@@ -89,7 +89,7 @@ public class ServerUtil {
 
                 if (state.isRegistered(clientId)) {
                     NickMessage m = ServerUtil.withSource(
-                        message, new Source(current));
+                        message, Source.fromNickname(current));
 
                     state.addMessage(clientId, m);
 
@@ -144,7 +144,7 @@ public class ServerUtil {
                     else if (!state.inChannel(clientId, channel)) {
                         JoinMessage m = ServerUtil.withSource(
                             new JoinMessage(channel),
-                            new Source(nickname));
+                            Source.fromNickname(nickname));
 
                         Set<Long> members = state.getMembers(channel);
 
@@ -154,7 +154,7 @@ public class ServerUtil {
                         state.addMessage(clientId, ServerUtil.withSource(
                             new RplNamReplyMessage(
                                 nickname, "=", channel, List.of(nickname)),
-                            new Source(HOSTNAME)));
+                            Source.fromHostname(HOSTNAME)));
 
                         for (Long otherId : members) {
                             state.addMessage(otherId, m);
@@ -163,7 +163,7 @@ public class ServerUtil {
                                 new RplNamReplyMessage(
                                     nickname, "=", channel,
                                     List.of(state.getNickname(otherId))),
-                                new Source(HOSTNAME)));
+                                Source.fromHostname(HOSTNAME)));
                         }
 
                         state.addMessage(clientId, forwardNumeric(
@@ -210,7 +210,7 @@ public class ServerUtil {
                     MessageBuilder mb = MessageBuilder
                         .build()
                         .command(Command.PART.string())
-                        .source(new Source(nickname))
+                        .source(Source.fromNickname(nickname))
                         .param(channel);
 
                     if (message.hasReason()) {
@@ -219,7 +219,7 @@ public class ServerUtil {
 
                     PartMessage m = ServerUtil.withSource(
                         new PartMessage(mb.message()),
-                        new Source(nickname));
+                        Source.fromNickname(nickname));
 
                     state.partChannel(clientId, channel);
                     state.addMessage(clientId, m);
@@ -272,7 +272,7 @@ public class ServerUtil {
                     else {
                         PrivmsgMessage m = ServerUtil.withSource(
                             new PrivmsgMessage(target, text),
-                            new Source(nickname));
+                            Source.fromNickname(nickname));
 
                         Set<Long> others = state.getMembers(target);
                         others.remove(clientId);
@@ -291,7 +291,7 @@ public class ServerUtil {
                     else {
                         PrivmsgMessage m = ServerUtil.withSource(
                             new PrivmsgMessage(target, text),
-                            new Source(nickname));
+                            Source.fromNickname(nickname));
 
                         state.addMessage(state.getClientId(target), m);
                     }
@@ -314,7 +314,7 @@ public class ServerUtil {
             for (long otherId : others) {
                 state.addMessage(otherId, ServerUtil.withSource(
                     new QuitMessage(reason),
-                    new Source(state.getNickname(clientId))));
+                    Source.fromNickname(state.getNickname(clientId))));
             }
         }
     }
@@ -328,7 +328,7 @@ public class ServerUtil {
                                    QuitMessage message) {
         state.addMessage(clientId, ServerUtil.withSource(
             new ErrorMessage("Client quit"),
-            new Source(HOSTNAME)));
+            Source.fromHostname(HOSTNAME)));
 
         ServerUtil.sendQuits(state, clientId, message);
     }
@@ -367,7 +367,7 @@ public class ServerUtil {
         return new ForwardMessage(
             MessageBuilder
                 .build()
-                .source(new Source(HOSTNAME))
+                .source(Source.fromHostname(HOSTNAME))
                 .command(command.string())
                 .params(ps)
                 .message());

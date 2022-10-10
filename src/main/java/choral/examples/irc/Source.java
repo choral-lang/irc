@@ -3,20 +3,10 @@ package choral.examples.irc;
 public class Source {
     private String nickname, username, hostname;
 
-    public Source(String nickname) {
-        this.nickname = nickname;
-        this.username = null;
-        this.hostname = null;
-    }
-
-    public Source(String nickname, String hostname) {
-        this(nickname);
-        this.hostname = hostname;
-    }
-
     public Source(String nickname, String username, String hostname) {
-        this(nickname, hostname);
+        this.nickname = nickname;
         this.username = username;
+        this.hostname = hostname;
     }
 
     public String getNickname() {
@@ -31,20 +21,36 @@ public class Source {
         return hostname;
     }
 
+    public static Source fromNickname(String nickname) {
+        return new Source(nickname, null, null);
+    }
+
+    public static Source fromHostname(String hostname) {
+        return new Source(null, null, hostname);
+    }
+
     public static Source parse(String str) {
+        String host = null;
         String[] hostParts = str.split("@", 2);
 
-        if (hostParts.length == 1) {
-            return new Source(str);
+        if (hostParts.length == 2) {
+            host = hostParts[1];
+        }
+        else if (hostParts.length > 2) {
+            return null;
         }
 
+        String user = null;
         String[] userParts = hostParts[0].split("!", 2);
 
-        if (userParts.length == 1) {
-            return new Source(hostParts[0], hostParts[1]);
+        if (userParts.length == 2) {
+            user = userParts[1];
+        }
+        else if (userParts.length > 2) {
+            return null;
         }
 
-        return new Source(userParts[0], userParts[1], hostParts[1]);
+        return new Source(userParts[0], user, host);
     }
 
     public String toString() {

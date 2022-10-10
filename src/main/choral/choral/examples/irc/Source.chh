@@ -1,12 +1,6 @@
 package choral.examples.irc;
 
 public class Source@R {
-    public Source() {}
-
-    public Source(String@R nickname) {}
-
-    public Source(String@R nickname, String@R hostname) {}
-
     public Source(String@R nickname, String@R username, String@R hostname) {}
 
     public String@R getNickname() {}
@@ -14,6 +8,10 @@ public class Source@R {
     public String@R getUsername() {}
 
     public String@R getHostname() {}
+
+    public static Source@R fromNickname(String@R nickname) {}
+
+    public static Source@R fromHostname(String@R hostname) {}
 
     public static Source@R parse(String@R source) {}
 

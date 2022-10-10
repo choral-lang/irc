@@ -114,7 +114,7 @@ public class Irc {
                 if (!state.isGracefulQuit(clientId)) {
                     ServerUtil.sendQuits(state, clientId, ServerUtil.withSource(
                         new QuitMessage("Client disconnected"),
-                        new Source(ServerUtil.HOSTNAME)));
+                        Source.fromHostname(ServerUtil.HOSTNAME)));
                     e.printStackTrace();
                 }
 
