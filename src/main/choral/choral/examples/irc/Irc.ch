@@ -65,19 +65,21 @@ public class Irc@(Client, Server) {
                 serverState.getOut().println(ping.toString());
 
                 if (!serverState.isRegistered(clientId)) {{
-                    addServerMessage(ServerUtil@Server.forwardNumeric(
-                        Command@Server.ERR_NOTREGISTERED, "*"@Server,
-                        "You must register first"@Server));
+                    Util@Server.<Message>put(serverQueue,
+                        ServerUtil@Server.forwardNumeric(
+                            Command@Server.ERR_NOTREGISTERED, "*"@Server,
+                            "You must register first"@Server));
                 }}
                 else {
                     if (!ping.hasEnoughParams()) {
-                        addServerMessage(ServerUtil@Server.forwardNumeric(
-                            Command@Server.ERR_NEEDMOREPARAMS,
-                            serverState.getNickname(clientId),
-                            "Need more parameters"@Server));
+                        Util@Server.<Message>put(serverQueue,
+                            ServerUtil@Server.forwardNumeric(
+                                Command@Server.ERR_NEEDMOREPARAMS,
+                                serverState.getNickname(clientId),
+                                "Need more parameters"@Server));
                     }
                     else {
-                        addServerMessage(
+                        Util@Server.<Message>put(serverQueue,
                             ServerUtil@Server.<PongMessage>withSource(
                                 new PongMessage@Server(
                                     ServerUtil@Server.HOSTNAME,
