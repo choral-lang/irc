@@ -19,7 +19,7 @@ public class ServerUtil {
     /**
      * Process a client's NICK message.
      *
-     * NOTE: Choral doesn't support loops.
+     * NOTE: Choral doesn't support loops and lambdas.
      */
     public static void processWelcome(ServerState state, long clientId) {
         BiConsumer<Command, String> add = (command, text) -> {
@@ -58,7 +58,7 @@ public class ServerUtil {
     /**
      * Process a client's NICK message.
      *
-     * NOTE: Choral doesn't support loops.
+     * NOTE: Choral doesn't support loops and lambdas.
      */
     public static void processNick(ServerState state, long clientId,
                                    NickMessage message) {
@@ -300,6 +300,12 @@ public class ServerUtil {
         }
     }
 
+    /**
+     * Send QUIT messages to all clients that share a channel with the given
+     * one.
+     *
+     * NOTE: Choral doesn't support loops and lambdas.
+     */
     public static void sendQuits(ServerState state, long clientId,
                                  QuitMessage message) {
         String reason = message.hasEnoughParams() ? message.getReason() : "";
