@@ -7,6 +7,14 @@ public class Source {
         this.nickname = nickname;
         this.username = username;
         this.hostname = hostname;
+
+        if (nickname == null) {
+            throw new IllegalArgumentException("Nickname cannot be null");
+        }
+    }
+
+    public Source(String nickname) {
+        this(nickname, null, null);
     }
 
     public String getNickname() {
@@ -19,14 +27,6 @@ public class Source {
 
     public String getHostname() {
         return hostname;
-    }
-
-    public static Source fromNickname(String nickname) {
-        return new Source(nickname, null, null);
-    }
-
-    public static Source fromHostname(String hostname) {
-        return new Source(null, null, hostname);
     }
 
     public static Source parse(String str) {

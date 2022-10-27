@@ -51,7 +51,7 @@ public class IrcServerHandler@R implements LoopsHandler@R {
             ServerUtil@R.sendQuits(state, clientId,
                 ServerUtil@R.<QuitMessage>withSource(
                     new QuitMessage@R("Client disconnected"@R),
-                    Source@R.fromHostname(ServerUtil@R.HOSTNAME)));
+                    new Source@R(ServerUtil@R.HOSTNAME)));
         }
 
         state.quit(clientId);
