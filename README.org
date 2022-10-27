@@ -43,26 +43,42 @@ of Choral. To build the project:
    We try and track the latest Java compiler version available. In case yours is
    older, either update your Java compiler or modify =pom.xml=.
 
-4. Run the server and the client program:
+* Running
 
-   #+BEGIN_EXAMPLE
-     ./server
-     ./client
-   #+END_EXAMPLE
+Run the server and the client programs separately:
 
-   Note that executing the Java code also requires the =--enable-preview=
-   option, which we provide to Maven through =.mvn/jvm.config=. If you want to
-   run the code in a different way, don't forget to pass the option.
+#+BEGIN_EXAMPLE
+  ./server
+  ./client
+#+END_EXAMPLE
 
-   Use the client's textual interface to connect to the server and run some
-   commands:
+Note that executing the Java code also requires the =--enable-preview=
+option, which we provide to Maven through =.mvn/jvm.config=. If you want to
+run the code in a different way, don't forget to pass the option.
 
-   #+BEGIN_EXAMPLE
-     /connect localhost 8667
-     /nick choralbot
-     /user choralbot
-     /join #choral
-     /privmsg #choral Hello!
-     /part #choral Bye!
-     /quit
-   #+END_EXAMPLE
+Use the client's textual interface to connect to the server and run some
+commands:
+
+#+BEGIN_EXAMPLE
+  /connect localhost 8667
+  /nick choralbot
+  /user choralbot
+  /join #choral
+  /privmsg #choral Hello!
+  /part #choral Bye!
+  /quit
+#+END_EXAMPLE
+
+* Binary Compatibility
+
+The implementation is fully *binary-compatible* with IRC, i.e. it respects IRC's
+wire format and doesn't perform any custom communications. Therefore, it's
+possible to swap out the client or the server for a 3rd party counterpart.
+
+E.g. you can connect to the IRC server using a 3rd party client such as Weechat,
+HexChat, Konversation, etc., or you can use the IRC client to connect to a 3rd
+party server, such as W3C:
+
+#+BEGIN_EXAMPLE
+  /connect irc.w3.org 6667
+#+END_EXAMPLE
