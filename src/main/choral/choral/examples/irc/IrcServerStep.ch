@@ -207,9 +207,9 @@ public class IrcServerStep@(Client, Server)
 
                 clientState.getOut().println(info);
 
-                // Set the gracefulQuit flags to communicate a graceful close.
-                serverState.setGracefulQuit(clientId);
-                clientState.setGracefulQuit();
+                // Set the quitRequested flags to communicate a graceful close.
+                serverState.setQuitRequested(clientId);
+                clientState.setQuitRequested();
                 ch_AB.close();
             }
 

@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class ClientState {
-    private boolean gracefulQuit;
+    private boolean quitRequested;
     private String username, realname, nickname;
     private boolean registered;
     private Map<String, Set<String>> channels;
 
     public ClientState(String username, String realname, String nickname) {
-        this.gracefulQuit = false;
+        this.quitRequested = false;
         this.username = username;
         this.realname = realname;
         this.nickname = nickname;
@@ -26,12 +26,12 @@ public class ClientState {
         this(nickname, nickname, nickname);
     }
 
-    public boolean isGracefulQuit() {
-        return gracefulQuit;
+    public boolean isQuitRequested() {
+        return quitRequested;
     }
 
-    public void setGracefulQuit() {
-        gracefulQuit = true;
+    public void setQuitRequested() {
+        quitRequested = true;
     }
 
     public String getUsername() {

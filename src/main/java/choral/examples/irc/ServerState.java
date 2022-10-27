@@ -148,14 +148,14 @@ public class ServerState {
         }
     }
 
-    public void setGracefulQuit(long clientId) {
+    public void setQuitRequested(long clientId) {
         assert clients.containsKey(clientId);
-        clients.get(clientId).gracefulQuit = true;
+        clients.get(clientId).quitRequested = true;
     }
 
-    public boolean isGracefulQuit(long clientId) {
+    public boolean isQuitRequested(long clientId) {
         assert clients.containsKey(clientId);
-        return clients.get(clientId).gracefulQuit;
+        return clients.get(clientId).quitRequested;
     }
 
     public PrintStream getOut() {

@@ -24,7 +24,7 @@ public class IrcClientHandler@R implements LoopsHandler@R {
         if (ce != null@R) {
             clientLoop.stop();
 
-            if (!state.isGracefulQuit()) {
+            if (!state.isQuitRequested()) {
                 e.printStackTrace();
             }
 

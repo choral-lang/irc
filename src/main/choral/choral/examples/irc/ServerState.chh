@@ -44,9 +44,9 @@ public class ServerState@R {
 
     public void quit(long@R clientId) {}
 
-    public void setGracefulQuit(long@R clientId) {}
+    public void setQuitRequested(long@R clientId) {}
 
-    public boolean@R isGracefulQuit(long@R clientId) {}
+    public boolean@R isQuitRequested(long@R clientId) {}
 
     public PrintStream@R getOut() {}
 }

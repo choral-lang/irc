@@ -6,7 +6,7 @@ import java.util.Set;
 public class ServerClientState {
     public LoopsLoop<Message> serverLoop;
     public long clientId;
-    public boolean gracefulQuit;
+    public boolean quitRequested;
     public String username, realname, nickname;
     public boolean registered;
     public Set<String> channels;
@@ -14,7 +14,7 @@ public class ServerClientState {
     ServerClientState(LoopsLoop<Message> serverLoop, long clientId) {
         this.serverLoop = serverLoop;
         this.clientId = clientId;
-        this.gracefulQuit = false;
+        this.quitRequested = false;
         this.username = null;
         this.realname = null;
         this.nickname = null;

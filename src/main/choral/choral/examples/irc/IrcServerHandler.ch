@@ -34,7 +34,7 @@ public class IrcServerHandler@R implements LoopsHandler@R {
         if (ce != null@R) {
             serverLoop.stop();
 
-            if (!state.isGracefulQuit(clientId)) {
+            if (!state.isQuitRequested(clientId)) {
                 e.printStackTrace();
             }
 
@@ -47,7 +47,7 @@ public class IrcServerHandler@R implements LoopsHandler@R {
     }
 
     public void handleStop() {
-        if (!state.isGracefulQuit(clientId)) {
+        if (!state.isQuitRequested(clientId)) {
             ServerUtil@R.sendQuits(state, clientId,
                 ServerUtil@R.<QuitMessage>withSource(
                     new QuitMessage@R("Client disconnected"@R),
