@@ -21,7 +21,11 @@ public class Client {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    private static String[] splitArgs(String rest, int n) {
+        return rest == null ? new String[0] : rest.split(" +", n);
+    }
+
+    public static void main(String[] argv) throws IOException {
         Scanner s = new Scanner(System.in);
         Gson gson = new Gson();
         ClientState state = new ClientState("choralbot");
@@ -38,7 +42,7 @@ public class Client {
                     break;
 
                 String line = s.nextLine();
-                String[] parts = line.split(" +");
+                String[] parts = line.split(" +", 2);
 
                 if (parts.length == 0) {
                     System.out.println("Invalid command");
@@ -46,9 +50,12 @@ public class Client {
                 }
 
                 String cmd = parts[0];
+                String rest = parts.length == 1 ? null : parts[1];
 
                 if (cmd.equalsIgnoreCase("/connect")) {
-                    if (parts.length - 1 < 2) {
+                    String[] args = splitArgs(rest, 2);
+
+                    if (args.length < 2) {
                         System.out.println("Usage: /connect <host> <port>");
                         continue;
                     }
@@ -58,8 +65,8 @@ public class Client {
                         continue;
                     }
 
-                    String host = parts[1];
-                    Integer port = parseInt(parts[2]);
+                    String host = args[0];
+                    Integer port = parseInt(args[1]);
 
                     if (port == null || port <= 0) {
                         System.out.println("Port has to be a positive integer");
@@ -79,7 +86,9 @@ public class Client {
                     irc.run(executor);
                 }
                 else if (cmd.equalsIgnoreCase("/nick")) {
-                    if (parts.length - 1 < 1) {
+                    String[] args = splitArgs(rest, 1);
+
+                    if (args.length == 0) {
                         System.out.println("Usage: /nick <nickname>");
                         continue;
                     }
@@ -89,10 +98,12 @@ public class Client {
                         continue;
                     }
 
-                    irc.addClientMessage(new NickMessage(parts[1]));
+                    irc.addClientMessage(new NickMessage(args[0]));
                 }
                 else if (cmd.equalsIgnoreCase("/user")) {
-                    if (parts.length - 1 == 0) {
+                    String[] args = rest.split(" +", 2);
+
+                    if (args.length == 0) {
                         System.out.println("Usage: /user <username> [<realname>]");
                         continue;
                     }
@@ -102,13 +113,15 @@ public class Client {
                         continue;
                     }
 
-                    String username = parts[1];
-                    String realname = parts.length - 1 < 2 ? username : parts[2];
+                    String username = args[0];
+                    String realname = args.length < 2 ? username : args[1];
 
                     irc.addClientMessage(new UserMessage(username, realname));
                 }
                 else if (cmd.equalsIgnoreCase("/join")) {
-                    if (parts.length - 1 < 1) {
+                    String[] args = rest.split(" +", 1);
+
+                    if (args.length == 0) {
                         System.out.println("Usage: /join <channel>[,<channel>]...");
                         continue;
                     }
@@ -119,10 +132,12 @@ public class Client {
                     }
 
                     irc.addClientMessage(new JoinMessage(
-                        Arrays.asList(parts[1].split(","))));
+                        Arrays.asList(args[0].split(","))));
                 }
                 else if (cmd.equalsIgnoreCase("/part")) {
-                    if (parts.length - 1 < 1) {
+                    String[] args = rest.split(" +", 2);
+
+                    if (args.length == 0) {
                         System.out.println("Usage: /part <channel>[,<channel>]... [<reason>]");
                         continue;
                     }
@@ -132,20 +147,22 @@ public class Client {
                         continue;
                     }
 
-                    List<String> channels = Arrays.asList(parts[1].split(","));
+                    List<String> channels = Arrays.asList(args[0].split(","));
                     PartMessage m = null;
 
-                    if (parts.length - 1 < 2) {
+                    if (args.length < 2) {
                         m = new PartMessage(channels);
                     }
                     else {
-                        m = new PartMessage(channels, parts[2]);
+                        m = new PartMessage(channels, args[1]);
                     }
 
                     irc.addClientMessage(m);
                 }
                 else if (cmd.equalsIgnoreCase("/privmsg")) {
-                    if (parts.length - 1 < 2) {
+                    String[] args = rest.split(" +", 2);
+
+                    if (args.length < 2) {
                         System.out.println("Usage: /privmsg <target>[,<target>]... <text>");
                         continue;
                     }
@@ -156,7 +173,7 @@ public class Client {
                     }
 
                     irc.addClientMessage(new PrivmsgMessage(
-                        Arrays.asList(parts[1].split(",")), parts[2]));
+                        Arrays.asList(args[0].split(",")), args[1]));
                 }
                 else if (cmd.equalsIgnoreCase("/state")) {
                     System.out.println(gson.toJson(state));
@@ -167,9 +184,11 @@ public class Client {
                         continue;
                     }
 
-                    String reason = parts.length - 1 < 1 ? "Bye" : parts[1];
+                    String[] args = rest.split(" +", 1);
 
-                    irc.addClientMessage(new QuitMessage(reason));
+                    irc.addClientMessage(new QuitMessage(
+                        args.length == 0 ? "Bye" : args[0]));
+
                     break;
                 }
                 else {
