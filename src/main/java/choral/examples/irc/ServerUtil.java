@@ -378,4 +378,11 @@ public class ServerUtil {
                                                 String param1) {
         return forwardNumeric(command, nickname, new String[] {param1});
     }
+
+    public static ForwardMessage forwardNumeric(Command command,
+                                                String nickname,
+                                                String param1,
+                                                String param2) {
+        return forwardNumeric(command, nickname, new String[] {param1, param2});
+    }
 }

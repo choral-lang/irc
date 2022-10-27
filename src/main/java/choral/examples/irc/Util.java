@@ -3,16 +3,6 @@ package choral.examples.irc;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Util {
-    public static <T> T take(LinkedBlockingQueue<T> queue) {
-        while (true) {
-            try {
-                return queue.take();
-            } catch (InterruptedException e) {
-                // Ignore and keep trying
-            }
-        }
-    }
-
     public static <T> void put(LinkedBlockingQueue<T> queue, T item) {
         while (true) {
             try {
@@ -28,6 +18,25 @@ public class Util {
         @SuppressWarnings("unchecked")
         T res = (T) message;
         return res;
+    }
+
+    public static <T> T asInstance(Object obj, Class<T> cls) {
+        if (cls.isInstance(obj)) {
+            @SuppressWarnings("unchecked")
+            T res = (T) obj;
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public static UnrecognizedMessageException asUnrecognizedMessageException(Object obj) {
+        return asInstance(obj, UnrecognizedMessageException.class);
+    }
+
+    public static ChannelException asChannelException(Object obj) {
+        return asInstance(obj, ChannelException.class);
     }
 
     public static void check(boolean cond, String message) {

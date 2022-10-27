@@ -37,7 +37,7 @@ public class Server {
                         try {
                             IrcChannel_B ch = new IrcChannel_B(client);
                             Irc_Server irc = new Irc_Server(ch, Unit.id, state);
-                            Irc.runServer(irc, executor);
+                            irc.run(executor);
                         }
                         catch (Exception e) {
                             e.printStackTrace();

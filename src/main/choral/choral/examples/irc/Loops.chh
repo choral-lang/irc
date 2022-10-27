@@ -1,0 +1,18 @@
+package choral.examples.irc;
+
+import java.util.concurrent.ExecutorService;
+
+public class Loops@(A, B)<T@R> {
+    public Loops() {}
+
+    public void run(ExecutorService@A executorA,
+                    ExecutorService@B executorB,
+                    LoopsConsumer@(A, B)<T> stepA,
+                    LoopsConsumer@(B, A)<T> stepB,
+                    LoopsHandler@A handlerA,
+                    LoopsHandler@B handlerB) {}
+
+    public LoopsLoop@A<T> getLoopA() {}
+
+    public LoopsLoop@B<T> getLoopB() {}
+}

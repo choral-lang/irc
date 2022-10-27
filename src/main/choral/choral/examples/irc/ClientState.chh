@@ -3,14 +3,11 @@ package choral.examples.irc;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientState@R {
     public ClientState(String@R username, String@R realname, String@R nickname) {}
 
     public ClientState(String@R nickname) {}
-
-    public LinkedBlockingQueue@R<Message> getQueue() {}
 
     public boolean@R isGracefulQuit() {}
 

@@ -1,0 +1,7 @@
+package choral.examples.irc;
+
+public class ChannelException@R extends RuntimeException@R {
+    ChannelException(String@R message) {}
+
+    ChannelException(Throwable@R cause) {}
+}

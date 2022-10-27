@@ -2,14 +2,11 @@ package choral.examples.irc;
 
 import java.io.PrintStream;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ServerState@R {
     public ServerState() {}
 
-    public long@R newClient() {}
-
-    public LinkedBlockingQueue@R<Message> getQueue(long@R clientId) {}
+    public long@R newClient(LoopsLoop@R<Message> serverLoop) {}
 
     public void addMessage(long@R clientId, Message@R message) {}
 
@@ -44,6 +41,8 @@ public class ServerState@R {
     public void joinChannel(long@R clientId, String@R channel) {}
 
     public void partChannel(long@R clientId, String@R channel) {}
+
+    public void quit(long@R clientId) {}
 
     public void setGracefulQuit(long@R clientId) {}
 

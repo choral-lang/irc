@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Util@R {
-    public static <T@R> T@R take(LinkedBlockingQueue@R<T> queue) {}
-
     public static <T@R> void put(LinkedBlockingQueue@R<T> queue, T@R item) {}
 
     public static <T@R> T@R as(Message@R message) {}
+
+    public static UnrecognizedMessageException@R asUnrecognizedMessageException(Object@R obj) {}
+
+    public static ChannelException@R asChannelException(Object@R obj) {}
 
     public static void check(boolean@R cond, String@R message) {}
 

@@ -2,19 +2,18 @@ package choral.examples.irc;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ServerClientState {
+    public LoopsLoop<Message> serverLoop;
     public long clientId;
-    public LinkedBlockingQueue<Message> queue;
     public boolean gracefulQuit;
     public String username, realname, nickname;
     public boolean registered;
     public Set<String> channels;
 
-    ServerClientState(long clientId) {
+    ServerClientState(LoopsLoop<Message> serverLoop, long clientId) {
+        this.serverLoop = serverLoop;
         this.clientId = clientId;
-        this.queue = new LinkedBlockingQueue<Message>();
         this.gracefulQuit = false;
         this.username = null;
         this.realname = null;

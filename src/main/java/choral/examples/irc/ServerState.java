@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 public class ServerState {
@@ -21,20 +20,15 @@ public class ServerState {
         channels = new HashMap<>();
     }
 
-    public long newClient() {
+    public long newClient(LoopsLoop<Message> serverLoop) {
         long clientId = ++lastClientId;
-        ServerClientState client = new ServerClientState(clientId);
+        ServerClientState client = new ServerClientState(serverLoop, clientId);
         clients.put(clientId, client);
         return clientId;
     }
 
-    public LinkedBlockingQueue<Message> getQueue(long clientId) {
-        assert clients.containsKey(clientId);
-        return clients.get(clientId).queue;
-    }
-
     public void addMessage(long clientId, Message message) {
-        Util.<Message>put(clients.get(clientId).queue, message);
+        clients.get(clientId).serverLoop.add(message);
     }
 
     public long getClientId(String nickname) {

@@ -76,7 +76,7 @@ public class Client {
 
                     IrcChannel_A ch = new IrcChannel_A(sc);
                     irc = new Irc_Client(ch, state, Unit.id);
-                    Irc.runClient(irc, executor);
+                    irc.run(executor);
                 }
                 else if (cmd.equalsIgnoreCase("/nick")) {
                     if (parts.length - 1 < 1) {

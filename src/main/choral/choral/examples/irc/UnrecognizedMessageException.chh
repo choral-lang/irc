@@ -1,0 +1,7 @@
+package choral.examples.irc;
+
+public class UnrecognizedMessageException@R extends RuntimeException@R {
+    UnrecognizedMessageException(Message@R message) {}
+
+    public Message@R getIrcMessage() {}
+}

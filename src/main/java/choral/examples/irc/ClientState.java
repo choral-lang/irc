@@ -6,17 +6,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientState {
-    private LinkedBlockingQueue<Message> queue;
     private boolean gracefulQuit;
     private String username, realname, nickname;
     private boolean registered;
     private Map<String, Set<String>> channels;
 
     public ClientState(String username, String realname, String nickname) {
-        queue = new LinkedBlockingQueue<Message>();
         this.gracefulQuit = false;
         this.username = username;
         this.realname = realname;
@@ -27,10 +24,6 @@ public class ClientState {
 
     public ClientState(String nickname) {
         this(nickname, nickname, nickname);
-    }
-
-    public LinkedBlockingQueue<Message> getQueue() {
-        return queue;
     }
 
     public boolean isGracefulQuit() {
