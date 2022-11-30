@@ -4,14 +4,14 @@ import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
-public class LoopsImpl<T> {
+public class EventsImpl<T> {
     protected LinkedBlockingQueue<Optional<T>> queue;
 
-    public LoopsImpl() {
+    public EventsImpl() {
         this.queue = new LinkedBlockingQueue<Optional<T>>();
     }
 
-    protected void sendLoop(Consumer<T> step, LoopsHandler handler) {
+    protected void sendLoop(Consumer<T> handler, LocalHandler localHandler) {
         while (true) {
             try {
                 Optional<T> event = queue.take();
@@ -20,26 +20,26 @@ public class LoopsImpl<T> {
                     break;
                 }
 
-                step.accept(event.get());
+                handler.accept(event.get());
             }
             catch (InterruptedException e) {
                 // Ignore
             }
             catch (Exception e) {
-                if (!handler.handleError(e)) {
+                if (!localHandler.onError(e)) {
                     break;
                 }
             }
         }
     }
 
-    protected void recvLoop(Runnable step, LoopsHandler handler) {
+    protected void recvLoop(Runnable handler, LocalHandler localHandler) {
         while (true) {
             try {
-                step.run();
+                handler.run();
             }
             catch (Exception e) {
-                if (!handler.handleError(e)) {
+                if (!localHandler.onError(e)) {
                     break;
                 }
             }

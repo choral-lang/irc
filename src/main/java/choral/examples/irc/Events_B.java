@@ -5,28 +5,28 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-public class Loops_B<T> extends LoopsImpl<T> {
-    public Loops_B() {
+public class Events_B<T> extends EventsImpl<T> {
+    public Events_B() {
     }
 
-    public Unit getLoopA() {
+    public Unit queueA() {
         return Unit.id;
     }
 
-    public LoopsLoop<T> getLoopB() {
-        return new LoopsLoop<T>(queue);
+    public EventQueue<T> queueB() {
+        return new EventQueue<T>(queue);
     }
 
     public void run(Unit executorA,
                     ExecutorService executorB,
-                    LoopsConsumer_B<T> stepA,
-                    LoopsConsumer_A<T> stepB,
-                    Unit handlerA,
-                    LoopsHandler handlerB) {
+                    EventHandler_B<T> eventHandlerA,
+                    EventHandler_A<T> eventHandlerB,
+                    Unit localHandlerA,
+                    LocalHandler localHandlerB) {
         Future<?> f1 = executorB.submit(
-            () -> sendLoop(t -> stepB.accept(t), handlerB));
+            () -> sendLoop(t -> eventHandlerB.on(t), localHandlerB));
         Future<?> f2 = executorB.submit(
-            () -> recvLoop(() -> stepA.accept(), handlerB));
+            () -> recvLoop(() -> eventHandlerA.on(), localHandlerB));
 
         executorB.execute(() -> {
             try {
@@ -43,7 +43,7 @@ public class Loops_B<T> extends LoopsImpl<T> {
                 e.printStackTrace();
             }
 
-            handlerB.handleStop();
+            localHandlerB.onStop();
         });
     }
 }

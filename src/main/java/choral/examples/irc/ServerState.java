@@ -20,15 +20,15 @@ public class ServerState {
         channels = new HashMap<>();
     }
 
-    public long newClient(LoopsLoop<Message> serverLoop) {
+    public long newClient(EventQueue<Message> serverQueue) {
         long clientId = ++lastClientId;
-        ServerClientState client = new ServerClientState(serverLoop, clientId);
+        ServerClientState client = new ServerClientState(serverQueue, clientId);
         clients.put(clientId, client);
         return clientId;
     }
 
     public void addMessage(long clientId, Message message) {
-        clients.get(clientId).serverLoop.add(message);
+        clients.get(clientId).serverQueue.enqueue(message);
     }
 
     public long getClientId(String nickname) {

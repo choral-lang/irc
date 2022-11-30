@@ -98,7 +98,7 @@ public class Client {
                         continue;
                     }
 
-                    irc.addClientMessage(new NickMessage(args[0]));
+                    irc.enqueue(new NickMessage(args[0]));
                 }
                 else if (cmd.equalsIgnoreCase("/user")) {
                     String[] args = rest.split(" +", 2);
@@ -116,7 +116,7 @@ public class Client {
                     String username = args[0];
                     String realname = args.length < 2 ? username : args[1];
 
-                    irc.addClientMessage(new UserMessage(username, realname));
+                    irc.enqueue(new UserMessage(username, realname));
                 }
                 else if (cmd.equalsIgnoreCase("/join")) {
                     String[] args = rest.split(" +", 1);
@@ -131,7 +131,7 @@ public class Client {
                         continue;
                     }
 
-                    irc.addClientMessage(new JoinMessage(
+                    irc.enqueue(new JoinMessage(
                         Arrays.asList(args[0].split(","))));
                 }
                 else if (cmd.equalsIgnoreCase("/part")) {
@@ -157,7 +157,7 @@ public class Client {
                         m = new PartMessage(channels, args[1]);
                     }
 
-                    irc.addClientMessage(m);
+                    irc.enqueue(m);
                 }
                 else if (cmd.equalsIgnoreCase("/privmsg")) {
                     String[] args = rest.split(" +", 2);
@@ -172,7 +172,7 @@ public class Client {
                         continue;
                     }
 
-                    irc.addClientMessage(new PrivmsgMessage(
+                    irc.enqueue(new PrivmsgMessage(
                         Arrays.asList(args[0].split(",")), args[1]));
                 }
                 else if (cmd.equalsIgnoreCase("/state")) {
@@ -186,7 +186,7 @@ public class Client {
 
                     String[] args = rest.split(" +", 1);
 
-                    irc.addClientMessage(new QuitMessage(
+                    irc.enqueue(new QuitMessage(
                         args.length == 0 ? "Bye" : args[0]));
 
                     break;

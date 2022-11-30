@@ -3,7 +3,7 @@ package choral.examples.irc;
 import java.util.concurrent.ExecutorService;
 
 public class Irc@(Client, Server) {
-    private Loops@(Client, Server)<Message> loops;
+    private Events@(Client, Server)<Message> events;
     private IrcChannel@(Client, Server) ch_AB;
 
     private ClientState@Client clientState;
@@ -14,35 +14,35 @@ public class Irc@(Client, Server) {
     public Irc(IrcChannel@(Client, Server) ch_AB,
                ClientState@Client clientState,
                ServerState@Server serverState) {
-        this.loops = new Loops@(Client, Server)<Message>();
+        this.events = new Events@(Client, Server)<Message>();
         this.ch_AB = ch_AB;
 
         this.clientState = clientState;
 
         this.serverState = serverState;
-        this.clientId = serverState.newClient(loops.getLoopB());
+        this.clientId = serverState.newClient(events.queueB());
     }
 
-    public void addClientMessage(Message@Client message) {
-        loops.getLoopA().add(message);
+    public void enqueue(Message@Client message) {
+        events.queueA().enqueue(message);
     }
 
-    public void addServerMessage(Message@Server message) {
-        loops.getLoopB().add(message);
+    public void enqueue(Message@Server message) {
+        events.queueB().enqueue(message);
     }
 
     public void run(ExecutorService@Client clientExecutor,
                     ExecutorService@Server serverExecutor) {
-        loops.run(
+        events.run(
             clientExecutor,
             serverExecutor,
-            new IrcClientStep@(Client, Server)(
-                loops.getLoopB(), ch_AB, clientState, serverState, clientId),
-            new IrcServerStep@(Client, Server)(
-                loops.getLoopA(), ch_AB, clientState, serverState, clientId),
-            new IrcClientHandler@Client(
-                loops.getLoopA(), clientState),
-            new IrcServerHandler@Server(
-                loops.getLoopB(), serverState, clientId));
+            new IrcClientHandler@(Client, Server)(
+                events.queueB(), ch_AB, clientState, serverState, clientId),
+            new IrcServerHandler@(Client, Server)(
+                events.queueA(), ch_AB, clientState, serverState, clientId),
+            new IrcClientLocalHandler@Client(
+                events.queueA(), clientState),
+            new IrcServerLocalHandler@Server(
+                events.queueB(), serverState, clientId));
     }
 }

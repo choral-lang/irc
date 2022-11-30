@@ -6,7 +6,7 @@ import java.util.Set;
 public class ServerState@R {
     public ServerState() {}
 
-    public long@R newClient(LoopsLoop@R<Message> serverLoop) {}
+    public long@R newClient(EventQueue@R<Message> serverQueue) {}
 
     public void addMessage(long@R clientId, Message@R message) {}
 

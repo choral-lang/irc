@@ -1,0 +1,18 @@
+package choral.examples.irc;
+
+import java.util.concurrent.ExecutorService;
+
+public class Events@(A, B)<T@R> {
+    public Events() {}
+
+    public void run(ExecutorService@A executorA,
+                    ExecutorService@B executorB,
+                    EventHandler@(A, B)<T> eventHandlerA,
+                    EventHandler@(B, A)<T> eventHandlerB,
+                    LocalHandler@A localHandlerA,
+                    LocalHandler@B localHandlerB) {}
+
+    public EventQueue@A<T> queueA() {}
+
+    public EventQueue@B<T> queueB() {}
+}
