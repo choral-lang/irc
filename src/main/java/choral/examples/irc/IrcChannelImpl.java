@@ -22,7 +22,7 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
     private byte[] marker;
     private int current;
 
-    IrcChannelImpl(ByteChannel channel) {
+    public IrcChannelImpl(ByteChannel channel) {
         this.channel = channel;
         this.inBuffer = ByteBuffer.allocate(MAX_SIZE);
         this.outBuffer = ByteBuffer.allocate(MAX_SIZE);
