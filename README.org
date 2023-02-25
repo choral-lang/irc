@@ -36,12 +36,13 @@ of Choral. To build the project:
      mvn compile
    #+END_EXAMPLE
 
-   Choral IRC expects that the Java compiler version listed in its =pom.xml=
-   matches the one you have installed (which should be at least Java 17), since
-   only then is the =--enable-preview= option, which we require, valid.
+   *NOTE*: Choral IRC expects that the Java compiler version listed in its
+   =pom.xml= matches the one you have installed, since only then is the
+   =--enable-preview= option valid. Additionally, we require at least Java 17.
 
    We try and track the latest Java compiler version available. In case yours is
-   older, either update your Java compiler or modify =pom.xml=.
+   older, either update your Java compiler or modify =pom.xml= to match the one
+   you have installed.
 
 * Running
 
