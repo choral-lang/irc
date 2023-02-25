@@ -77,12 +77,13 @@ public class ServerUtil {
 
             if (!Util.validNickname(nickname)) {
                 state.addMessage(clientId, forwardNumeric(
-                    Command.ERR_ERRONEOUSNICKNAME, current,
+                    Command.ERR_ERRONEOUSNICKNAME, current, nickname,
                     "Nickname is invalid"));
             }
             else if (state.nicknameExists(nickname)) {
                 state.addMessage(clientId, forwardNumeric(
-                    Command.ERR_NICKNAMEINUSE, current, "Nickname is in use"));
+                    Command.ERR_NICKNAMEINUSE, current, nickname,
+                    "Nickname is in use"));
             }
             else {
                 state.setNickname(clientId, nickname);
@@ -123,7 +124,7 @@ public class ServerUtil {
         else if (!message.hasEnoughParams()) {
             state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NEEDMOREPARAMS, state.getNickname(clientId),
-                "Need more parameters"));
+                Command.JOIN.string(), "Need more parameters"));
         }
         else {
             List<String> channels = message.getChannels();
@@ -138,7 +139,7 @@ public class ServerUtil {
                 for (String channel : new HashSet<>(channels)) {
                     if (!Util.validChannelname(channel)) {
                         state.addMessage(clientId, forwardNumeric(
-                            Command.ERR_NOSUCHCHANNEL, nickname,
+                            Command.ERR_NOSUCHCHANNEL, nickname, channel,
                             "Invalid channel name"));
                     }
                     else if (!state.inChannel(clientId, channel)) {
@@ -189,7 +190,7 @@ public class ServerUtil {
         else if (!message.hasEnoughParams()) {
             state.addMessage(clientId, forwardNumeric(
                 Command.ERR_NEEDMOREPARAMS, state.getNickname(clientId),
-                "Need more parameters"));
+                Command.PART.string(), "Need more parameters"));
         }
         else {
             List<String> channels = message.getChannels();
@@ -198,12 +199,12 @@ public class ServerUtil {
             for (String channel : new HashSet<>(channels)) {
                 if (!Util.validChannelname(channel)) {
                     state.addMessage(clientId, forwardNumeric(
-                        Command.ERR_NOSUCHCHANNEL, nickname,
+                        Command.ERR_NOSUCHCHANNEL, nickname, channel,
                         "Invalid channel name"));
                 }
                 else if (!state.inChannel(clientId, channel)) {
                     state.addMessage(clientId, forwardNumeric(
-                        Command.ERR_NOTONCHANNEL, nickname,
+                        Command.ERR_NOTONCHANNEL, nickname, channel,
                         "You are not in that channel"));
                 }
                 else {
@@ -259,14 +260,9 @@ public class ServerUtil {
 
             for (String target : message.getTargets()) {
                 if (Util.validChannelname(target)) {
-                    if (!state.channelExists(target)) {
+                    if (!state.inChannel(clientId, target)) {
                         state.addMessage(clientId, forwardNumeric(
-                            Command.ERR_NOSUCHNICK, nickname,
-                            "No such channel"));
-                    }
-                    else if (!state.inChannel(clientId, target)) {
-                        state.addMessage(clientId, forwardNumeric(
-                            Command.ERR_CANNOTSENDTOCHAN, nickname,
+                            Command.ERR_CANNOTSENDTOCHAN, nickname, target,
                             "You are not in that channel"));
                     }
                     else {
@@ -285,7 +281,7 @@ public class ServerUtil {
                 else {
                     if (!state.nicknameExists(target)) {
                         state.addMessage(clientId, forwardNumeric(
-                            Command.ERR_NOSUCHNICK, nickname,
+                            Command.ERR_NOSUCHNICK, nickname, target,
                             "No such nickname"));
                     }
                     else {
@@ -390,5 +386,13 @@ public class ServerUtil {
                                                 String param1,
                                                 String param2) {
         return forwardNumeric(command, nickname, new String[] {param1, param2});
+    }
+
+    public static ForwardMessage forwardNumeric(Command command,
+                                                String nickname,
+                                                String param1,
+                                                String param2,
+                                                String param3) {
+        return forwardNumeric(command, nickname, new String[] {param1, param2, param3});
     }
 }

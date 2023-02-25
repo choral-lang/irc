@@ -25,4 +25,6 @@ public class ServerUtil@R {
     public static ForwardMessage@R forwardNumeric(Command@R command, String@R nickname, String@R param1) {}
 
     public static ForwardMessage@R forwardNumeric(Command@R command, String@R nickname, String@R param1, String@R param2) {}
+
+    public static ForwardMessage@R forwardNumeric(Command@R command, String@R nickname, String@R param1, String@R param2, String@R param3) {}
 }

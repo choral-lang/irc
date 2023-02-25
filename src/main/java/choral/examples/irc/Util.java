@@ -45,6 +45,16 @@ public class Util {
         }
     }
 
+    /**
+     * NOTE: Choral doesn't support methods within enums.
+     */
+    public static String commandToString(Command command) {
+        return command.string();
+    }
+
+    /**
+     * NOTE: Choral doesn't support methods within enums.
+     */
     public static Command commandFromString(String command) {
         return Command.fromString(command);
     }

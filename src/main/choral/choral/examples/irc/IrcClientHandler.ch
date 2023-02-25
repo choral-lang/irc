@@ -53,6 +53,7 @@ public class IrcClientHandler@(Client, Server)
                         serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
                             Command@Server.ERR_NEEDMOREPARAMS,
                             serverState.getNickname(clientId),
+                            Util@Server.commandToString(Command@Server.PING),
                             "Need more parameters"@Server));
                     }
                     else {
@@ -103,8 +104,9 @@ public class IrcClientHandler@(Client, Server)
                 else {
                     if (!sUser.hasEnoughParams()) {{{
                         serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
-                            Command@Server.ERR_NEEDMOREPARAMS,
-                            "*"@Server, "Need more parameters"@Server));
+                            Command@Server.ERR_NEEDMOREPARAMS, "*"@Server,
+                            Util@Server.commandToString(Command@Server.USER),
+                            "Need more parameters"@Server));
                     }}}
                     else {
                         String@Server username = sUser.getUsername();

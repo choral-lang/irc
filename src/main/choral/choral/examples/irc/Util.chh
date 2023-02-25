@@ -16,6 +16,8 @@ public class Util@R {
 
     public static Command@R commandFromString(String@R command) {}
 
+    public static String@R commandToString(Command@R command) {}
+
     public static boolean@R validNickname(String@R nickname) {}
 
     public static boolean@R validUsername(String@R username) {}
