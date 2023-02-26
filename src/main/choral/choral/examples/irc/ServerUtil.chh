@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 public class ServerUtil@R {
-    public static String@R HOSTNAME;
-
     public static void processWelcome(ServerState@R state, long@R clientId) {}
 
     public static void processNick(ServerState@R state, long@R clientId, NickMessage@R message) {}
@@ -22,9 +20,9 @@ public class ServerUtil@R {
 
     public static <T@R extends Message@R> T@R withSource(T@R message, Source@R source) {}
 
-    public static ForwardMessage@R forwardNumeric(Command@R command, String@R nickname, String@R param1) {}
+    public static ForwardMessage@R forwardNumeric(ServerState@R state, Command@R command, String@R nickname, String@R param1) {}
 
-    public static ForwardMessage@R forwardNumeric(Command@R command, String@R nickname, String@R param1, String@R param2) {}
+    public static ForwardMessage@R forwardNumeric(ServerState@R state, Command@R command, String@R nickname, String@R param1, String@R param2) {}
 
-    public static ForwardMessage@R forwardNumeric(Command@R command, String@R nickname, String@R param1, String@R param2, String@R param3) {}
+    public static ForwardMessage@R forwardNumeric(ServerState@R state, Command@R command, String@R nickname, String@R param1, String@R param2, String@R param3) {}
 }

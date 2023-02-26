@@ -11,13 +11,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class Server {
+    private static final String HOSTNAME = "irc.choral.net";
     private static final String HOST = "localhost";
     private static final int PORT = 8667;
 
     public static void main(String[] args) throws IOException {
         Scanner s = new Scanner(System.in);
         Gson gson = new Gson();
-        ServerState state = new ServerState();
+        ServerState state = new ServerState(
+            args.length < 1 || args[0].isEmpty() ? HOSTNAME : args[0]);
         ExecutorService executor = Executors.newCachedThreadPool();
 
         ServerSocketChannel listener = ServerSocketChannel.open();
@@ -85,7 +87,7 @@ public class Server {
         for (long clientId : state.clients()) {
             state.addMessage(clientId, ServerUtil.withSource(
                 new ErrorMessage("Server closing"),
-                new Source(ServerUtil.HOSTNAME)));
+                new Source(state.getHostname())));
             state.setQuitRequested(clientId);
             state.stop(clientId);
         }

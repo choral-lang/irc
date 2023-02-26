@@ -20,6 +20,7 @@ public class IrcServerLocalHandler@R implements LocalHandler@R {
         if (ume != null@R) {
             if (state.isRegistered(clientId)) {
                 serverQueue.enqueue(ServerUtil@R.forwardNumeric(
+                    state,
                     Command@R.ERR_UNKNOWNCOMMAND,
                     state.getNickname(clientId),
                     ume.getIrcMessage().getCommand(),
@@ -56,7 +57,7 @@ public class IrcServerLocalHandler@R implements LocalHandler@R {
             ServerUtil@R.sendQuits(state, clientId,
                 ServerUtil@R.<QuitMessage>withSource(
                     new QuitMessage@R("Client disconnected"@R),
-                    new Source@R(ServerUtil@R.HOSTNAME)));
+                    new Source@R(state.getHostname())));
             state.getOut().println("Connection closed: "@R + clientId);
         }
         else {

@@ -8,12 +8,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ServerState {
+    private String hostname;
     private long lastClientId;
     private Map<Long, ServerClientState> clients;
     private Map<String, ServerClientState> nicknames;
     private Map<String, Set<ServerClientState>> channels;
 
-    public ServerState() {
+    public ServerState(String hostname) {
+        this.hostname = hostname;
         lastClientId = 0;
         clients = new HashMap<>();
         nicknames = new HashMap<>();
@@ -26,6 +28,10 @@ public class ServerState {
             ch, serverQueue, clientId);
         clients.put(clientId, client);
         return clientId;
+    }
+
+    public String getHostname() {
+        return hostname;
     }
 
     public Set<Long> clients() {

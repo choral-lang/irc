@@ -45,13 +45,13 @@ public class IrcClientHandler@(Client, Server)
 
                 if (!serverState.isRegistered(clientId)) {{
                     serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
-                        Command@Server.ERR_NOTREGISTERED, "*"@Server,
-                        "You must register first"@Server));
+                        serverState, Command@Server.ERR_NOTREGISTERED,
+                        "*"@Server, "You must register first"@Server));
                 }}
                 else {
                     if (!ping.hasEnoughParams()) {
                         serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
-                            Command@Server.ERR_NEEDMOREPARAMS,
+                            serverState, Command@Server.ERR_NEEDMOREPARAMS,
                             serverState.getNickname(clientId),
                             Util@Server.commandToString(Command@Server.PING),
                             "Need more parameters"@Server));
@@ -60,10 +60,10 @@ public class IrcClientHandler@(Client, Server)
                         serverQueue.enqueue(
                             ServerUtil@Server.<PongMessage>withSource(
                                 new PongMessage@Server(
-                                    ServerUtil@Server.HOSTNAME,
+                                    serverState.getHostname(),
                                     ping.getToken()),
                                 Source@Server.parse(
-                                    ServerUtil@Server.HOSTNAME)));
+                                    serverState.getHostname())));
                     }
                 }
             }
@@ -97,14 +97,15 @@ public class IrcClientHandler@(Client, Server)
 
                 if (serverState.isRegistered(clientId)) {{{{
                     serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
-                        Command@Server.ERR_ALREADYREGISTERED,
+                        serverState, Command@Server.ERR_ALREADYREGISTERED,
                         serverState.getNickname(clientId),
                         "You cannot register again"@Server));
                 }}}}
                 else {
                     if (!sUser.hasEnoughParams()) {{{
                         serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
-                            Command@Server.ERR_NEEDMOREPARAMS, "*"@Server,
+                            serverState, Command@Server.ERR_NEEDMOREPARAMS,
+                            "*"@Server,
                             Util@Server.commandToString(Command@Server.USER),
                             "Need more parameters"@Server));
                     }}}
