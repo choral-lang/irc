@@ -1,8 +1,8 @@
 package choral.examples.irc;
 
-import choral.lang.Unit;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
@@ -10,8 +10,23 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Client {
+    private Gson gson;
+    private ExecutorService executor;
+    private IrcChannel_A ch;
+    private Irc_Client irc;
+    private ClientState state;
+
+    public Client() {
+        gson = new Gson();
+        executor = null;
+        ch = null;
+        irc = null;
+        state = null;
+    }
+
     private static Integer parseInt(String str) {
         try {
             return Integer.parseInt(str);
@@ -25,14 +40,19 @@ public class Client {
         return rest == null ? new String[0] : rest.split(" +", n);
     }
 
-    public static void main(String[] argv) throws IOException {
-        Scanner s = new Scanner(System.in);
-        Gson gson = new Gson();
-        ClientState state = new ClientState("choralbot");
-        ExecutorService executor = Executors.newCachedThreadPool();
-        Irc_Client irc = null;
+    public boolean isOpen() {
+        // NOTE: The channel could've been closed by the loop threads without us
+        // requesting it, e.g. if the server terminated the connection or there
+        // was some sort of error. Using this function, we can "poll" whether
+        // the channel is open on each command. A "callback" mechanism with
+        // cooperation between the main thread and the loop threads would be
+        // nicer.
+        return ch != null && ch.isOpen();
+    }
 
-        System.out.println("Commands: /connect, /nick, /user, /join, /part, /privmsg, /state, /quit");
+    public void run() throws IOException {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Commands: /connect, /nick, /user, /join, /part, /privmsg, /state, /quit, /exit");
 
         try {
             while (true) {
@@ -50,7 +70,7 @@ public class Client {
                 }
 
                 String cmd = parts[0];
-                String rest = parts.length == 1 ? null : parts[1];
+                String rest = parts.length == 1 ? "" : parts[1];
 
                 if (cmd.equalsIgnoreCase("/connect")) {
                     String[] args = splitArgs(rest, 2);
@@ -60,7 +80,7 @@ public class Client {
                         continue;
                     }
 
-                    if (irc != null) {
+                    if (isOpen()) {
                         System.out.println("Already connected!");
                         continue;
                     }
@@ -74,16 +94,26 @@ public class Client {
                     }
 
                     System.out.println("Connecting to the server");
+                    SocketChannel sc = null;
 
-                    SocketChannel sc = SocketChannel.open();
-                    sc.configureBlocking(true);
-                    sc.connect(new InetSocketAddress(host, port.intValue()));
+                    try {
+                        sc = SocketChannel.open();
+                        sc.configureBlocking(true);
+                        sc.connect(new InetSocketAddress(host, port.intValue()));
+                    }
+                    catch (ConnectException e) {
+                        System.out.println("Connection failed!");
+                        e.printStackTrace();
+                        continue;
+                    }
 
                     System.out.println("Connected to " + host + " at " + port);
 
-                    IrcChannel_A ch = new IrcChannel_A(sc);
-                    irc = new Irc_Client(ch, state, Unit.id);
-                    irc.run(executor);
+                    executor = Executors.newCachedThreadPool();
+                    ch = new IrcChannel_A(sc);
+                    irc = new Irc_Client(ch);
+                    state = new ClientState(ch, "choralbot");
+                    irc.run(state, executor);
                 }
                 else if (cmd.equalsIgnoreCase("/nick")) {
                     String[] args = splitArgs(rest, 1);
@@ -93,7 +123,7 @@ public class Client {
                         continue;
                     }
 
-                    if (irc == null) {
+                    if (!isOpen()) {
                         System.out.println("Connect first!");
                         continue;
                     }
@@ -108,7 +138,7 @@ public class Client {
                         continue;
                     }
 
-                    if (irc == null) {
+                    if (!isOpen()) {
                         System.out.println("Connect first");
                         continue;
                     }
@@ -126,7 +156,7 @@ public class Client {
                         continue;
                     }
 
-                    if (irc == null) {
+                    if (!isOpen()) {
                         System.out.println("Connect first");
                         continue;
                     }
@@ -142,7 +172,7 @@ public class Client {
                         continue;
                     }
 
-                    if (irc == null) {
+                    if (!isOpen()) {
                         System.out.println("Connect first");
                         continue;
                     }
@@ -167,7 +197,7 @@ public class Client {
                         continue;
                     }
 
-                    if (irc == null) {
+                    if (!isOpen()) {
                         System.out.println("Connect first");
                         continue;
                     }
@@ -176,10 +206,15 @@ public class Client {
                         Arrays.asList(args[0].split(",")), args[1]));
                 }
                 else if (cmd.equalsIgnoreCase("/state")) {
+                    if (!isOpen()) {
+                        System.out.println("Connect first!");
+                        continue;
+                    }
+
                     System.out.println(gson.toJson(state));
                 }
                 else if (cmd.equalsIgnoreCase("/quit")) {
-                    if (irc == null) {
+                    if (!isOpen()) {
                         System.out.println("Connect first!");
                         continue;
                     }
@@ -188,6 +223,21 @@ public class Client {
 
                     irc.enqueue(new QuitMessage(
                         args.length == 0 ? "Bye" : args[0]));
+                    state.setQuitRequested();
+                    irc.clientQueue().stop();
+
+                    executor.shutdown();
+                    executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+
+                    executor = null;
+                    irc = null;
+                    ch = null;
+                    state = null;
+                }
+                else if (cmd.equalsIgnoreCase("/exit")) {
+                    if (isOpen()) {
+                        state.setQuitRequested();
+                    }
 
                     break;
                 }
@@ -200,9 +250,26 @@ public class Client {
             e.printStackTrace();
         }
 
-        System.out.println("Quitting");
+        System.out.println("Exiting");
 
         s.close();
-        executor.shutdown();
+
+        if (isOpen()) {
+            ch.close();
+        }
+
+        if (executor != null) {
+            executor.shutdown();
+            try {
+                executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            }
+            catch (InterruptedException e2) {
+                // Ignore
+            }
+        }
+    }
+
+    public static void main(String[] argv) throws IOException {
+        new Client().run();
     }
 }

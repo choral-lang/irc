@@ -6,32 +6,31 @@ public class Irc@(Client, Server) {
     private Events@(Client, Server)<Message> events;
     private IrcChannel@(Client, Server) ch_AB;
 
-    private ClientState@Client clientState;
-
-    private ServerState@Server serverState;
-    private long@Server clientId;
-
-    public Irc(IrcChannel@(Client, Server) ch_AB,
-               ClientState@Client clientState,
-               ServerState@Server serverState) {
-        this.events = new Events@(Client, Server)<Message>();
+    public Irc(IrcChannel@(Client, Server) ch_AB) {
+        events = new Events@(Client, Server)<Message>();
         this.ch_AB = ch_AB;
+    }
 
-        this.clientState = clientState;
+    public EventQueue@Client<Message> clientQueue() {
+        return events.queueA();
+    }
 
-        this.serverState = serverState;
-        this.clientId = serverState.newClient(events.queueB());
+    public EventQueue@Server<Message> serverQueue() {
+        return events.queueB();
     }
 
     public void enqueue(Message@Client message) {
-        events.queueA().enqueue(message);
+        clientQueue().enqueue(message);
     }
 
     public void enqueue(Message@Server message) {
-        events.queueB().enqueue(message);
+        serverQueue().enqueue(message);
     }
 
-    public void run(ExecutorService@Client clientExecutor,
+    public void run(ClientState@Client clientState,
+                    ServerState@Server serverState,
+                    long@Server clientId,
+                    ExecutorService@Client clientExecutor,
                     ExecutorService@Server serverExecutor) {
         events.run(
             clientExecutor,

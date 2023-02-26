@@ -217,6 +217,10 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         return com();
     }
 
+    public boolean isOpen() {
+        return channel.isOpen();
+    }
+
     public void close() {
         try {
             channel.close();

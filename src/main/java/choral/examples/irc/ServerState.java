@@ -20,14 +20,19 @@ public class ServerState {
         channels = new HashMap<>();
     }
 
-    public long newClient(EventQueue<Message> serverQueue) {
+    public long newClient(IrcChannel_B ch, EventQueue<Message> serverQueue) {
         long clientId = ++lastClientId;
-        ServerClientState client = new ServerClientState(serverQueue, clientId);
+        ServerClientState client = new ServerClientState(
+            ch, serverQueue, clientId);
         clients.put(clientId, client);
         return clientId;
     }
 
+    public Set<Long> clients() {
+        return clients.keySet();
+    }
     public void addMessage(long clientId, Message message) {
+        assert clients.containsKey(clientId);
         clients.get(clientId).serverQueue.enqueue(message);
     }
 
@@ -156,6 +161,16 @@ public class ServerState {
     public boolean isQuitRequested(long clientId) {
         assert clients.containsKey(clientId);
         return clients.get(clientId).quitRequested;
+    }
+
+    public void stop(long clientId) {
+        assert clients.containsKey(clientId);
+        clients.get(clientId).serverQueue.stop();
+    }
+
+    public void close(long clientId) {
+        assert clients.containsKey(clientId);
+        clients.get(clientId).ch.close();
     }
 
     public PrintStream getOut() {

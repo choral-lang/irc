@@ -36,5 +36,13 @@ public class IrcClientLocalHandler@R implements LocalHandler@R {
         return true@R;
     }
 
-    public void onStop() {}
+    public void onSendStop() {
+        state.close();
+    }
+
+    public void onStop() {
+        if (!state.isQuitRequested()) {
+            state.getOut().println("Connection closed"@R);
+        }
+    }
 }

@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.Set;
 
 public class ClientState {
+    private IrcChannel_A ch;
     private boolean quitRequested;
     private String username, realname, nickname;
     private boolean registered;
     private Map<String, Set<String>> channels;
 
-    public ClientState(String username, String realname, String nickname) {
+    public ClientState(IrcChannel_A ch, String username, String realname, String nickname) {
+        this.ch = ch;
         this.quitRequested = false;
         this.username = username;
         this.realname = realname;
@@ -22,8 +24,8 @@ public class ClientState {
         channels = new HashMap<>();
     }
 
-    public ClientState(String nickname) {
-        this(nickname, nickname, nickname);
+    public ClientState(IrcChannel_A ch, String nickname) {
+        this(ch, nickname, nickname, nickname);
     }
 
     public boolean isQuitRequested() {
@@ -116,6 +118,10 @@ public class ClientState {
         for (Set<String> members : channels.values()) {
             members.remove(nickname);
         }
+    }
+
+    public void close() {
+        ch.close();
     }
 
     public PrintStream getOut() {

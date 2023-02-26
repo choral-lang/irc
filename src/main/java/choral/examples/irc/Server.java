@@ -1,6 +1,5 @@
 package choral.examples.irc;
 
-import choral.lang.Unit;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,6 +8,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
     private static final String HOST = "localhost";
@@ -23,7 +23,7 @@ public class Server {
         ServerSocketChannel listener = ServerSocketChannel.open();
         listener.bind(new InetSocketAddress(HOST, PORT));
 
-        executor.submit(() -> {
+        executor.execute(() -> {
             System.out.println("Listening on " + HOST + ":" + PORT);
 
             while (listener.isOpen()) {
@@ -31,17 +31,13 @@ public class Server {
                     SocketChannel client = listener.accept();
                     client.configureBlocking(true);
 
-                    System.out.println("Client connected");
+                    executor.execute(() -> {
+                        IrcChannel_B ch = new IrcChannel_B(client);
+                        Irc_Server irc = new Irc_Server(ch);
+                        long clientId = state.newClient(ch, irc.serverQueue());
 
-                    executor.submit(() -> {
-                        try {
-                            IrcChannel_B ch = new IrcChannel_B(client);
-                            Irc_Server irc = new Irc_Server(ch, Unit.id, state);
-                            irc.run(executor);
-                        }
-                        catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        System.out.println("Client connected: " + clientId);
+                        irc.run(state, clientId, executor);
                     });
                 }
                 catch (IOException e) {
@@ -52,7 +48,7 @@ public class Server {
             executor.shutdown();
         });
 
-        System.out.println("Commands: /state, /quit");
+        System.out.println("Commands: /state, /exit");
 
         while (true) {
             System.out.print("> ");
@@ -73,7 +69,7 @@ public class Server {
             if (cmd.equalsIgnoreCase("/state")) {
                 System.out.println(gson.toJson(state));
             }
-            else if (cmd.equalsIgnoreCase("/quit")) {
+            else if (cmd.equalsIgnoreCase("/exit")) {
                 break;
             }
             else {
@@ -81,9 +77,25 @@ public class Server {
             }
         }
 
-        System.out.println("Quitting");
+        System.out.println("Exiting");
 
         s.close();
         listener.close();
+
+        for (long clientId : state.clients()) {
+            state.addMessage(clientId, ServerUtil.withSource(
+                new ErrorMessage("Server closing"),
+                new Source(ServerUtil.HOSTNAME)));
+            state.setQuitRequested(clientId);
+            state.stop(clientId);
+        }
+
+        executor.shutdown();
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        }
+        catch (InterruptedException e2) {
+            // Ignore
+        }
     }
 }

@@ -17,6 +17,7 @@ public class EventsImpl<T> {
                 Optional<T> event = queue.take();
 
                 if (event.isEmpty()) {
+                    localHandler.onSendStop();
                     break;
                 }
 

@@ -47,5 +47,7 @@ public class ClientState@R {
 
     public void removeMember(String@R nickname) {}
 
+    public void close() {}
+
     public PrintStream@R getOut() {}
 }

@@ -26,6 +26,7 @@ public class IrcServerLocalHandler@R implements LocalHandler@R {
                     "Unknown command"@R));
             }
 
+            state.getOut().println(ume.getMessage());
             return true@R;
         }
 
@@ -46,15 +47,22 @@ public class IrcServerLocalHandler@R implements LocalHandler@R {
         return true@R;
     }
 
+    public void onSendStop() {
+        state.close(clientId);
+    }
+
     public void onStop() {
         if (!state.isQuitRequested(clientId)) {
             ServerUtil@R.sendQuits(state, clientId,
                 ServerUtil@R.<QuitMessage>withSource(
                     new QuitMessage@R("Client disconnected"@R),
                     new Source@R(ServerUtil@R.HOSTNAME)));
+            state.getOut().println("Connection closed: "@R + clientId);
+        }
+        else {
+            state.getOut().println("Client disconnected: "@R + clientId);
         }
 
         state.quit(clientId);
-        state.getOut().println("Client disconnected"@R);
     }
 }
