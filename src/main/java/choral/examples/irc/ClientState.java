@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ClientState {
-    private IrcChannel_A ch;
+    private transient IrcChannel_A ch;
     private boolean quitRequested;
     private String username, realname, nickname;
     private boolean registered;

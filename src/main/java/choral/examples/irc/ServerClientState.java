@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ServerClientState {
-    public IrcChannel_B ch;
-    public EventQueue<Message> serverQueue;
+    public transient IrcChannel_B ch;
+    public transient EventQueue<Message> serverQueue;
     public long clientId;
     public boolean quitRequested;
     public String username, realname, nickname;
