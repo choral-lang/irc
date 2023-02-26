@@ -102,7 +102,8 @@ public class IrcClientHandler@(Client, Server)
                         "You cannot register again"@Server));
                 }}}}
                 else {
-                    if (!sUser.hasEnoughParams()) {{{
+                    if (!sUser.hasEnoughParams() ||
+                        sUser.getRealname().trim().equals(""@Server)) {{{
                         serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
                             serverState, Command@Server.ERR_NEEDMOREPARAMS,
                             "*"@Server,
