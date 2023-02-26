@@ -36,18 +36,16 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
             // Clear the buffer
             outBuffer.clear();
 
-            // Write the message (will stop on overflow)
+            // We truncate large messages
+            outBuffer.limit(MAX_SIZE - CRLF.length);
+
+            // Write the message (the encoder stops when it reaches the limit)
             CharsetEncoder encoder = StandardCharsets.UTF_8.newEncoder();
             encoder.encode(CharBuffer.wrap(message.toString()),
                            outBuffer, true);
 
-            if (outBuffer.remaining() < 2) {
-                throw new RuntimeException(String.format(
-                    "Message exceeds the maximum length of %d bytes",
-                    MAX_SIZE));
-            }
-
             // Write the marker
+            outBuffer.limit(MAX_SIZE);
             outBuffer.put(CRLF);
 
             // Put the buffer into "read mode"
@@ -146,8 +144,9 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         if (!m.getCommand().equals(SELECT)) {
             Message m2 = Message.construct(m);
 
-            if (m2 == null)
+            if (m2 == null) {
                 throw new UnrecognizedMessageException(m);
+            }
 
             m = m2;
         }
