@@ -21,11 +21,11 @@ public class ServerUtil {
      */
     public static void processWelcome(ServerState state, long clientId) {
         BiConsumer<Command, String> add = (command, text) -> {
-            state.addMessage(clientId, forwardNumeric(
+            state.enqueue(clientId, forwardNumeric(
                 state, command, state.getNickname(clientId), text));
         };
 
-        state.addMessage(clientId, ServerUtil.withSource(
+        state.enqueue(clientId, ServerUtil.withSource(
             new RplWelcomeMessage(state.getNickname(clientId),
                                   "Welcome to ChoralNet!"),
             new Source(state.getHostname())));
@@ -67,7 +67,7 @@ public class ServerUtil {
         }
 
         if (!message.hasEnoughParams()) {
-            state.addMessage(clientId, forwardNumeric(
+            state.enqueue(clientId, forwardNumeric(
                 state, Command.ERR_NONICKNAMEGIVEN, current,
                 "No nickname given"));
         }
@@ -75,12 +75,12 @@ public class ServerUtil {
             String nickname = message.getNickname();
 
             if (!Util.validNickname(nickname)) {
-                state.addMessage(clientId, forwardNumeric(
+                state.enqueue(clientId, forwardNumeric(
                     state, Command.ERR_ERRONEOUSNICKNAME, current, nickname,
                     "Nickname is invalid"));
             }
             else if (state.nicknameExists(nickname)) {
-                state.addMessage(clientId, forwardNumeric(
+                state.enqueue(clientId, forwardNumeric(
                     state, Command.ERR_NICKNAMEINUSE, current, nickname,
                     "Nickname is in use"));
             }
@@ -91,7 +91,7 @@ public class ServerUtil {
                     NickMessage m = ServerUtil.withSource(
                         message, new Source(current));
 
-                    state.addMessage(clientId, m);
+                    state.enqueue(clientId, m);
 
                     Set<Long> others = state.getChannels(clientId).stream()
                         .flatMap(c -> state.getMembers(c).stream())
@@ -99,7 +99,7 @@ public class ServerUtil {
                     others.remove(clientId);
 
                     for (long otherId : others) {
-                        state.addMessage(otherId, m);
+                        state.enqueue(otherId, m);
                     }
                 }
                 else if (state.canRegister(clientId)) {
@@ -117,12 +117,12 @@ public class ServerUtil {
     public static void processJoin(ServerState state, long clientId,
                                    JoinMessage message) {
         if (!state.isRegistered(clientId)) {
-            state.addMessage(clientId, forwardNumeric(
+            state.enqueue(clientId, forwardNumeric(
                 state, Command.ERR_NOTREGISTERED, "*",
                 "You must register first"));
         }
         else if (!message.hasEnoughParams()) {
-            state.addMessage(clientId, forwardNumeric(
+            state.enqueue(clientId, forwardNumeric(
                 state, Command.ERR_NEEDMOREPARAMS, state.getNickname(clientId),
                 Command.JOIN.string(), "Need more parameters"));
         }
@@ -138,7 +138,7 @@ public class ServerUtil {
 
                 for (String channel : new HashSet<>(channels)) {
                     if (!Util.validChannelname(channel)) {
-                        state.addMessage(clientId, forwardNumeric(
+                        state.enqueue(clientId, forwardNumeric(
                             state, Command.ERR_NOSUCHCHANNEL, nickname, channel,
                             "Invalid channel name"));
                     }
@@ -150,24 +150,24 @@ public class ServerUtil {
                         Set<Long> members = state.getMembers(channel);
 
                         state.joinChannel(clientId, channel);
-                        state.addMessage(clientId, m);
+                        state.enqueue(clientId, m);
 
-                        state.addMessage(clientId, ServerUtil.withSource(
+                        state.enqueue(clientId, ServerUtil.withSource(
                             new RplNamReplyMessage(
                                 nickname, "=", channel, List.of(nickname)),
                             new Source(state.getHostname())));
 
                         for (Long otherId : members) {
-                            state.addMessage(otherId, m);
+                            state.enqueue(otherId, m);
 
-                            state.addMessage(clientId, ServerUtil.withSource(
+                            state.enqueue(clientId, ServerUtil.withSource(
                                 new RplNamReplyMessage(
                                     nickname, "=", channel,
                                     List.of(state.getNickname(otherId))),
                                 new Source(state.getHostname())));
                         }
 
-                        state.addMessage(clientId, forwardNumeric(
+                        state.enqueue(clientId, forwardNumeric(
                             state, Command.RPL_ENDOFNAMES, nickname, channel,
                             "End of names list"));
                     }
@@ -184,12 +184,12 @@ public class ServerUtil {
     public static void processPart(ServerState state, long clientId,
                                    PartMessage message) {
         if (!state.isRegistered(clientId)) {
-            state.addMessage(clientId, forwardNumeric(
+            state.enqueue(clientId, forwardNumeric(
                 state, Command.ERR_NOTREGISTERED, "*",
                 "You must register first"));
         }
         else if (!message.hasEnoughParams()) {
-            state.addMessage(clientId, forwardNumeric(
+            state.enqueue(clientId, forwardNumeric(
                 state, Command.ERR_NEEDMOREPARAMS, state.getNickname(clientId),
                 Command.PART.string(), "Need more parameters"));
         }
@@ -199,12 +199,12 @@ public class ServerUtil {
 
             for (String channel : new HashSet<>(channels)) {
                 if (!Util.validChannelname(channel)) {
-                    state.addMessage(clientId, forwardNumeric(
+                    state.enqueue(clientId, forwardNumeric(
                         state, Command.ERR_NOSUCHCHANNEL, nickname, channel,
                         "Invalid channel name"));
                 }
                 else if (!state.inChannel(clientId, channel)) {
-                    state.addMessage(clientId, forwardNumeric(
+                    state.enqueue(clientId, forwardNumeric(
                         state, Command.ERR_NOTONCHANNEL, nickname, channel,
                         "You are not in that channel"));
                 }
@@ -224,10 +224,10 @@ public class ServerUtil {
                         new Source(nickname));
 
                     state.partChannel(clientId, channel);
-                    state.addMessage(clientId, m);
+                    state.enqueue(clientId, m);
 
                     for (Long otherId : state.getMembers(channel)) {
-                        state.addMessage(otherId, m);
+                        state.enqueue(otherId, m);
                     }
                 }
             }
@@ -242,17 +242,17 @@ public class ServerUtil {
     public static void processPrivmsg(ServerState state, long clientId,
                                       PrivmsgMessage message) {
         if (!state.isRegistered(clientId)) {
-            state.addMessage(clientId, forwardNumeric(
+            state.enqueue(clientId, forwardNumeric(
                 state, Command.ERR_NOTREGISTERED, "*",
                 "You must register first"));
         }
         else if (!message.hasTargets()) {
-            state.addMessage(clientId, forwardNumeric(
+            state.enqueue(clientId, forwardNumeric(
                 state, Command.ERR_NORECIPIENT, state.getNickname(clientId),
                 "No recipient"));
         }
         else if (!message.hasText()) {
-            state.addMessage(clientId, forwardNumeric(
+            state.enqueue(clientId, forwardNumeric(
                 state, Command.ERR_NOTEXTTOSEND, state.getNickname(clientId),
                 "No text to send"));
         }
@@ -263,7 +263,7 @@ public class ServerUtil {
             for (String target : message.getTargets()) {
                 if (Util.validChannelname(target)) {
                     if (!state.inChannel(clientId, target)) {
-                        state.addMessage(clientId, forwardNumeric(
+                        state.enqueue(clientId, forwardNumeric(
                             state, Command.ERR_CANNOTSENDTOCHAN, nickname,
                             target, "You are not in that channel"));
                     }
@@ -276,13 +276,13 @@ public class ServerUtil {
                         others.remove(clientId);
 
                         for (long otherId : others) {
-                            state.addMessage(otherId, m);
+                            state.enqueue(otherId, m);
                         }
                     }
                 }
                 else {
                     if (!state.nicknameExists(target)) {
-                        state.addMessage(clientId, forwardNumeric(
+                        state.enqueue(clientId, forwardNumeric(
                             state, Command.ERR_NOSUCHNICK, nickname, target,
                             "No such nickname"));
                     }
@@ -291,7 +291,7 @@ public class ServerUtil {
                             new PrivmsgMessage(target, text),
                             new Source(nickname));
 
-                        state.addMessage(state.getClientId(target), m);
+                        state.enqueue(state.getClientId(target), m);
                     }
                 }
             }
@@ -316,7 +316,7 @@ public class ServerUtil {
             others.remove(clientId);
 
             for (long otherId : others) {
-                state.addMessage(otherId, ServerUtil.withSource(
+                state.enqueue(otherId, ServerUtil.withSource(
                     new QuitMessage(reason),
                     new Source(state.getNickname(clientId))));
             }
@@ -330,7 +330,7 @@ public class ServerUtil {
      */
     public static void processQuit(ServerState state, long clientId,
                                    QuitMessage message) {
-        state.addMessage(clientId, ServerUtil.withSource(
+        state.enqueue(clientId, ServerUtil.withSource(
             new ErrorMessage("Client quit"),
             new Source(state.getHostname())));
 

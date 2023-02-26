@@ -37,7 +37,8 @@ public class ServerState {
     public Set<Long> clients() {
         return clients.keySet();
     }
-    public void addMessage(long clientId, Message message) {
+
+    public void enqueue(long clientId, Message message) {
         assert clients.containsKey(clientId);
         clients.get(clientId).serverQueue.enqueue(message);
     }

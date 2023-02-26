@@ -85,7 +85,7 @@ public class Server {
         listener.close();
 
         for (long clientId : state.clients()) {
-            state.addMessage(clientId, ServerUtil.withSource(
+            state.enqueue(clientId, ServerUtil.withSource(
                 new ErrorMessage("Server closing"),
                 new Source(state.getHostname())));
             state.setQuitRequested(clientId);

@@ -8,7 +8,7 @@ public class ServerState@R {
 
     public String@R getHostname() {}
 
-    public void addMessage(long@R clientId, Message@R message) {}
+    public void enqueue(long@R clientId, Message@R message) {}
 
     public String@R getUsername(long@R clientId) {}
 
