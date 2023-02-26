@@ -3,21 +3,21 @@ package choral.examples.irc;
 import choral.channels.SymChannel;
 
 public class IrcChannel@(A, B) implements SymChannel@(A, B)<Message> {
-    public <M@X extends Message@X> M@B com(M@A m);
+    public <M@X extends Message@X> M@B com(M@A m) {}
 
-    public <M@X extends Message@X> M@A com(M@B m);
-
-    @SelectionMethod
-    public <Message@X extends Enum@X<Message>> Message@B select(Message@A m);
+    public <M@X extends Message@X> M@A com(M@B m) {}
 
     @SelectionMethod
-    public <Message@X extends Enum@X<Message>> Message@A select(Message@B m);
+    public <Message@X extends Enum@X<Message>> Message@B select(Message@A m) {}
+
+    @SelectionMethod
+    public <Message@X extends Enum@X<Message>> Message@A select(Message@B m) {}
 
     @SuperSelectionMethod
-    public <M@X extends Message@X> M@B sselect(M@A m);
+    public <M@X extends Message@X> M@B sselect(M@A m) {}
 
     @SuperSelectionMethod
-    public <M@X extends Message@X> M@A sselect(M@B m);
+    public <M@X extends Message@X> M@A sselect(M@B m) {}
 
-    public void close();
+    public void close() {}
 }
