@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 /**
  * The only purpose of this class is to be a collection of utilities useful for
- * the Irc choreography. We put here anything that would be too inconvenient,
- * cumbersome or impossible to write directly in Choral.
+ * the Server within the Irc choreography. We put here anything that would be
+ * too inconvenient, cumbersome or impossible to write directly in Choral.
  */
 public class ServerUtil {
     /**
