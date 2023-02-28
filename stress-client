@@ -1,0 +1,69 @@
+#!/bin/bash
+
+if [[ $# -lt 1 ]]; then
+    echo "Usage: $0 <id> [<sleep>]"
+    exit
+fi
+
+sleep=${2:-0}
+
+pipe=$(mktemp -u)
+mkfifo "$pipe"
+trap "rm $pipe; pkill -P $$" EXIT
+echo "FIFO at $pipe"
+
+# Keep the pipe open at all times so that the reading process doesn't receive an
+# EOF. Reading from a pipe results in an EOF when no process has the pipe open
+# for writing.
+sleep infinity > "$pipe" &
+
+# Echo whatever netcat outputs.
+#
+# NOTE: The while loop makes it so that nc terminates immediately after
+# receiving an EOF on the socket (i.e. when the connection is closed). For some
+# reason this is not the case when just running nc without the while loop, or
+# even when trying to do slightly differently such as:
+#
+# { nc -C localhost 8667 < "$pipe" | while IFS= read -r line; do echo "$line"; done; } &
+#
+# Seems like this is the behavior of ncat, which is the Nmap's project netcat
+# implementation. See https://github.com/nmap/nmap/issues/1413.
+while IFS= read -r line; do
+    echo "recv: user$1: $line"
+done < <(nc -C localhost 8667 < "$pipe") &
+pid=$!
+sleep "$sleep"
+
+echo "user$1: Join #stress"
+cat > "$pipe" <<EOF
+NICK user$1
+USER user$1 0 * user$1
+JOIN #stress
+EOF
+sleep "$sleep"
+
+echo "user$1: Write 1"
+cat > "$pipe" <<EOF
+PRIVMSG #stress :Hi from user$1, how are you?
+EOF
+sleep "$sleep"
+
+echo "user$1: Write 2"
+cat > "$pipe" <<EOF
+PRIVMSG #stress :user$1 says they're good, thanks!
+EOF
+sleep "$sleep"
+
+echo "user$1: Write 3"
+cat > "$pipe" <<EOF
+PRIVMSG #stress :See you later, user$1!
+EOF
+sleep "$sleep"
+
+echo "user$1: Quit"
+cat > "$pipe" <<EOF
+QUIT :Bye from user$1!
+EOF
+
+wait "$pid"
+echo "user$1: Exit"

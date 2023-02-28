@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [[ $# -lt 1 ]]; then
+    echo "Usage: $0 <n> [<sleep>]"
+    exit
+fi
+
+sleep="${2:-0}"
+
+ulimit -n $(ulimit -Hn)
+
+echo "Starting $1 clients"
+echo "$(seq $1)" | parallel --line-buffer -j "$1" ./stress-client {} "$sleep"
