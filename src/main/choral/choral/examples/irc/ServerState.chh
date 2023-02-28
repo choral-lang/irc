@@ -20,7 +20,7 @@ public class ServerState@R {
 
     public String@R getNickname(long@R clientId) {}
 
-    public void setNickname(long@R clientId, String@R nickname) {}
+    public boolean@R setNickname(long@R clientId, String@R nickname) {}
 
     public boolean@R canRegister(long@R clientId) {}
 

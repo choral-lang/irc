@@ -118,8 +118,7 @@ public class IrcClientHandler@(Client, Server)
                             serverState.setUsername(clientId, username);
                             serverState.setRealname(clientId, realname);
 
-                            if (serverState.canRegister(clientId) &&
-                                !serverState.isRegistered(clientId)) {
+                            if (serverState.canRegister(clientId)) {
                                 ServerUtil@Server.processWelcome(
                                     serverState, clientId);
                             }

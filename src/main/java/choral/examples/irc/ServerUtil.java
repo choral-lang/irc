@@ -79,20 +79,22 @@ public class ServerUtil {
                     state, Command.ERR_ERRONEOUSNICKNAME, current, nickname,
                     "Nickname is invalid"));
             }
-            else if (state.nicknameExists(nickname)) {
+            // Try to atomically acquire the nickname
+            else if (!state.setNickname(clientId, nickname)) {
                 state.enqueue(clientId, forwardNumeric(
                     state, Command.ERR_NICKNAMEINUSE, current, nickname,
                     "Nickname is in use"));
             }
-            else {
-                state.setNickname(clientId, nickname);
+            // Client is changing their nickname
+            else if (state.isRegistered(clientId)) {
+                NickMessage m = ServerUtil.withSource(
+                    message, new Source(current));
 
-                if (state.isRegistered(clientId)) {
-                    NickMessage m = ServerUtil.withSource(
-                        message, new Source(current));
+                state.enqueue(clientId, m);
 
-                    state.enqueue(clientId, m);
-
+                // Synchronize to disallow others joining or leaving the channel
+                // (for whatever reason) while we queue up messages
+                synchronized (state) {
                     Set<Long> others = state.getChannels(clientId).stream()
                         .flatMap(c -> state.getMembers(c).stream())
                         .collect(Collectors.toSet());
@@ -102,9 +104,9 @@ public class ServerUtil {
                         state.enqueue(otherId, m);
                     }
                 }
-                else if (state.canRegister(clientId)) {
-                    processWelcome(state, clientId);
-                }
+            // Client has only just registered
+            } else if (state.canRegister(clientId)) {
+                processWelcome(state, clientId);
             }
         }
     }
@@ -147,29 +149,39 @@ public class ServerUtil {
                             new JoinMessage(channel),
                             new Source(nickname));
 
-                        Set<Long> members = state.getMembers(channel);
-
-                        state.joinChannel(clientId, channel);
                         state.enqueue(clientId, m);
-
                         state.enqueue(clientId, ServerUtil.withSource(
                             new RplNamReplyMessage(
                                 nickname, "=", channel, List.of(nickname)),
                             new Source(state.getHostname())));
 
-                        for (Long otherId : members) {
-                            state.enqueue(otherId, m);
+                        // Synchronize to disallow others joining or leaving the
+                        // channel (for whatever reason) while we queue up
+                        // messages
+                        synchronized (state) {
+                            Set<Long> members = state.getMembers(channel);
+                            Set<String> nicknames = members.stream()
+                                .map(otherId -> state.getNickname(otherId))
+                                .collect(Collectors.toSet());
 
-                            state.enqueue(clientId, ServerUtil.withSource(
-                                new RplNamReplyMessage(
-                                    nickname, "=", channel,
-                                    List.of(state.getNickname(otherId))),
-                                new Source(state.getHostname())));
+                            for (String otherNickname : nicknames) {
+                                state.enqueue(clientId, ServerUtil.withSource(
+                                    new RplNamReplyMessage(
+                                        nickname, "=", channel,
+                                        List.of(otherNickname)),
+                                    new Source(state.getHostname())));
+                            }
+
+                            state.enqueue(clientId, forwardNumeric(
+                                state, Command.RPL_ENDOFNAMES, nickname,
+                                channel, "End of names list"));
+
+                            state.joinChannel(clientId, channel);
+
+                            for (Long otherId : members) {
+                                state.enqueue(otherId, m);
+                            }
                         }
-
-                        state.enqueue(clientId, forwardNumeric(
-                            state, Command.RPL_ENDOFNAMES, nickname, channel,
-                            "End of names list"));
                     }
                 }
             }
@@ -223,11 +235,15 @@ public class ServerUtil {
                         new PartMessage(mb.message()),
                         new Source(nickname));
 
-                    state.partChannel(clientId, channel);
-                    state.enqueue(clientId, m);
+                    // Synchronize to disallow others joining or leaving the
+                    // channel (for whatever reason) while we queue up messages
+                    synchronized (state) {
+                        state.partChannel(clientId, channel);
+                        state.enqueue(clientId, m);
 
-                    for (Long otherId : state.getMembers(channel)) {
-                        state.enqueue(otherId, m);
+                        for (Long otherId : state.getMembers(channel)) {
+                            state.enqueue(otherId, m);
+                        }
                     }
                 }
             }
@@ -272,26 +288,35 @@ public class ServerUtil {
                             new PrivmsgMessage(target, text),
                             new Source(nickname));
 
-                        Set<Long> others = state.getMembers(target);
-                        others.remove(clientId);
+                        // Synchronize to disallow others joining or leaving the
+                        // channel (for whatever reason) while we queue up
+                        // messages
+                        synchronized (state) {
+                            Set<Long> others = state.getMembers(target);
+                            others.remove(clientId);
 
-                        for (long otherId : others) {
-                            state.enqueue(otherId, m);
+                            for (long otherId : others) {
+                                state.enqueue(otherId, m);
+                            }
                         }
                     }
                 }
                 else {
-                    if (!state.nicknameExists(target)) {
-                        state.enqueue(clientId, forwardNumeric(
-                            state, Command.ERR_NOSUCHNICK, nickname, target,
-                            "No such nickname"));
-                    }
-                    else {
-                        PrivmsgMessage m = ServerUtil.withSource(
-                            new PrivmsgMessage(target, text),
-                            new Source(nickname));
+                    // Synchronize to disallow someone disappearing while we
+                    // send them a message
+                    synchronized (state) {
+                        if (!state.nicknameExists(target)) {
+                            state.enqueue(clientId, forwardNumeric(
+                                state, Command.ERR_NOSUCHNICK, nickname, target,
+                                "No such nickname"));
+                        }
+                        else {
+                            PrivmsgMessage m = ServerUtil.withSource(
+                                new PrivmsgMessage(target, text),
+                                new Source(nickname));
 
-                        state.enqueue(state.getClientId(target), m);
+                            state.enqueue(state.getClientId(target), m);
+                        }
                     }
                 }
             }
@@ -310,15 +335,19 @@ public class ServerUtil {
         reason = "Quit: " + reason;
 
         if (state.isRegistered(clientId)) {
-            Set<Long> others = state.getChannels(clientId).stream()
-                .flatMap(c -> state.getMembers(c).stream())
-                .collect(Collectors.toSet());
-            others.remove(clientId);
+            // Synchronize to disallow others joining or leaving the channel
+            // (for whatever reason) while we queue up messages
+            synchronized (state) {
+                Set<Long> others = state.getChannels(clientId).stream()
+                    .flatMap(c -> state.getMembers(c).stream())
+                    .collect(Collectors.toSet());
+                others.remove(clientId);
 
-            for (long otherId : others) {
-                state.enqueue(otherId, ServerUtil.withSource(
-                    new QuitMessage(reason),
-                    new Source(state.getNickname(clientId))));
+                for (long otherId : others) {
+                    state.enqueue(otherId, ServerUtil.withSource(
+                        new QuitMessage(reason),
+                        new Source(state.getNickname(clientId))));
+                }
             }
         }
     }
