@@ -62,7 +62,7 @@ public class IrcClientHandler@(Client, Server)
                                 new PongMessage@Server(
                                     serverState.getHostname(),
                                     ping.getToken()),
-                                Source@Server.parse(
+                                new Source@Server(
                                     serverState.getHostname())));
                     }
                 }
