@@ -32,16 +32,13 @@ public class IrcClientHandler@(Client, Server)
      */
     public void on(Message@Client msg) {
         Command@Client cmd = Util@Client.commandFromString(msg.getCommand());
-
-        Util@Client.check(cmd != null@Client,
-                          "Expected a known message"@Client);
+        Util@Client.check(cmd != null@Client, "Expected a known message"@Client);
 
         switch (cmd) {
             case PING -> {
                 PingMessage@Server ping = ch_AB.<PingMessage>sselect(
                     Util@Client.<PingMessage>as(msg));
-
-                serverState.getOut().println(ping.toString());
+                ServerUtil@Server.printRecv(serverState, clientId, ping);
 
                 if (!serverState.isRegistered(clientId)) {{
                     serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
@@ -71,13 +68,13 @@ public class IrcClientHandler@(Client, Server)
             case PONG -> {
                 PongMessage@Server pong = ch_AB.<PongMessage>sselect(
                     Util@Client.<PongMessage>as(msg));
-
-                serverState.getOut().println(pong.toString());
+                ServerUtil@Server.printRecv(serverState, clientId, pong);
             }
 
             case NICK -> {
                 NickMessage@Client cNick = Util@Client.<NickMessage>as(msg);
                 NickMessage@Server sNick = ch_AB.<NickMessage>sselect(cNick);
+                ServerUtil@Server.printRecv(serverState, clientId, sNick);
 
                 if (!clientState.isRegistered()) {
                     clientState.setNickname(cNick.getNickname());
@@ -89,6 +86,7 @@ public class IrcClientHandler@(Client, Server)
             case USER -> {
                 UserMessage@Client cUser = Util@Client.<UserMessage>as(msg);
                 UserMessage@Server sUser = ch_AB.<UserMessage>sselect(cUser);
+                ServerUtil@Server.printRecv(serverState, clientId, sUser);
 
                 if (!clientState.isRegistered()) {
                     clientState.setUsername(cUser.getUsername());
@@ -131,6 +129,7 @@ public class IrcClientHandler@(Client, Server)
             case JOIN -> {
                 JoinMessage@Server join = ch_AB.<JoinMessage>sselect(
                     Util@Client.<JoinMessage>as(msg));
+                ServerUtil@Server.printRecv(serverState, clientId, join);
 
                 ServerUtil@Server.processJoin(serverState, clientId, join);
             }
@@ -138,6 +137,7 @@ public class IrcClientHandler@(Client, Server)
             case PART -> {
                 PartMessage@Server part = ch_AB.<PartMessage>sselect(
                     Util@Client.<PartMessage>as(msg));
+                ServerUtil@Server.printRecv(serverState, clientId, part);
 
                 ServerUtil@Server.processPart(serverState, clientId, part);
             }
@@ -145,6 +145,7 @@ public class IrcClientHandler@(Client, Server)
             case PRIVMSG -> {
                 PrivmsgMessage@Server privmsg = ch_AB.<PrivmsgMessage>sselect(
                     Util@Client.<PrivmsgMessage>as(msg));
+                ServerUtil@Server.printRecv(serverState, clientId, privmsg);
 
                 ServerUtil@Server.processPrivmsg(
                     serverState, clientId, privmsg);
@@ -153,6 +154,7 @@ public class IrcClientHandler@(Client, Server)
             case QUIT -> {
                 QuitMessage@Server quit = ch_AB.<QuitMessage>sselect(
                     Util@Client.<QuitMessage>as(msg));
+                ServerUtil@Server.printRecv(serverState, clientId, quit);
 
                 ServerUtil@Server.processQuit(serverState, clientId, quit);
             }

@@ -23,17 +23,26 @@ import java.util.stream.Collectors;
  */
 public class ServerState {
     private String hostname;
+    private boolean debug;
     private AtomicLong lastClientId;
     private ConcurrentMap<Long, ServerClientState> clients;
     private ConcurrentMap<String, ServerClientState> nicknames;
     private ConcurrentMap<String, Set<ServerClientState>> channels;
 
-    public ServerState(String hostname) {
+    public ServerState(String hostname, boolean debug) {
         this.hostname = hostname;
+        this.debug = debug;
         lastClientId = new AtomicLong(0);
         clients = new ConcurrentHashMap<>();
         nicknames = new ConcurrentHashMap<>();
         channels = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * This method is thread-safe.
+     */
+    public boolean isDebug() {
+        return debug;
     }
 
     /**

@@ -18,8 +18,15 @@ public class Server {
     public static void main(String[] args) throws IOException {
         Scanner s = new Scanner(System.in);
         Gson gson = new Gson();
+        boolean debug = Boolean.getBoolean("choral.irc.debug");
+
+        if (debug) {
+            System.out.println("Running in debug mode!");
+        }
+
         ServerState state = new ServerState(
-            args.length < 1 || args[0].isEmpty() ? HOSTNAME : args[0]);
+            args.length < 1 || args[0].isEmpty() ? HOSTNAME : args[0],
+            debug);
         ExecutorService executor = Executors.newCachedThreadPool();
 
         ServerSocketChannel listener = ServerSocketChannel.open();

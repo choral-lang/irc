@@ -14,6 +14,22 @@ import java.util.stream.Collectors;
  * too inconvenient, cumbersome or impossible to write directly in Choral.
  */
 public class ServerUtil {
+    public static void printRecv(ServerState state, long clientId,
+                                 Message message) {
+        if (state.isDebug()) {
+            System.out.println("recv: client " + clientId + ": " +
+                               message.toString());
+        }
+    }
+
+    public static void printSend(ServerState state, long clientId,
+                                 Message message) {
+        if (state.isDebug()) {
+            System.out.println("send: client " + clientId + ": " +
+                               message.toString());
+        }
+    }
+
     /**
      * Process a client's NICK message.
      *

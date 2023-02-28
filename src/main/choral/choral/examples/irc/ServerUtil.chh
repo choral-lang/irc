@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Set;
 
 public class ServerUtil@R {
+    public static void printRecv(ServerState@R state, long@R clientId, Message@R message) {}
+
+    public static void printSend(ServerState@R state, long@R clientId, Message@R message) {}
+
     public static void processWelcome(ServerState@R state, long@R clientId) {}
 
     public static void processNick(ServerState@R state, long@R clientId, NickMessage@R message) {}

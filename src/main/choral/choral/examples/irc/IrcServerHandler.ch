@@ -32,9 +32,9 @@ public class IrcServerHandler@(Client, Server)
      */
     public void on(Message@Server msg) {
         Command@Server cmd = Util@Server.commandFromString(msg.getCommand());
+        Util@Server.check(cmd != null@Server, "Expected a known message"@Server);
 
-        Util@Server.check(cmd != null@Server,
-                          "Expected a known message"@Server);
+        ServerUtil@Server.printSend(serverState, clientId, msg);
 
         switch (cmd) {
             case PING -> {

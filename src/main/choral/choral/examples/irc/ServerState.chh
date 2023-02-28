@@ -6,6 +6,8 @@ import java.util.Set;
 public class ServerState@R {
     public ServerState() {}
 
+    public boolean@R isDebug() {}
+
     public String@R getHostname() {}
 
     public void enqueue(long@R clientId, Message@R message) {}
