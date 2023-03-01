@@ -25,13 +25,13 @@ sleep infinity > "$pipe" &
 # reason this is not the case when just running nc without the while loop, or
 # even when trying to do slightly differently such as:
 #
-# { nc -C localhost 8667 < "$pipe" | while IFS= read -r line; do echo "$line"; done; } &
+# { nc localhost 8667 < "$pipe" | while IFS= read -r line; do echo "$line"; done; } &
 #
 # Seems like this is the behavior of ncat, which is the Nmap's project netcat
 # implementation. See https://github.com/nmap/nmap/issues/1413.
 while IFS= read -r line; do
     echo "recv: user$1: $line"
-done < <(nc -c localhost 8667 < "$pipe") &
+done < <(nc localhost 8667 < "$pipe") &
 pid=$!
 sleep "$init_sleep"
 
