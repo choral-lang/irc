@@ -12,19 +12,19 @@ trap "pkill -P $$; exit" SIGINT EXIT
 echo -n "Starting the server..."
 sleep infinity | ./server > /dev/null &
 sleep 2
-echo " Done"
+echo " done"
 
 # Warm up
 echo -n "Warming up the server..."
 ./stress 1000 2>&1 > /dev/null
-echo " Done"
+echo " done"
 
 # Stress test runs
 echo "Starting stress test"
 
-echo "n,user,system,real,cpu"
 for run in $(seq 1 1 5); do
 	echo "Run $run"
+    echo "n,user,system,real,cpu"
 	for n in $(seq 100 100 "$upper"); do
 	    echo -n "$n,"
 	    time -f "$FORMAT" ./stress "$n" "$init_sleep" "$sleep" 2>&1 > /dev/null
