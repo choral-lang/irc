@@ -1,11 +1,12 @@
 #!/bin/bash
 
 if [[ $# -lt 1 ]]; then
-    echo "Usage: $0 <id> [<sleep>]"
+    echo "Usage: $0 <id> [<init-sleep> [<sleep>]]"
     exit
 fi
 
-sleep=${2:-0}
+init_sleep=${2:-0}
+sleep=${3:-0}
 
 pipe=$(mktemp -u)
 mkfifo "$pipe"
@@ -32,7 +33,7 @@ while IFS= read -r line; do
     echo "recv: user$1: $line"
 done < <(nc -C localhost 8667 < "$pipe") &
 pid=$!
-sleep "$sleep"
+sleep "$init_sleep"
 
 echo "user$1: Join #stress"
 cat > "$pipe" <<EOF

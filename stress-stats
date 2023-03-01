@@ -3,6 +3,7 @@
 FORMAT="%U,%S,%e,%P"
 
 upper=${1:-1500}
+init_sleep=${2:-0}
 sleep=${2:-0}
 trap "pkill -P $$; exit" SIGINT EXIT
 
@@ -14,5 +15,5 @@ sleep 2
 echo "n,user,system,real,cpu"
 for n in $(seq 100 100 "$upper"); do
     echo -n "$n,"
-    /usr/bin/time -f "$FORMAT" ./stress "$n" "$sleep" 2>&1 > /dev/null
+    /usr/bin/time -f "$FORMAT" ./stress "$n" "$init_sleep" "$sleep" 2>&1 > /dev/null
 done
