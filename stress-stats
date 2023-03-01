@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 FORMAT="%U,%S,%e,%P"
 
@@ -27,6 +27,6 @@ for run in $(seq 1 1 5); do
     echo "n,user,system,real,cpu"
 	for n in $(seq 100 100 "$upper"); do
 	    echo -n "$n,"
-	    time -f "$FORMAT" ./stress "$n" "$init_sleep" "$sleep" 2>&1 > /dev/null
+	    \time -f "$FORMAT" ./stress "$n" "$init_sleep" "$sleep" 2>&1 > /dev/null
 	done
 done
