@@ -4,7 +4,7 @@ FORMAT="%U,%S,%e,%P"
 
 upper=${1:-1500}
 sleep=${2:-0}
-trap "pkill -P $$" EXIT
+trap "pkill -P $$; exit" SIGINT EXIT
 
 # Keep server's stdin open so that it doesn't immediately terminate. Give the
 # server a few seconds to start.
