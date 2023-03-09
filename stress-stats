@@ -16,7 +16,7 @@ echo " done"
 
 # Warm up
 echo -n "Warming up the server..."
-./stress 1000 2>&1 > /dev/null
+./stress "$upper" 2>&1 > /dev/null
 echo " done"
 
 # Stress test runs
