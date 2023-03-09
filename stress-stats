@@ -23,10 +23,10 @@ echo " done"
 echo "Starting stress test"
 
 for run in $(seq 1 1 5); do
-	echo "Run $run"
+    echo "Run $run"
     echo "n,user,system,real,cpu"
-	for n in $(seq 100 100 "$upper"); do
-	    echo -n "$n,"
-	    \time -f "$FORMAT" ./stress "$n" "$init_sleep" "$sleep" 2>&1 > /dev/null
-	done
+    for n in $(seq 100 100 "$upper"); do
+        echo -n "$n,"
+        \time -f "$FORMAT" ./stress "$n" "$init_sleep" "$sleep" 2>&1 > /dev/null
+    done
 done
