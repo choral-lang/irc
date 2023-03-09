@@ -17,22 +17,13 @@ echo "user$1: FIFO at $pipe"
 # EOF. Reading from a pipe results in an EOF when no process has the pipe open
 # for writing.
 sleep infinity > "$pipe" &
+pid_sleep=$!
 
-# Echo whatever netcat outputs.
-#
-# NOTE: The while loop makes it so that nc terminates immediately after
-# receiving an EOF on the socket (i.e. when the connection is closed). For some
-# reason this is not the case when just running nc without the while loop, or
-# even when trying to do slightly differently such as:
-#
-# { nc localhost 8667 < "$pipe" | while IFS= read -r line; do echo "$line"; done; } &
-#
-# Seems like this is the behavior of ncat, which is the Nmap's project netcat
-# implementation. See https://github.com/nmap/nmap/issues/1413.
+# Echo whatever netcat receives.
 while IFS= read -r line; do
     echo "recv: user$1: $line"
 done < <(nc localhost 8667 < "$pipe") &
-pid=$!
+pid_nc=$!
 sleep "$init_sleep"
 
 echo "user$1: Join #stress"
@@ -66,5 +57,6 @@ cat > "$pipe" <<EOF
 QUIT :Bye from user$1!
 EOF
 
-wait "$pid"
+kill "$pid_sleep"
+wait "$pid_nc"
 echo "user$1: Exit"
