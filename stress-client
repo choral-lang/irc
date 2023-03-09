@@ -22,6 +22,9 @@ pid_sleep=$!
 # Echo whatever netcat receives.
 while IFS= read -r line; do
     echo "recv: user$1: $line"
+    if [[ $line =~ ^[^[:blank:]]+[[:blank:]]+ERROR ]]; then
+        kill "$pid_sleep"
+    fi
 done < <(nc localhost 8667 < "$pipe") &
 pid_nc=$!
 sleep "$init_sleep"
@@ -57,6 +60,5 @@ cat > "$pipe" <<EOF
 QUIT :Bye from user$1!
 EOF
 
-kill "$pid_sleep"
 wait "$pid_nc"
 echo "user$1: Exit"
