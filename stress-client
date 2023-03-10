@@ -11,7 +11,7 @@ sleep=${3:-0}
 pipe=$(mktemp -u)
 mkfifo "$pipe"
 trap "rm $pipe; pkill -P $$" EXIT
-echo "FIFO at $pipe"
+echo "user$1: FIFO at $pipe"
 
 # Keep the pipe open at all times so that the reading process doesn't receive an
 # EOF. Reading from a pipe results in an EOF when no process has the pipe open
