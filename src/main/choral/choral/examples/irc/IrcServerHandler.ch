@@ -38,7 +38,7 @@ public class IrcServerHandler@(Client, Server)
 
         switch (cmd) {
             case PING -> {
-                PingMessage@Client ping = ch_AB.<PingMessage>sselect(
+                PingMessage@Client ping = ch_AB.<PingMessage>tselect(
                     Util@Server.<PingMessage>as(msg));
 
                 clientState.getOut().println(ping.toString());
@@ -49,14 +49,14 @@ public class IrcServerHandler@(Client, Server)
             }
 
             case PONG -> {
-                PongMessage@Client pong = ch_AB.<PongMessage>sselect(
+                PongMessage@Client pong = ch_AB.<PongMessage>tselect(
                     Util@Server.<PongMessage>as(msg));
 
                 clientState.getOut().println(pong.toString());
             }
 
             case NICK -> {
-                NickMessage@Client nick = ch_AB.<NickMessage>sselect(
+                NickMessage@Client nick = ch_AB.<NickMessage>tselect(
                     Util@Server.<NickMessage>as(msg));
 
                 clientState.getOut().println(nick.toString());
@@ -82,7 +82,7 @@ public class IrcServerHandler@(Client, Server)
             }
 
             case JOIN -> {
-                JoinMessage@Client join = ch_AB.<JoinMessage>sselect(
+                JoinMessage@Client join = ch_AB.<JoinMessage>tselect(
                     Util@Server.<JoinMessage>as(msg));
 
                 clientState.getOut().println(join.toString());
@@ -110,7 +110,7 @@ public class IrcServerHandler@(Client, Server)
             }
 
             case PART -> {
-                PartMessage@Client part = ch_AB.<PartMessage>sselect(
+                PartMessage@Client part = ch_AB.<PartMessage>tselect(
                     Util@Server.<PartMessage>as(msg));
 
                 clientState.getOut().println(part.toString());
@@ -138,14 +138,14 @@ public class IrcServerHandler@(Client, Server)
             }
 
             case PRIVMSG -> {
-                PrivmsgMessage@Client privmsg = ch_AB.<PrivmsgMessage>sselect(
+                PrivmsgMessage@Client privmsg = ch_AB.<PrivmsgMessage>tselect(
                     Util@Server.<PrivmsgMessage>as(msg));
 
                 clientState.getOut().println(privmsg.toString());
             }
 
             case RPL_WELCOME -> {
-                RplWelcomeMessage@Client welcome = ch_AB.<RplWelcomeMessage>sselect(
+                RplWelcomeMessage@Client welcome = ch_AB.<RplWelcomeMessage>tselect(
                     Util@Server.<RplWelcomeMessage>as(msg));
 
                 clientState.getOut().println(welcome.toString());
@@ -157,7 +157,7 @@ public class IrcServerHandler@(Client, Server)
             }
 
             case RPL_NAMREPLY -> {
-                RplNamReplyMessage@Client namReply = ch_AB.<RplNamReplyMessage>sselect(
+                RplNamReplyMessage@Client namReply = ch_AB.<RplNamReplyMessage>tselect(
                     Util@Server.<RplNamReplyMessage>as(msg));
 
                 clientState.getOut().println(namReply.toString());
@@ -170,7 +170,7 @@ public class IrcServerHandler@(Client, Server)
             }
 
             case QUIT -> {
-                QuitMessage@Client quit = ch_AB.<QuitMessage>sselect(
+                QuitMessage@Client quit = ch_AB.<QuitMessage>tselect(
                     Util@Server.<QuitMessage>as(msg));
 
                 Source@Client source = quit.getSource();
@@ -196,7 +196,7 @@ public class IrcServerHandler@(Client, Server)
             }
 
             case ERROR -> {
-                ErrorMessage@Client error = ch_AB.<ErrorMessage>sselect(
+                ErrorMessage@Client error = ch_AB.<ErrorMessage>tselect(
                     Util@Server.<ErrorMessage>as(msg));
 
                 String@Client info = "Disconnected"@Client;
@@ -216,7 +216,7 @@ public class IrcServerHandler@(Client, Server)
             // NOTE: Any message that falls under ForwardMessage
             default -> {
                 // We can use whichever ForwardMessage for the selection
-                ForwardMessage@Client forward = ch_AB.<ForwardMessage>sselect(
+                ForwardMessage@Client forward = ch_AB.<ForwardMessage>tselect(
                     Util@Server.<ForwardMessage>as(msg));
 
                 Util@Server.check(ForwardMessage@Server.COMMANDS.contains(cmd),

@@ -13,11 +13,11 @@ public class IrcChannel@(A, B) implements SymChannel@(A, B)<Message> {
     @SelectionMethod
     public <Message@X extends Enum@X<Message>> Message@A select(Message@B m) {}
 
-    @SuperSelectionMethod
-    public <M@X extends Message@X> M@B sselect(M@A m) {}
+    @TypeSelectionMethod
+    public <M@X extends Message@X> M@B tselect(M@A m) {}
 
-    @SuperSelectionMethod
-    public <M@X extends Message@X> M@A sselect(M@B m) {}
+    @TypeSelectionMethod
+    public <M@X extends Message@X> M@A tselect(M@B m) {}
 
     public void close() {}
 }

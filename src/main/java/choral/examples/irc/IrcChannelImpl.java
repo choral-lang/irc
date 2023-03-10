@@ -204,15 +204,15 @@ public class IrcChannelImpl implements SymChannelImpl<Message> {
         }
     }
 
-    public <M extends Message> Unit sselect(M message) {
+    public <M extends Message> Unit tselect(M message) {
         return com(message);
     }
 
-    public <M extends Message> M sselect(Unit u) {
-        return sselect();
+    public <M extends Message> M tselect(Unit u) {
+        return tselect();
     }
 
-    public <M extends Message> M sselect() {
+    public <M extends Message> M tselect() {
         return com();
     }
 
