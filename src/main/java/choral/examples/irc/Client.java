@@ -70,7 +70,7 @@ public class Client {
                 }
 
                 String cmd = parts[0];
-                String rest = parts.length == 1 ? "" : parts[1];
+                String rest = parts.length == 1 ? null : parts[1];
 
                 if (cmd.equalsIgnoreCase("/connect")) {
                     String[] args = splitArgs(rest, 2);
@@ -118,7 +118,7 @@ public class Client {
                 else if (cmd.equalsIgnoreCase("/nick")) {
                     String[] args = splitArgs(rest, 1);
 
-                    if (args.length == 0) {
+                    if (args.length < 1) {
                         System.out.println("Usage: /nick <nickname>");
                         continue;
                     }
@@ -131,15 +131,15 @@ public class Client {
                     irc.enqueue(new NickMessage(args[0]));
                 }
                 else if (cmd.equalsIgnoreCase("/user")) {
-                    String[] args = rest.split(" +", 2);
+                    String[] args = splitArgs(rest, 2);
 
-                    if (args.length == 0) {
+                    if (args.length < 1) {
                         System.out.println("Usage: /user <username> [<realname>]");
                         continue;
                     }
 
                     if (!isOpen()) {
-                        System.out.println("Connect first");
+                        System.out.println("Connect first!");
                         continue;
                     }
 
@@ -149,15 +149,15 @@ public class Client {
                     irc.enqueue(new UserMessage(username, realname));
                 }
                 else if (cmd.equalsIgnoreCase("/join")) {
-                    String[] args = rest.split(" +", 1);
+                    String[] args = splitArgs(rest, 1);
 
-                    if (args.length == 0) {
+                    if (args.length < 1) {
                         System.out.println("Usage: /join <channel>[,<channel>]...");
                         continue;
                     }
 
                     if (!isOpen()) {
-                        System.out.println("Connect first");
+                        System.out.println("Connect first!");
                         continue;
                     }
 
@@ -165,15 +165,15 @@ public class Client {
                         Arrays.asList(args[0].split(","))));
                 }
                 else if (cmd.equalsIgnoreCase("/part")) {
-                    String[] args = rest.split(" +", 2);
+                    String[] args = splitArgs(rest, 2);
 
-                    if (args.length == 0) {
+                    if (args.length < 1) {
                         System.out.println("Usage: /part <channel>[,<channel>]... [<reason>]");
                         continue;
                     }
 
                     if (!isOpen()) {
-                        System.out.println("Connect first");
+                        System.out.println("Connect first!");
                         continue;
                     }
 
@@ -190,7 +190,7 @@ public class Client {
                     irc.enqueue(m);
                 }
                 else if (cmd.equalsIgnoreCase("/privmsg")) {
-                    String[] args = rest.split(" +", 2);
+                    String[] args = splitArgs(rest, 2);
 
                     if (args.length < 2) {
                         System.out.println("Usage: /privmsg <target>[,<target>]... <text>");
@@ -198,7 +198,7 @@ public class Client {
                     }
 
                     if (!isOpen()) {
-                        System.out.println("Connect first");
+                        System.out.println("Connect first!");
                         continue;
                     }
 
@@ -219,10 +219,10 @@ public class Client {
                         continue;
                     }
 
-                    String[] args = rest.split(" +", 1);
+                    String[] args = splitArgs(rest, 1);
 
                     irc.enqueue(new QuitMessage(
-                        args.length == 0 ? "Bye" : args[0]));
+                        args.length < 1 ? "Bye" : args[0]));
                     state.setQuitRequested();
                     irc.clientQueue().stop();
 
