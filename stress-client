@@ -8,29 +8,19 @@ fi
 init_sleep=${2:-0}
 sleep=${3:-0}
 
-pipe=$(mktemp -u)
-mkfifo "$pipe"
-trap "rm $pipe; pkill -P $$" EXIT
-echo "user$1: FIFO at $pipe"
+trap "pkill -P $$" EXIT
 
-# Keep the pipe open at all times so that the reading process doesn't receive an
-# EOF. Reading from a pipe results in an EOF when no process has the pipe open
-# for writing.
-sleep infinity > "$pipe" &
-pid_sleep=$!
-
-# Echo whatever netcat receives.
-while IFS= read -r line; do
-    echo "recv: user$1: $line"
-    if [[ $line =~ ^[^[:blank:]]+[[:blank:]]+ERROR ]]; then
-        kill "$pid_sleep"
-    fi
-done < <(nc localhost 8667 < "$pipe") &
-pid_nc=$!
+exec 3>/dev/tcp/localhost/8667
 sleep "$init_sleep"
 
+# Echo whatever we receive
+while IFS= read -r line; do
+    echo "recv: user$1: $line"
+done <&3 &
+pid=$!
+
 echo "user$1: Join #stress"
-cat > "$pipe" <<EOF
+cat >&3 <<EOF
 NICK user$1
 USER user$1 0 * user$1
 JOIN #stress
@@ -38,27 +28,29 @@ EOF
 sleep "$sleep"
 
 echo "user$1: Write 1"
-cat > "$pipe" <<EOF
+cat >&3 <<EOF
 PRIVMSG #stress :Hi from user$1, how are you?
 EOF
 sleep "$sleep"
 
 echo "user$1: Write 2"
-cat > "$pipe" <<EOF
+cat >&3 <<EOF
 PRIVMSG #stress :user$1 says they're good, thanks!
 EOF
 sleep "$sleep"
 
 echo "user$1: Write 3"
-cat > "$pipe" <<EOF
+cat >&3 <<EOF
 PRIVMSG #stress :See you later, user$1!
 EOF
 sleep "$sleep"
 
 echo "user$1: Quit"
-cat > "$pipe" <<EOF
+cat >&3 <<EOF
 QUIT :Bye from user$1!
 EOF
 
-wait "$pid_nc"
+# Wait until we're done receiving, otherwise terminating the script would close
+# the connection prematurely
+wait "$pid"
 echo "user$1: Exit"
