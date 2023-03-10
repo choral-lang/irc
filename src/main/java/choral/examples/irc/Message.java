@@ -155,6 +155,10 @@ public class Message {
         }
     }
 
+    public static String escapeParam(String str) {
+        return str.replaceAll(" +", "");
+    }
+
     /**
      * Parse an IRC message as specified by the IRC protocol. Assume there's no
      * trailing <code>CRLF</code> sequence.

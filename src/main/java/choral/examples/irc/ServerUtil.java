@@ -92,8 +92,8 @@ public class ServerUtil {
 
             if (!Util.validNickname(nickname)) {
                 state.enqueue(clientId, forwardNumeric(
-                    state, Command.ERR_ERRONEOUSNICKNAME, current, nickname,
-                    "Nickname is invalid"));
+                    state, Command.ERR_ERRONEOUSNICKNAME, current,
+                    Message.escapeParam(nickname), "Nickname is invalid"));
             }
             // Try to atomically acquire the nickname
             else if (!state.setNickname(clientId, nickname)) {
@@ -157,7 +157,8 @@ public class ServerUtil {
                 for (String channel : new HashSet<>(channels)) {
                     if (!Util.validChannelname(channel)) {
                         state.enqueue(clientId, forwardNumeric(
-                            state, Command.ERR_NOSUCHCHANNEL, nickname, channel,
+                            state, Command.ERR_NOSUCHCHANNEL, nickname,
+                            Message.escapeParam(channel),
                             "Invalid channel name"));
                     }
                     else if (!state.inChannel(clientId, channel)) {
@@ -228,8 +229,8 @@ public class ServerUtil {
             for (String channel : new HashSet<>(channels)) {
                 if (!Util.validChannelname(channel)) {
                     state.enqueue(clientId, forwardNumeric(
-                        state, Command.ERR_NOSUCHCHANNEL, nickname, channel,
-                        "Invalid channel name"));
+                        state, Command.ERR_NOSUCHCHANNEL, nickname,
+                        Message.escapeParam(channel), "Invalid channel name"));
                 }
                 else if (!state.inChannel(clientId, channel)) {
                     state.enqueue(clientId, forwardNumeric(
