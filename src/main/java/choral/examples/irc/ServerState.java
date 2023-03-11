@@ -136,14 +136,21 @@ public class ServerState {
      */
     public boolean setNickname(long clientId, String nickname) {
         assert clients.containsKey(clientId);
-        ServerClientState client = clients.get(clientId);
-        ServerClientState res = nicknames.putIfAbsent(nickname, client);
 
-        if (res == null) {
-            client.nickname = nickname;
+        synchronized (this) {
+            ServerClientState client = clients.get(clientId);
+            ServerClientState res = nicknames.putIfAbsent(nickname, client);
+
+            if (res == null) {
+                if (client.nickname != null) {
+                    nicknames.remove(client.nickname);
+                }
+
+                client.nickname = nickname;
+            }
+
+            return res == null;
         }
-
-        return res == null;
     }
 
     /**
