@@ -226,7 +226,7 @@ public class ServerState {
         ServerClientState client = clients.get(clientId);
 
         client.channels.add(channel);
-        channels.merge(channel, new HashSet<>(), (members, __) -> {
+        channels.merge(channel, Set.of(client), (members, __) -> {
             Set<ServerClientState> res = new HashSet<>(members);
             res.add(client);
             return res;
