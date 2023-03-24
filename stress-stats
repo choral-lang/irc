@@ -9,7 +9,7 @@ trap "pkill -P $$; exit" SIGINT EXIT
 
 # Keep server's stdin open so that it doesn't immediately terminate. Give the
 # server a few seconds to start.
-echo -n "Starting the server..."
+echo -n "Starting the server (make sure it's not already running)..."
 sleep infinity | ./server > /dev/null &
 sleep 2
 echo " done"
