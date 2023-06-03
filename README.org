@@ -70,15 +70,15 @@ commands:
   /quit
 #+END_EXAMPLE
 
-* Binary Compatibility
+* Interoperability
 
 The implementation is fully *binary-compatible* with IRC, i.e. it respects IRC's
 wire format and doesn't perform any custom communications. Therefore, it's
-possible to swap out the client or the server for a 3rd party counterpart.
+possible to use the client or the server with third-party implementations.
 
-E.g. you can connect to the IRC server using a 3rd party client such as Weechat,
-HexChat, Konversation, etc., or you can use the IRC client to connect to a 3rd
-party server, such as W3C:
+E.g. you can connect to the IRC server using a third-party client such as
+Weechat, HexChat, Konversation, etc., or you can use the IRC client to connect
+to a third-party server, such as W3C:
 
 #+BEGIN_EXAMPLE
   /connect irc.w3.org 6667
