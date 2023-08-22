@@ -249,18 +249,20 @@ public class ServerState {
     }
 
     /**
-     * Remove the client from the state.
+     * Unregister the client and remove it from all channels.
      *
-     * This method should only ever be called once. After it completes, it is
-     * invalid to use the same client ID with any of the method of this state.
+     * After this method completes, the client's username, realname and nickname
+     * are all null, the client is treated as unregistered, and the set of
+     * channels is empty, while the quit requested flag is preserved. It is
+     * still valid to use the same client ID with other methods of this state.
      *
-     * This method is thread-safe.
+     * This method is thread-safe and idempotent.
      */
     public void quit(long clientId) {
         assert clients.containsKey(clientId);
 
         synchronized (this) {
-            ServerClientState client = clients.remove(clientId);
+            ServerClientState client = clients.get(clientId);
 
             if (client.nickname != null) {
                 nicknames.remove(client.nickname);
@@ -273,7 +275,26 @@ public class ServerState {
                     return res.isEmpty() ? null : res;
                 });
             }
+
+            client.username = null;
+            client.realname = null;
+            client.nickname = null;
+            client.registered = false;
+            client.channels.clear();
         }
+    }
+
+    /**
+     * Remove the client from the state.
+     *
+     * This method should only ever be called once. After it completes, it is
+     * invalid to use the same client ID with any of the method of this state.
+     *
+     * This method is thread-safe.
+     */
+    public void remove(long clientId) {
+        assert clients.containsKey(clientId);
+        clients.remove(clientId);
     }
 
     /**

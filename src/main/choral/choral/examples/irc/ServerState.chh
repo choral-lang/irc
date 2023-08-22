@@ -46,6 +46,8 @@ public class ServerState@R {
 
     public void quit(long@R clientId) {}
 
+    public void remove(long@R clientId) {}
+
     public void setQuitRequested(long@R clientId) {}
 
     public boolean@R isQuitRequested(long@R clientId) {}

@@ -381,6 +381,8 @@ public class ServerUtil {
             new Source(state.getHostname())));
 
         ServerUtil.sendQuits(state, clientId, message);
+
+        state.quit(clientId);
     }
 
     /**

@@ -56,14 +56,15 @@ public class IrcServerLocalHandler@R implements LocalHandler@R {
         if (!state.isQuitRequested(clientId)) {
             ServerUtil@R.sendQuits(state, clientId,
                 ServerUtil@R.<QuitMessage>withSource(
-                    new QuitMessage@R("Client disconnected"@R),
+                    new QuitMessage@R("Connection closed"@R),
                     new Source@R(state.getHostname())));
+            state.quit(clientId);
             state.getOut().println("Connection closed: "@R + clientId);
         }
         else {
             state.getOut().println("Client disconnected: "@R + clientId);
         }
 
-        state.quit(clientId);
+        state.remove(clientId);
     }
 }
