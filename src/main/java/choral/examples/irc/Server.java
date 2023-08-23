@@ -101,7 +101,7 @@ public class Server {
 
         executor.shutdown();
         try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            executor.awaitTermination(2, TimeUnit.SECONDS);
         }
         catch (InterruptedException e2) {
             // Ignore
