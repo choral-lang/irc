@@ -8,12 +8,19 @@ import java.nio.channels.SocketChannel;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 public class Server {
     private static final String HOSTNAME = "irc.choral.net";
     private static final String HOST = "localhost";
     private static final int PORT = 8667;
+
+    private static Thread makeThread(Runnable runnable) {
+        Thread thread = new Thread(runnable);
+        thread.setDaemon(true);
+        return thread;
+    }
 
     public static void main(String[] args) throws IOException {
         Scanner s = new Scanner(System.in);
@@ -27,7 +34,8 @@ public class Server {
         ServerState state = new ServerState(
             args.length < 1 || args[0].isEmpty() ? HOSTNAME : args[0],
             debug);
-        ExecutorService executor = Executors.newCachedThreadPool();
+        ExecutorService executor = Executors.newCachedThreadPool(
+            Server::makeThread);
 
         ServerSocketChannel listener = ServerSocketChannel.open();
         listener.bind(new InetSocketAddress(HOST, PORT));

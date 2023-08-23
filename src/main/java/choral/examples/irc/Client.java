@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 public class Client {
@@ -48,6 +49,12 @@ public class Client {
         // cooperation between the main thread and the loop threads would be
         // nicer.
         return ch != null && ch.isOpen();
+    }
+
+    private static Thread makeThread(Runnable runnable) {
+        Thread thread = new Thread(runnable);
+        thread.setDaemon(true);
+        return thread;
     }
 
     public void run() throws IOException {
@@ -109,7 +116,7 @@ public class Client {
 
                     System.out.println("Connected to " + host + " at " + port);
 
-                    executor = Executors.newCachedThreadPool();
+                    executor = Executors.newCachedThreadPool(Client::makeThread);
                     ch = new IrcChannel_A(sc);
                     irc = new Irc_Client(ch);
                     state = new ClientState(ch, "choralbot");
