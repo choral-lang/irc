@@ -36,13 +36,27 @@ of Choral. To build the project:
      mvn compile
    #+END_EXAMPLE
 
-   *NOTE*: Choral IRC expects that the Java compiler version listed in its
-   =pom.xml= matches the one you have installed, since only then is the
-   =--enable-preview= option valid. Additionally, we require at least Java 17.
+   We make use of *pattern switch expressions* and therefore require at least
+   *Java 21*. Pattern switch expressions first appeared in Java 17 as a preview
+   feature, so if you don't have Java 21 or newer you can use an earlier version
+   not older than Java 17. In that case you will have to adjust =pom.xml= to
+   also include the =--enable-preview= flag, along with the specific version:
 
-   We try and track the latest Java compiler version available. In case yours is
-   older, either update your Java compiler or modify =pom.xml= to match the one
-   you have installed.
+   #+BEGIN_SRC xml
+     <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-compiler-plugin</artifactId>
+         ...
+         <configuration>
+             <source>JAVA_VERSION</source>
+             <target>JAVA_VERSION</target>
+             <compilerArgs>--enable-preview</compilerArgs>
+         </configuration>
+     </plugin>
+   #+END_SRC
+
+   *NOTE*: The Java compiler only accepts =--enable-preview= if the source and
+   target versions match the compiler's own version.
 
 * Running
 
@@ -53,9 +67,12 @@ Run the server and the client programs separately:
   ./client
 #+END_EXAMPLE
 
-Note that executing the Java code also requires the =--enable-preview=
-option, which we provide to Maven through =.mvn/jvm.config=. If you want to
-run the code in a different way, don't forget to pass the option.
+*NOTE*: Java code compiled with the =--enable-preview= option requires passing
+the same option to the JVM when executing the code. The above scripts invoke the
+two programs through Maven, which we unconditionally provide with the option
+through =.mvn/jvm.config=, so generally no adjustments are required on your
+part. If you wish to execute the code in a different way but had to compile with
+=--enable-preview=, don't forget to pass the option when executing as well.
 
 Use the client's textual interface to connect to the server and run some
 commands:
