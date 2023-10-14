@@ -35,9 +35,9 @@ public class Irc@(Client, Server) {
         events.run(
             clientExecutor,
             serverExecutor,
-            new IrcClientHandler@(Client, Server)(
+            new IrcClientToServerHandler@(Client, Server)(
                 events.queueB(), ch_AB, clientState, serverState, clientId),
-            new IrcServerHandler@(Client, Server)(
+            new IrcServerToClientHandler@(Client, Server)(
                 events.queueA(), ch_AB, clientState, serverState, clientId),
             new IrcClientLocalHandler@Client(
                 events.queueA(), clientState),

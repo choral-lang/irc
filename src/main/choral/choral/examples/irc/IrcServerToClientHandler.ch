@@ -2,7 +2,7 @@ package choral.examples.irc;
 
 import java.util.List;
 
-public class IrcServerHandler@(Client, Server)
+public class IrcServerToClientHandler@(Client, Server)
         implements EventHandler@(Server, Client)<Message> {
     private EventQueue@Client<Message> clientQueue;
     private IrcChannel@(Client, Server) ch_AB;
@@ -12,7 +12,7 @@ public class IrcServerHandler@(Client, Server)
     private ServerState@Server serverState;
     private long@Server clientId;
 
-    public IrcServerHandler(EventQueue@Client<Message> clientQueue,
+    public IrcServerToClientHandler(EventQueue@Client<Message> clientQueue,
                             IrcChannel@(Client, Server) ch_AB,
                             ClientState@Client clientState,
                             ServerState@Server serverState,
