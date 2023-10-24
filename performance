@@ -12,4 +12,4 @@ ulimit -n $(ulimit -Hn)
 
 echo "Starting $1 clients"
 echo "$(seq $1)" | parallel --will-cite --line-buffer -j "$1" \
-                            ./stress-client {} "$init_sleep" "$sleep"
+                            ./performance-client {} "$init_sleep" "$sleep"

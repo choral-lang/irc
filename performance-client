@@ -19,29 +19,29 @@ while IFS= read -r line; do
 done <&3 &
 pid=$!
 
-echo "user$1: Join #stress"
+echo "user$1: Join #perf"
 cat >&3 <<EOF
 NICK user$1
 USER user$1 0 * user$1
-JOIN #stress
+JOIN #perf
 EOF
 sleep "$sleep"
 
 echo "user$1: Write 1"
 cat >&3 <<EOF
-PRIVMSG #stress :Hi from user$1, how are you?
+PRIVMSG #perf :Hi from user$1, how are you?
 EOF
 sleep "$sleep"
 
 echo "user$1: Write 2"
 cat >&3 <<EOF
-PRIVMSG #stress :user$1 says they're good, thanks!
+PRIVMSG #perf :user$1 says they're good, thanks!
 EOF
 sleep "$sleep"
 
 echo "user$1: Write 3"
 cat >&3 <<EOF
-PRIVMSG #stress :See you later, user$1!
+PRIVMSG #perf :See you later, user$1!
 EOF
 sleep "$sleep"
 

@@ -16,17 +16,17 @@ echo " done"
 
 # Warm up
 echo -n "Warming up the server..."
-./stress "$upper" 2>&1 > /dev/null
+./performance "$upper" 2>&1 > /dev/null
 echo " done"
 
-# Stress test runs
-echo "Starting stress test"
+# Performance test runs
+echo "Starting performance test"
 
 for run in $(seq 1 1 5); do
     echo "Run $run"
     echo "n,user,system,real,cpu"
     for n in $(seq 100 100 "$upper"); do
         echo -n "$n,"
-        \time -f "$FORMAT" ./stress "$n" "$init_sleep" "$sleep" 2>&1 > /dev/null
+        \time -f "$FORMAT" ./performance "$n" "$init_sleep" "$sleep" 2>&1 > /dev/null
     done
 done
