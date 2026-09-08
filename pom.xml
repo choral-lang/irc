@@ -7,6 +7,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
+        <choral.version>0.1.12</choral.version>
+        <choral-maven-plugin.version>1.0.0-SNAPSHOT</choral-maven-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -14,12 +16,12 @@
         <dependency>
             <groupId>org.choral-lang</groupId>
             <artifactId>choral</artifactId>
-            <version>0.1.1</version>
+            <version>${choral.version}</version>
         </dependency>
         <dependency>
             <groupId>org.choral-lang</groupId>
             <artifactId>runtime</artifactId>
-            <version>0.1.1</version>
+            <version>${choral.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -46,43 +48,27 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <groupId>org.choral-lang</groupId>
+                <artifactId>choral-maven-plugin</artifactId>
+                <version>${choral-maven-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.choral-lang</groupId>
+                        <artifactId>choral</artifactId>
+                        <version>${choral.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>choral-epp-irc</id>
-                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>epp</goal>
                         </goals>
                         <configuration>
-                            <executable>choral</executable>
-                            <arguments>
-                                <argument>epp</argument>
-                                <argument>--sources=${project.basedir}/src/main/choral</argument>
-                                <argument>--headers=${project.basedir}/src/main/choral</argument>
-                                <argument>--target=${project.build.directory}/generated-sources/choral</argument>
-                                <argument>Irc</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/choral</source>
-                            </sources>
+                            <symbol>Irc</symbol>
+                            <headers>
+                                <header>${project.basedir}/src/main/choral</header>
+                            </headers>
                         </configuration>
                     </execution>
                 </executions>

@@ -40,11 +40,11 @@ public class IrcClientToServerHandler@(Client, Server)
                     Util@Client.<PingMessage>as(msg));
                 ServerUtil@Server.printRecv(serverState, clientId, ping);
 
-                if (!serverState.isRegistered(clientId)) {{
+                if (!serverState.isRegistered(clientId)) {
                     serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
                         serverState, Command@Server.ERR_NOTREGISTERED,
                         "*"@Server, "You must register first"@Server));
-                }}
+                }
                 else {
                     if (!ping.hasEnoughParams()) {
                         serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
@@ -93,21 +93,21 @@ public class IrcClientToServerHandler@(Client, Server)
                     clientState.setRealname(cUser.getRealname());
                 }
 
-                if (serverState.isRegistered(clientId)) {{{{
+                if (serverState.isRegistered(clientId)) {
                     serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
                         serverState, Command@Server.ERR_ALREADYREGISTERED,
                         serverState.getNickname(clientId),
                         "You cannot register again"@Server));
-                }}}}
+                }
                 else {
                     if (!sUser.hasEnoughParams() ||
-                        sUser.getRealname().trim().equals(""@Server)) {{{
+                        sUser.getRealname().trim().equals(""@Server)) {
                         serverQueue.enqueue(ServerUtil@Server.forwardNumeric(
                             serverState, Command@Server.ERR_NEEDMOREPARAMS,
                             "*"@Server,
                             Util@Server.commandToString(Command@Server.USER),
                             "Need more parameters"@Server));
-                    }}}
+                    }
                     else {
                         String@Server username = sUser.getUsername();
                         String@Server realname = sUser.getRealname();
@@ -121,7 +121,6 @@ public class IrcClientToServerHandler@(Client, Server)
                                     serverState, clientId);
                             }
                         }
-                        else {{}}
                     }
                 }
             }
