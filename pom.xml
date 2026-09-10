@@ -7,8 +7,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <choral.version>0.1.12</choral.version>
-        <choral-maven-plugin.version>1.0.0-SNAPSHOT</choral-maven-plugin.version>
+        <choral.version>0.1.13</choral.version>
+        <choral-maven-plugin.version>0.1.0</choral-maven-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
